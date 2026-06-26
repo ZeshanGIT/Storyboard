@@ -1,5 +1,7 @@
 import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
 
 type WireframeErrorOverlayProps = {
   errors: readonly string[]
@@ -22,19 +24,17 @@ type CopyButtonProps = {
 
 function CopyButton({ label, copied, onCopy }: CopyButtonProps) {
   return (
-    <button
+    <Button
       type="button"
-      className="shrink-0 rounded border border-red-600 p-1"
+      variant="ghost"
+      size="icon"
+      className="shrink-0"
       aria-label={label}
       title={label}
       onClick={onCopy}
     >
-      {copied ? (
-        <Check aria-hidden="true" className="size-3.5" />
-      ) : (
-        <Copy aria-hidden="true" className="size-3.5" />
-      )}
-    </button>
+      {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+    </Button>
   )
 }
 
@@ -53,32 +53,31 @@ export function WireframeErrorOverlay({ errors }: WireframeErrorOverlayProps) {
   }
 
   return (
-    <div
-      role="alert"
-      aria-live="assertive"
-      className="fixed bottom-4 right-4 z-50 max-w-md max-h-[40vh] overflow-y-auto rounded border border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900 shadow-lg"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <strong className="font-semibold">Wireframe error</strong>
-        <CopyButton
-          label="Copy all errors"
-          copied={copiedKey === 'all'}
-          onCopy={() => handleCopy(errors.join('\n'), 'all')}
-        />
-      </div>
-
-      <ul className="mt-2 space-y-2">
-        {errors.map((error) => (
-          <li key={error} className="flex items-start gap-2">
-            <span className="flex-1">{error}</span>
-            <CopyButton
-              label={`Copy error: ${error}`}
-              copied={copiedKey === error}
-              onCopy={() => handleCopy(error, error)}
-            />
-          </li>
-        ))}
-      </ul>
+    <div className="fixed bottom-4 right-4 z-50 max-w-md max-h-[40vh] overflow-y-auto">
+      <Alert variant="destructive">
+        <AlertTitle className="flex items-center justify-between gap-3">
+          Wireframe error
+          <CopyButton
+            label="Copy all errors"
+            copied={copiedKey === 'all'}
+            onCopy={() => handleCopy(errors.join('\n'), 'all')}
+          />
+        </AlertTitle>
+        <AlertDescription>
+          <ul className="mt-2 flex flex-col gap-2">
+            {errors.map((error) => (
+              <li key={error} className="flex items-start gap-2">
+                <span className="flex-1">{error}</span>
+                <CopyButton
+                  label={`Copy error: ${error}`}
+                  copied={copiedKey === error}
+                  onCopy={() => handleCopy(error, error)}
+                />
+              </li>
+            ))}
+          </ul>
+        </AlertDescription>
+      </Alert>
     </div>
   )
 }
