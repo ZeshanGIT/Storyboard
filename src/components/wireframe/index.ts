@@ -1,6 +1,8 @@
 export { Button, type ButtonProps } from './Button'
+export { Card, type CardProps } from './Card'
 export { Heading, type HeadingProps } from './Heading'
 export { Input, type InputProps } from './Input'
 export { Link, type LinkProps } from './Link'
 export { Screen, type ScreenProps } from './Screen'
+export { Section, type SectionProps } from './Section'
 export { Text, type TextProps } from './Text'
