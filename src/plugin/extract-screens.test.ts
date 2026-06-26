@@ -24,7 +24,7 @@ describe('extractScreens', () => {
     expect(result.screens[0].jsx).toContain('<Text>Welcome back</Text>')
   })
 
-  it('rejects duplicate screen ids', () => {
+  it('rejects duplicate screen ids with location detail', () => {
     const dup = `
 <Screen id="home" title="A">...</Screen>
 <Screen id="home" title="B">...</Screen>
@@ -32,7 +32,9 @@ describe('extractScreens', () => {
     const result = extractScreens(dup)
     expect(result.ok).toBe(false)
     if (result.ok) return
-    expect(result.error).toBeInstanceOf(CodegenError)
-    expect(result.error.code).toBe('DUPLICATE_SCREEN_ID')
+    expect(result.errors[0]).toBeInstanceOf(CodegenError)
+    expect(result.errors[0].code).toBe('DUPLICATE_SCREEN_ID')
+    expect(result.errors[0].message).toContain('first at screen 1')
+    expect(result.errors[0].message).toContain('repeated at screen 2')
   })
 })

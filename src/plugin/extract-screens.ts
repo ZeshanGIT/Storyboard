@@ -14,6 +14,7 @@ function isScreenNode(node: { type?: string; name?: string | null }): node is Sc
 }
 
 import { CodegenError, type CodegenResult, type ExtractedScreen } from './types'
+import { collectGotoErrors } from './validate-gotos'
 
 const processor = remark().use(remarkMdx)
 
@@ -43,31 +44,48 @@ export function extractScreens(source: string): CodegenResult {
     } catch (err) {
       return {
         ok: false,
-        error: new CodegenError(
-          'PARSE_ERROR',
-          err instanceof Error ? err.message : 'Failed to parse MDX',
-        ),
+        errors: [
+          new CodegenError(
+            'PARSE_ERROR',
+            err instanceof Error ? err.message : 'Failed to parse MDX',
+          ),
+        ],
       }
     }
 
     const screens: ExtractedScreen[] = []
-    const seenIds = new Map<string, number>()
+    const seenIds = new Map<string, { order: number; title: string }>()
+    const errors: CodegenError[] = []
+    let screenCount = 0
 
     visit(tree, (node) => {
       if (!isScreenNode(node)) return
 
+      screenCount += 1
       const id = getStringAttr(node, 'id')
       const title = getStringAttr(node, 'title') ?? ''
 
       if (!id) {
-        throw new CodegenError('MISSING_SCREEN_ID', 'Screen node missing id attribute')
+        errors.push(
+          new CodegenError('MISSING_SCREEN_ID', `Screen ${screenCount} is missing an id attribute`),
+        )
+        return
       }
 
       if (seenIds.has(id)) {
-        throw new CodegenError('DUPLICATE_SCREEN_ID', `Duplicate screen id "${id}"`, id)
+        const first = seenIds.get(id)
+        if (!first) return
+        errors.push(
+          new CodegenError(
+            'DUPLICATE_SCREEN_ID',
+            `Duplicate screen id "${id}" — first at screen ${first.order + 1} ("${first.title}"), repeated at screen ${screenCount} ("${title}")`,
+            id,
+          ),
+        )
+        return
       }
-      seenIds.set(id, screens.length)
 
+      seenIds.set(id, { order: screens.length, title })
       screens.push({
         id,
         title,
@@ -76,14 +94,22 @@ export function extractScreens(source: string): CodegenResult {
       })
     })
 
+    errors.push(...collectGotoErrors(tree, screens))
+
+    if (errors.length > 0) {
+      return { ok: false, errors }
+    }
+
     return { ok: true, screens }
   } catch (err) {
     if (err instanceof CodegenError) {
-      return { ok: false, error: err }
+      return { ok: false, errors: [err] }
     }
     return {
       ok: false,
-      error: new CodegenError('PARSE_ERROR', err instanceof Error ? err.message : 'Unknown error'),
+      errors: [
+        new CodegenError('PARSE_ERROR', err instanceof Error ? err.message : 'Unknown error'),
+      ],
     }
   }
 }

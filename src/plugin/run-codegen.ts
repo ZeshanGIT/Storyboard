@@ -15,7 +15,9 @@ try {
 
 const result = await runCodegen(source, outDir)
 if (!result.ok) {
-  console.error(`[wireframe] Codegen failed: ${result.error.message}`)
+  for (const error of result.errors) {
+    console.error(`[wireframe] Codegen failed: ${error.message}`)
+  }
   process.exit(1)
 }
 

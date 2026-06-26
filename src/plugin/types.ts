@@ -5,7 +5,11 @@ export type ExtractedScreen = {
   order: number
 }
 
-export type CodegenErrorCode = 'DUPLICATE_SCREEN_ID' | 'MISSING_SCREEN_ID' | 'PARSE_ERROR'
+export type CodegenErrorCode =
+  | 'DUPLICATE_SCREEN_ID'
+  | 'MISSING_SCREEN_ID'
+  | 'INVALID_GOTO'
+  | 'PARSE_ERROR'
 
 export class CodegenError extends Error {
   readonly code: CodegenErrorCode
@@ -21,4 +25,4 @@ export class CodegenError extends Error {
 
 export type CodegenResult =
   | { ok: true; screens: ExtractedScreen[] }
-  | { ok: false; error: CodegenError }
+  | { ok: false; errors: CodegenError[] }
