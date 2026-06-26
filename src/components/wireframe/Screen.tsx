@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScreenProvider } from './ScreenContext'
-import { wireframeBox, wireframeStack } from './wireframeStyles'
 
 export type ScreenProps = {
   id: string
@@ -11,11 +11,13 @@ export type ScreenProps = {
 export function Screen({ id, title, children }: ScreenProps) {
   return (
     <ScreenProvider screenId={id}>
-      <section id={id} aria-label={title}>
-        <h2 className="text-lg font-medium mb-2">{title}</h2>
-        <div className={wireframeBox}>
-          <div className={wireframeStack}>{children}</div>
-        </div>
+      <section id={id} aria-label={title} className="scroll-mt-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>{title}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">{children}</CardContent>
+        </Card>
       </section>
     </ScreenProvider>
   )

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { wireframeBox, wireframeStack } from './wireframeStyles'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export type SectionProps = {
   title?: string
@@ -8,9 +8,13 @@ export type SectionProps = {
 
 export function Section({ title, children }: SectionProps) {
   return (
-    <section className={wireframeBox}>
-      {title ? <h3 className="font-medium">{title}</h3> : null}
-      <div className={wireframeStack}>{children}</div>
-    </section>
+    <Card>
+      {title ? (
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">{title}</CardTitle>
+        </CardHeader>
+      ) : null}
+      <CardContent className="flex flex-col gap-4 pt-0">{children}</CardContent>
+    </Card>
   )
 }

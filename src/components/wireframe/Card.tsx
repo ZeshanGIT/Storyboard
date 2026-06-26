@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { wireframeBox, wireframeStack } from './wireframeStyles'
+import { CardContent, CardHeader, CardTitle, Card as ShadcnCard } from '@/components/ui/card'
 
 export type CardProps = {
   title?: string
@@ -8,9 +8,13 @@ export type CardProps = {
 
 export function Card({ title, children }: CardProps) {
   return (
-    <div className={wireframeBox}>
-      {title ? <h3 className="font-medium">{title}</h3> : null}
-      <div className={wireframeStack}>{children}</div>
-    </div>
+    <ShadcnCard>
+      {title ? (
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">{title}</CardTitle>
+        </CardHeader>
+      ) : null}
+      <CardContent className="flex flex-col gap-2 pt-0">{children}</CardContent>
+    </ShadcnCard>
   )
 }
