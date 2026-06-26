@@ -25,7 +25,13 @@ export async function generateWireframeFiles(
     })
     .join('\n\n')
 
-  const screensContent = `${HEADER}import { Screen, Text, Link } from '../components/wireframe'\nimport { Screens } from './screens-map.generated'\n\n${componentExports}\n`
+  const needsScreens = screens.some((s) => s.jsx.includes('Screens.'))
+  const screensImports = [
+    "import { Screen, Text, Link } from '../components/wireframe'",
+    ...(needsScreens ? ["import { Screens } from './screens-map.generated'"] : []),
+  ].join('\n')
+
+  const screensContent = `${HEADER}${screensImports}\n\n${componentExports}\n`
 
   const routeImports = componentNames.join(', ')
   const routeEntries = screens
