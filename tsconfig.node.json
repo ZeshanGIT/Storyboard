@@ -7,10 +7,11 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "module": "nodenext",
+    "module": "ESNext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "moduleResolution": "bundler",
     "noEmit": true,
 
     /* Linting */
@@ -19,5 +20,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "src/plugin/**/*.ts"],
+  "exclude": ["src/plugin/**/*.test.ts"]
 }
