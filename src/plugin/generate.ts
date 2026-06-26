@@ -11,9 +11,7 @@ export async function generateWireframeFiles(
 ): Promise<void> {
   await mkdir(outDir, { recursive: true })
 
-  const mapEntries = screens
-    .map((s) => `  ${screenIdToScreensKey(s.id)}: '${s.id}',`)
-    .join('\n')
+  const mapEntries = screens.map((s) => `  ${screenIdToScreensKey(s.id)}: '${s.id}',`).join('\n')
 
   const mapContent = `${HEADER}export const Screens = {\n${mapEntries}\n} as const\n\nexport type ScreenId = (typeof Screens)[keyof typeof Screens]\n`
 

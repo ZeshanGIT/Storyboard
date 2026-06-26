@@ -18,11 +18,7 @@ export function Link({ goto, children }: LinkProps) {
   }
 
   return (
-    <button
-      type="button"
-      className="underline"
-      onClick={() => navigate(`/${goto}`)}
-    >
+    <button type="button" className="underline" onClick={() => navigate(`/${goto}`)}>
       {children}
     </button>
   )

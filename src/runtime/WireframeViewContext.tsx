@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, type ReactNode, useContext } from 'react'
 
 export type WireframeView = 'preview' | 'prototype'
 
@@ -20,11 +20,7 @@ export type WireframeViewProviderProps = {
   children: ReactNode
 }
 
-export function WireframeViewProvider({
-  view,
-  navigate,
-  children,
-}: WireframeViewProviderProps) {
+export function WireframeViewProvider({ view, navigate, children }: WireframeViewProviderProps) {
   return (
     <WireframeViewContext.Provider value={{ view, navigate }}>
       {children}

@@ -1,8 +1,8 @@
+import type { Root } from 'mdast'
+import type { MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx'
 import { remark } from 'remark'
 import remarkMdx from 'remark-mdx'
 import { visit } from 'unist-util-visit'
-import type { Root } from 'mdast'
-import type { MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx'
 
 type ScreenNode = MdxJsxFlowElement | MdxJsxTextElement
 
@@ -12,18 +12,13 @@ function isScreenNode(node: { type?: string; name?: string | null }): node is Sc
     node.name === 'Screen'
   )
 }
-import {
-  CodegenError,
-  type CodegenResult,
-  type ExtractedScreen,
-} from './types'
+
+import { CodegenError, type CodegenResult, type ExtractedScreen } from './types'
 
 const processor = remark().use(remarkMdx)
 
 function getStringAttr(node: ScreenNode, name: string): string | undefined {
-  const attr = node.attributes.find(
-    (a) => a.type === 'mdxJsxAttribute' && a.name === name,
-  )
+  const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === name)
   if (!attr || attr.value === null || attr.value === undefined) return undefined
   if (typeof attr.value === 'string') return attr.value
   if (attr.value.type === 'mdxJsxAttributeValueExpression') {
@@ -69,11 +64,7 @@ export function extractScreens(source: string): CodegenResult {
       }
 
       if (seenIds.has(id)) {
-        throw new CodegenError(
-          'DUPLICATE_SCREEN_ID',
-          `Duplicate screen id "${id}"`,
-          id,
-        )
+        throw new CodegenError('DUPLICATE_SCREEN_ID', `Duplicate screen id "${id}"`, id)
       }
       seenIds.set(id, screens.length)
 
@@ -92,10 +83,7 @@ export function extractScreens(source: string): CodegenResult {
     }
     return {
       ok: false,
-      error: new CodegenError(
-        'PARSE_ERROR',
-        err instanceof Error ? err.message : 'Unknown error',
-      ),
+      error: new CodegenError('PARSE_ERROR', err instanceof Error ? err.message : 'Unknown error'),
     }
   }
 }

@@ -29,6 +29,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["src/generated"],
   "mdx": {
     "checkMdx": true,
     "plugins": ["remark-gfm"]

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react'
+import { type ComponentType, useCallback, useEffect, useMemo, useState } from 'react'
 
 export type RouteEntry = {
   id: string
@@ -8,16 +8,12 @@ export type RouteEntry = {
 
 function normalizePath(pathname: string): string {
   if (!pathname || pathname === '/') return '/'
-  return pathname.endsWith('/') && pathname.length > 1
-    ? pathname.slice(0, -1)
-    : pathname
+  return pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
 }
 
 export function usePrototypeRouter(routes: readonly RouteEntry[]) {
   const defaultPath = routes[0]?.path ?? '/'
-  const [pathname, setPathname] = useState(() =>
-    normalizePath(window.location.pathname),
-  )
+  const [pathname, setPathname] = useState(() => normalizePath(window.location.pathname))
 
   useEffect(() => {
     const onPopState = () => setPathname(normalizePath(window.location.pathname))

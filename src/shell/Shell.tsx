@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import type { RouteEntry } from './router'
+import { CodegenErrorBanner } from './CodegenErrorBanner'
 import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
-import { CodegenErrorBanner } from './CodegenErrorBanner'
+import type { RouteEntry } from './router'
 
 export type ShellProps = {
   routes: readonly RouteEntry[]
@@ -48,11 +48,7 @@ export function Shell({ routes }: ShellProps) {
       <CodegenErrorBanner />
 
       <main className="mx-auto max-w-3xl px-6 py-8">
-        {view === 'preview' ? (
-          <PreviewView />
-        ) : (
-          <PrototypeView routes={routes} />
-        )}
+        {view === 'preview' ? <PreviewView /> : <PrototypeView routes={routes} />}
       </main>
     </div>
   )

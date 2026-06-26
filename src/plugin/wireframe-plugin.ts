@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises'
 import type { Plugin } from 'vite'
 import { runCodegen } from './codegen'
-import { wireframePluginState } from './plugin-state'
 import { resolveGeneratedDir, resolveWireframePath, WIREFRAME_MDX } from './paths'
+import { wireframePluginState } from './plugin-state'
 
 export type WireframePluginState = {
   lastError: typeof wireframePluginState.lastError

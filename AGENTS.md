@@ -103,18 +103,19 @@ If a change makes wireframes look "designed," it likely violates the vision.
 | Language | TypeScript 6 (strict: `verbatimModuleSyntax`, `noUnusedLocals`) |
 | Content | MDX 3 (`@mdx-js/rollup`, `@mdx-js/react`) |
 | Styling | Tailwind CSS 4 (app shell only; not wireframe primitives) |
-| Lint | Oxlint |
+| Lint / format | Biome |
 
 ## Commands
 
 ```bash
 npm run dev      # Start dev server
 npm run build    # Typecheck + production build
-npm run lint     # Oxlint
+npm run check     # Typecheck + Biome lint/format check
+npm run fix       # Apply Biome safe fixes and formatting
 npm run preview  # Preview production build
 ```
 
-Always run `npm run build` and `npm run lint` before claiming work is complete.
+Always run `npm run build` and `npm run check` before claiming work is complete.
 
 ## Repository layout
 
@@ -231,5 +232,5 @@ Before opening a PR or reporting done:
 - [ ] Wireframe components remain minimal/unstyled
 - [ ] New MDX components registered in `mdx-components.ts`
 - [ ] `npm run build` passes
-- [ ] `npm run lint` passes
+- [ ] `npm run check` passes
 - [ ] Changes match a phase above (don't boil the ocean)

@@ -1,13 +1,23 @@
-import { describe, expect, it } from 'vitest'
 import { mkdtemp, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
 import { generateWireframeFiles } from './generate'
 import type { ExtractedScreen } from './types'
 
 const screens: ExtractedScreen[] = [
-  { id: 'home', title: 'Home', jsx: '<Screen id="home" title="Home"><Text>Hi</Text></Screen>', order: 0 },
-  { id: 'login', title: 'Login', jsx: '<Screen id="login" title="Login"><Text>In</Text></Screen>', order: 1 },
+  {
+    id: 'home',
+    title: 'Home',
+    jsx: '<Screen id="home" title="Home"><Text>Hi</Text></Screen>',
+    order: 0,
+  },
+  {
+    id: 'login',
+    title: 'Login',
+    jsx: '<Screen id="login" title="Login"><Text>In</Text></Screen>',
+    order: 1,
+  },
 ]
 
 describe('generateWireframeFiles', () => {

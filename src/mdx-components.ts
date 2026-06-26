@@ -1,4 +1,4 @@
-import { Screen, Text, Link } from './components/wireframe'
+import { Link, Screen, Text } from './components/wireframe'
 
 const components = {
   Screen,
