@@ -9,7 +9,7 @@ export type ListItemProps = {
 }
 
 export function List({ children }: ListProps) {
-  return <ul className="list-disc pl-5 flex flex-col gap-1">{children}</ul>
+  return <ul className="flex flex-col gap-1 list-disc pl-5 text-sm">{children}</ul>
 }
 
 export function ListItem({ children }: ListItemProps) {

@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
 import { useEffect } from 'react'
-import { useWireframeView } from '../../runtime/WireframeViewContext'
-import { useScreenId } from './ScreenContext'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { useScreenId } from '@/components/wireframe/ScreenContext'
+import { useWireframeView } from '@/runtime/WireframeViewContext'
 
 export type LinkProps = {
   goto?: string
@@ -50,24 +52,20 @@ export function Link({ goto, children }: LinkProps) {
   }, [goto, valid, view, reportError, screenId, label, validScreenIds])
 
   if (!valid) {
-    return (
-      <span className="border border-red-600 px-1 text-red-900" aria-invalid="true">
-        {children}
-      </span>
-    )
+    return <Badge variant="destructive">{children}</Badge>
   }
 
   if (view === 'preview') {
     return (
-      <a href={`#${goto}`} className="underline">
+      <a href={`#${goto}`} className="text-primary underline-offset-4 hover:underline">
         {children}
       </a>
     )
   }
 
   return (
-    <button type="button" className="underline" onClick={() => navigate(`/${goto}`)}>
+    <Button variant="link" className="h-auto p-0" onClick={() => navigate(`/${goto}`)}>
       {children}
-    </button>
+    </Button>
   )
 }
