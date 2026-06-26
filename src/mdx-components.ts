@@ -1,9 +1,29 @@
-import { Link, Screen, Text } from './components/wireframe'
+import {
+  Button,
+  Card,
+  Heading,
+  Input,
+  Link,
+  List,
+  ListItem,
+  Screen,
+  Section,
+  Separator,
+  Text,
+} from './components/wireframe'
 
 const components = {
   Screen,
   Text,
   Link,
+  Heading,
+  Input,
+  Button,
+  Section,
+  Card,
+  List,
+  ListItem,
+  Separator,
 }
 
 declare global {
