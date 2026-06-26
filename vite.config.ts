@@ -1,3 +1,4 @@
+import path from 'node:path'
 import mdx from '@mdx-js/rollup'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
@@ -6,6 +7,11 @@ import { wireframePlugin } from './src/plugin/wireframe-plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   plugins: [
     wireframePlugin(),
     {
