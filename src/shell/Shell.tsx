@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getCodegenErrors } from '../runtime/codegen-error'
 import { WireframeErrorProvider } from '../runtime/WireframeErrorProvider'
 import { PreviewView } from './PreviewView'
@@ -26,34 +27,16 @@ export function Shell({ routes }: ShellProps) {
 
   return (
     <WireframeErrorProvider initialErrors={initialErrors}>
-      <div className="min-h-screen bg-slate-50 text-slate-900">
-        <header className="border-b border-slate-200 bg-white px-6 py-4">
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="border-b px-6 py-4">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
-            <h1 className="text-lg font-semibold">WireframeX</h1>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className={
-                  view === 'preview'
-                    ? 'rounded border border-slate-900 px-3 py-1 text-sm'
-                    : 'rounded border border-slate-300 px-3 py-1 text-sm'
-                }
-                onClick={() => setView('preview')}
-              >
-                MDX Preview
-              </button>
-              <button
-                type="button"
-                className={
-                  view === 'prototype'
-                    ? 'rounded border border-slate-900 px-3 py-1 text-sm'
-                    : 'rounded border border-slate-300 px-3 py-1 text-sm'
-                }
-                onClick={() => setView('prototype')}
-              >
-                Prototype View
-              </button>
-            </div>
+            <h1 className="text-lg font-semibold tracking-tight">WireframeX</h1>
+            <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>
+              <TabsList>
+                <TabsTrigger value="preview">MDX Preview</TabsTrigger>
+                <TabsTrigger value="prototype">Prototype View</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
         </header>
 
