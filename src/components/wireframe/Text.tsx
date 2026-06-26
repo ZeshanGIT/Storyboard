@@ -5,5 +5,5 @@ export type TextProps = {
 }
 
 export function Text({ children }: TextProps) {
-  return <p>{children}</p>
+  return <p className="text-muted-foreground">{children}</p>
 }
