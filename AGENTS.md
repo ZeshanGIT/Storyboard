@@ -2,6 +2,8 @@
 
 Guidance for AI agents and automated tooling working in this repository.
 
+**Current project state and architecture:** [`docs/CONTEXT.md`](docs/CONTEXT.md) — read this first in a new session.
+
 ## Project summary
 
 **WireframeX** (working name; vision doc: "MDX Wireframes") is a **text-first UX specification format**. Developers describe application screens and navigation flows in **MDX using React components** — not as visual mockups.

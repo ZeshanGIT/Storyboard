@@ -8,7 +8,13 @@ import { wireframePlugin } from './src/plugin/wireframe-plugin'
 export default defineConfig({
   plugins: [
     wireframePlugin(),
-    { enforce: 'pre', ...mdx() },
+    {
+      enforce: 'pre',
+      ...mdx({
+        // MDX files live in src/content/; resolves to src/mdx-components.ts
+        providerImportSource: '../mdx-components.ts',
+      }),
+    },
     react({
       include: /\.(jsx|js|mdx|md|tsx|ts)$/,
     }),
