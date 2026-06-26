@@ -1,3 +1,6 @@
+import { Input as ShadcnInput } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
 export type InputProps = {
   label: string
   type?: 'text' | 'email' | 'password' | 'number'
@@ -6,15 +9,9 @@ export type InputProps = {
 
 export function Input({ label, type = 'text', placeholder }: InputProps) {
   return (
-    <label className="flex flex-col gap-1">
-      <span>{label}</span>
-      <input
-        type={type}
-        placeholder={placeholder}
-        readOnly
-        disabled
-        className="border border-current px-2 py-1"
-      />
-    </label>
+    <div className="flex flex-col gap-2">
+      <Label>{label}</Label>
+      <ShadcnInput type={type} placeholder={placeholder} readOnly disabled />
+    </div>
   )
 }

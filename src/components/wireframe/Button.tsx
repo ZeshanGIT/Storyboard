@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Button as ShadcnButton } from '@/components/ui/button'
 
 export type ButtonProps = {
   type?: 'button' | 'submit'
@@ -6,9 +7,5 @@ export type ButtonProps = {
 }
 
 export function Button({ type = 'button', children }: ButtonProps) {
-  return (
-    <button type={type} className="border border-current px-2 py-1">
-      {children}
-    </button>
-  )
+  return <ShadcnButton type={type}>{children}</ShadcnButton>
 }
