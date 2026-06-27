@@ -29,7 +29,8 @@ POC shipped + extended. `npm run dev` → codegen, dual-view shell, document pic
 | Per-doc screens/routes + contentDocuments registry | Done |
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | wireframe.mdx, components.mdx | Done |
-| Nav graph, unreachable validation, doc export | Not started |
+| Graph View (shell tab, Screen + Compact modes) | Done |
+| Unreachable validation, doc export | Not started |
 | Card, List, Section, BottomNav, Tabs | Not started |
 
 ## Quick start
@@ -111,6 +112,10 @@ Validation blocks run. Terminal: `[wireframe] Codegen failed: …` with filename
 ### Add screen
 
 New `<Screen>` in MDX + save → codegen updates that doc's generated files. No shell edits.
+
+### Graph View
+
+Third shell tab; active document picker applies. Codegen `navigationGraph` → Screen View (default, wireframe nodes + link-anchored edges) or Compact View (cards with note/counts). Pan/zoom/fit/minimap; node click selects only. Full UX spec: [`GRAPH_VIEW.md`](GRAPH_VIEW.md).
 
 ## Tooling
 
