@@ -1,15 +1,10 @@
 import type { Root } from 'mdast'
 import type { MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx'
+import { remark } from 'remark'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMdx from 'remark-mdx'
-import { remark } from 'remark'
 import { visit } from 'unist-util-visit'
-import type {
-  ExtractedScreen,
-  NavigationEdge,
-  NavigationGraph,
-  NavigationGraphNode,
-} from './types'
+import type { ExtractedScreen, NavigationEdge, NavigationGraph, NavigationGraphNode } from './types'
 import { collectModalIdsByScreen } from './validate-gotos'
 
 type MdxJsxElement = MdxJsxFlowElement | MdxJsxTextElement

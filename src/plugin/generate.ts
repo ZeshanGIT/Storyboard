@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { screenIdToComponentName } from './naming'
-import type { ExtractedScreen } from './types'
+import type { ExtractedScreen, NavigationGraph } from './types'
 
 const WIREFRAME_COMPONENTS = [
   'Screen',
@@ -90,9 +90,14 @@ ${routeEntries},
 ${modalIdsBlock}`
 }
 
+function buildNavigationGraphFile(graph: NavigationGraph): string {
+  return `${HEADER}export const navigationGraph = ${JSON.stringify(graph, null, 2)} as const\n`
+}
+
 export async function generateDocumentFiles(
   slug: string,
   screens: ExtractedScreen[],
+  graph: NavigationGraph,
   outDir: string,
 ): Promise<void> {
   const docDir = join(outDir, 'documents', slug)
@@ -100,6 +105,11 @@ export async function generateDocumentFiles(
 
   await writeFile(join(docDir, 'screens.generated.tsx'), buildScreensFile(screens), 'utf8')
   await writeFile(join(docDir, 'routes.generated.tsx'), buildRoutesFile(screens), 'utf8')
+  await writeFile(
+    join(docDir, 'navigation-graph.generated.ts'),
+    buildNavigationGraphFile(graph),
+    'utf8',
+  )
 }
 
 export type DocumentScreensMap = ReadonlyMap<string, readonly ExtractedScreen[]>
@@ -162,7 +172,8 @@ function slugToRoutesAlias(slug: string): string {
 export async function generateWireframeFiles(
   screens: ExtractedScreen[],
   outDir: string,
+  graph: NavigationGraph = { nodes: [], edges: [] },
 ): Promise<void> {
-  await generateDocumentFiles('wireframe', screens, outDir)
+  await generateDocumentFiles('wireframe', screens, graph, outDir)
   await generateAggregateRoutes(new Map([['wireframe', screens]]), outDir)
 }

@@ -29,18 +29,33 @@ export async function generateContentDocuments(
     })
     .join('\n')
 
+  const graphImportLines = documents
+    .filter((doc) => documentScreens.has(doc.slug))
+    .map((doc) => {
+      const alias = slugToRoutesAlias(doc.slug)
+      return `import { navigationGraph as ${alias}Graph } from './documents/${doc.slug}/navigation-graph.generated'`
+    })
+    .join('\n')
+
+  const graphTypeUnion =
+    documents
+      .filter((doc) => documentScreens.has(doc.slug))
+      .map((doc) => `typeof ${slugToRoutesAlias(doc.slug)}Graph`)
+      .join(' | ') || 'never'
+
   const entries = documents
     .filter((doc) => documentScreens.has(doc.slug))
     .map((doc) => {
       const name = slugToDocumentExportName(doc.slug)
       const alias = slugToRoutesAlias(doc.slug)
-      return `  {\n    slug: '${doc.slug}',\n    title: ${JSON.stringify(doc.title)},\n    component: ${name},\n    routes: ${alias},\n  }`
+      return `  {\n    slug: '${doc.slug}',\n    title: ${JSON.stringify(doc.title)},\n    component: ${name},\n    routes: ${alias},\n    navigationGraph: ${alias}Graph,\n  }`
     })
     .join(',\n')
 
   const content = `${HEADER}import type { ComponentType } from 'react'
 ${mdxImportLines}
 ${routeImportLines}
+${graphImportLines}
 
 export type DocumentRoute = {
   id: string
@@ -54,6 +69,7 @@ export type ContentDocumentEntry = {
   title: string
   component: ComponentType
   routes: readonly DocumentRoute[]
+  navigationGraph: ${graphTypeUnion}
 }
 
 export const contentDocuments = [

@@ -31,6 +31,10 @@ describe('generateWireframeFiles', () => {
       'utf8',
     )
     const docRoutes = await readFile(join(dir, 'documents/wireframe/routes.generated.tsx'), 'utf8')
+    const navGraph = await readFile(
+      join(dir, 'documents/wireframe/navigation-graph.generated.ts'),
+      'utf8',
+    )
 
     expect(docRoutes).toContain("id: 'home'")
     expect(docRoutes).toContain("path: '/home'")
@@ -40,6 +44,9 @@ describe('generateWireframeFiles', () => {
     expect(components).toContain('export function Home()')
     expect(components).toContain('<Text>Hi</Text>')
     expect(components).not.toContain('Screens')
+    expect(navGraph).toContain('export const navigationGraph')
+    expect(navGraph).toContain('"nodes"')
+    expect(navGraph).toContain('"edges"')
   })
 
   it('includes modal ids in generated types', async () => {

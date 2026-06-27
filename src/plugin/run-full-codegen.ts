@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { extractNavigationGraph } from './extract-navigation-graph'
 import { extractScreens } from './extract-screens'
 import { generateAggregateRoutes, generateDocumentFiles } from './generate'
 import { generateContentDocuments } from './generate-documents'
@@ -29,7 +30,8 @@ export async function runFullCodegen(root: string): Promise<CodegenResult> {
     }
 
     documentScreens.set(doc.slug, extracted.screens)
-    await generateDocumentFiles(doc.slug, extracted.screens, outDir)
+    const graph = extractNavigationGraph(source, extracted.screens)
+    await generateDocumentFiles(doc.slug, extracted.screens, graph, outDir)
   }
 
   if (errors.length > 0) {

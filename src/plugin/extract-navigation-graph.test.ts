@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { extractScreens } from './extract-screens'
 import { extractNavigationGraph } from './extract-navigation-graph'
+import { extractScreens } from './extract-screens'
 
 const TWO_SCREEN = `
 <Screen id="home" title="Home" note="Entry point">

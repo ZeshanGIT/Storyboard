@@ -1,3 +1,4 @@
+import { extractNavigationGraph } from './extract-navigation-graph'
 import { extractScreens } from './extract-screens'
 import { generateWireframeFiles } from './generate'
 import type { CodegenError, ExtractedScreen } from './types'
@@ -11,6 +12,7 @@ export async function runCodegen(source: string, outDir: string): Promise<RunCod
   if (!extracted.ok) {
     return extracted
   }
-  await generateWireframeFiles(extracted.screens, outDir)
+  const graph = extractNavigationGraph(source, extracted.screens)
+  await generateWireframeFiles(extracted.screens, outDir, graph)
   return extracted
 }
