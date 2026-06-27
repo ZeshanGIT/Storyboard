@@ -58,6 +58,7 @@ describe('generateWireframeFiles', () => {
     const docRoutes = await readFile(join(dir, 'documents/wireframe/routes.generated.tsx'), 'utf8')
     expect(routes).toContain("'confirm'")
     expect(docRoutes).toContain("'confirm'")
+    expect(docRoutes).toContain("modalIds: ['confirm']")
     expect(routes).toContain('export type ModalId')
   })
 })

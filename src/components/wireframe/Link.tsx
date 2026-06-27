@@ -6,8 +6,9 @@ import { useScreenId } from '@/components/wireframe/ScreenContext'
 import type { GotoTarget } from '@/generated/routes.generated'
 import { cn } from '@/lib/utils'
 import { RESERVED_GOTO, useWireframeView } from '@/runtime/WireframeViewContext'
+import { type NoteProps, WireframeNote } from './note'
 
-export type LinkProps = {
+export type LinkProps = NoteProps & {
   goto?: GotoTarget
   'primary-btn'?: boolean
   'secondary-btn'?: boolean
@@ -45,11 +46,11 @@ function formatRuntimeGotoError(
 function isValidGoto(
   goto: string | undefined,
   validScreenIds: ReadonlySet<string>,
-  registeredModalIds: ReadonlySet<string>,
+  screenModalIds: ReadonlySet<string>,
 ): boolean {
   if (typeof goto !== 'string' || goto.length === 0) return false
   if (RESERVED_GOTO.has(goto)) return true
-  return validScreenIds.has(goto) || registeredModalIds.has(goto)
+  return validScreenIds.has(goto) || screenModalIds.has(goto)
 }
 
 function buttonVariant(
@@ -67,6 +68,7 @@ export function Link({
   children,
   disabled,
   danger,
+  note,
   'primary-btn': primaryBtn,
   'secondary-btn': secondaryBtn,
 }: LinkProps) {
@@ -78,15 +80,20 @@ export function Link({
     openModal,
     closeModal,
     validScreenIds,
-    registeredModalIds,
+    modalIdsByScreen,
     reportError,
   } = useWireframeView()
 
-  const valid = isValidGoto(goto, validScreenIds, registeredModalIds)
+  const screenModalIds = useMemo(() => {
+    const ids = screenId ? modalIdsByScreen.get(screenId) : undefined
+    return new Set(ids ?? [])
+  }, [screenId, modalIdsByScreen])
+
+  const valid = isValidGoto(goto, validScreenIds, screenModalIds)
   const label = linkLabel(children)
   const knownTargets = useMemo(
-    () => [...RESERVED_GOTO, ...validScreenIds, ...registeredModalIds],
-    [validScreenIds, registeredModalIds],
+    () => [...RESERVED_GOTO, ...validScreenIds, ...screenModalIds],
+    [validScreenIds, screenModalIds],
   )
 
   useEffect(() => {
@@ -104,7 +111,7 @@ export function Link({
       goBack()
       return
     }
-    if (registeredModalIds.has(goto)) {
+    if (screenModalIds.has(goto)) {
       openModal(goto)
       return
     }
@@ -112,15 +119,21 @@ export function Link({
   }
 
   if (!valid) {
-    return <Badge variant="destructive">{children}</Badge>
+    return (
+      <WireframeNote note={note} className="w-fit self-start">
+        <Badge variant="destructive">{children}</Badge>
+      </WireframeNote>
+    )
   }
 
   if (view === 'preview') {
     const href = goto === '_close' || goto === '_back' ? '#' : goto ? `#${goto}` : '#'
     return (
-      <a href={href} className="text-primary underline-offset-4 hover:underline">
-        {children}
-      </a>
+      <WireframeNote note={note} className="w-fit self-start">
+        <a href={href} className="text-primary underline-offset-4 hover:underline">
+          {children}
+        </a>
+      </WireframeNote>
     )
   }
 
@@ -129,29 +142,33 @@ export function Link({
 
   if (!isButton) {
     return (
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={handleClick}
-        className={cn(
-          'w-fit self-start text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
-          danger && 'text-destructive',
-        )}
-      >
-        {children}
-      </button>
+      <WireframeNote note={note} className="w-fit self-start">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={handleClick}
+          className={cn(
+            'w-fit self-start text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
+            danger && 'text-destructive',
+          )}
+        >
+          {children}
+        </button>
+      </WireframeNote>
     )
   }
 
   return (
-    <Button
-      type="button"
-      variant={variant}
-      disabled={disabled}
-      className={cn('w-fit self-start', danger && !primaryBtn && 'text-destructive')}
-      onClick={handleClick}
-    >
-      {children}
-    </Button>
+    <WireframeNote note={note} className="w-fit self-start">
+      <Button
+        type="button"
+        variant={variant}
+        disabled={disabled}
+        className={cn('w-fit self-start', danger && !primaryBtn && 'text-destructive')}
+        onClick={handleClick}
+      >
+        {children}
+      </Button>
+    </WireframeNote>
   )
 }

@@ -8,11 +8,10 @@ export type WireframeViewContextValue = {
   navigate: (path: string) => void
   goBack: () => void
   validScreenIds: ReadonlySet<string>
+  modalIdsByScreen: ReadonlyMap<string, readonly string[]>
   activeModalId: string | null
   openModal: (id: string) => void
   closeModal: () => void
-  registerModal: (id: string) => () => void
-  registeredModalIds: ReadonlySet<string>
   reportError: (message: string) => void
 }
 
@@ -21,11 +20,10 @@ const defaultValue: WireframeViewContextValue = {
   navigate: () => {},
   goBack: () => {},
   validScreenIds: new Set(),
+  modalIdsByScreen: new Map(),
   activeModalId: null,
   openModal: () => {},
   closeModal: () => {},
-  registerModal: () => () => {},
-  registeredModalIds: new Set(),
   reportError: () => {},
 }
 
@@ -35,6 +33,7 @@ export type WireframeViewProviderProps = {
   view: WireframeView
   navigate: (path: string) => void
   validScreenIds: readonly string[]
+  modalIdsByScreen: ReadonlyMap<string, readonly string[]>
   children: ReactNode
 }
 
@@ -42,12 +41,12 @@ export function WireframeViewProvider({
   view,
   navigate,
   validScreenIds,
+  modalIdsByScreen,
   children,
 }: WireframeViewProviderProps) {
   const { reportError } = useWireframeErrors()
   const validIds = useMemo(() => new Set(validScreenIds), [validScreenIds])
   const [activeModalId, setActiveModalId] = useState<string | null>(null)
-  const [registeredModalIds, setRegisteredModalIds] = useState<Set<string>>(() => new Set())
 
   const openModal = useCallback((id: string) => {
     setActiveModalId(id)
@@ -61,32 +60,16 @@ export function WireframeViewProvider({
     window.history.back()
   }, [])
 
-  const registerModal = useCallback((id: string) => {
-    setRegisteredModalIds((prev) => {
-      const next = new Set(prev)
-      next.add(id)
-      return next
-    })
-    return () => {
-      setRegisteredModalIds((prev) => {
-        const next = new Set(prev)
-        next.delete(id)
-        return next
-      })
-    }
-  }, [])
-
   const value = useMemo(
     () => ({
       view,
       navigate,
       goBack,
       validScreenIds: validIds,
+      modalIdsByScreen,
       activeModalId,
       openModal,
       closeModal,
-      registerModal,
-      registeredModalIds,
       reportError,
     }),
     [
@@ -94,11 +77,10 @@ export function WireframeViewProvider({
       navigate,
       goBack,
       validIds,
+      modalIdsByScreen,
       activeModalId,
       openModal,
       closeModal,
-      registerModal,
-      registeredModalIds,
       reportError,
     ],
   )

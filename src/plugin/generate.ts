@@ -28,16 +28,23 @@ function wireframeImportLine(screens: ExtractedScreen[]): string {
   return `import { ${used.join(', ')} } from '../../../components/wireframe'`
 }
 
+const MODAL_ID_PATTERN = /<Modal\s[^>]*\bid="([^"]+)"/g
+
+function extractModalIdsForScreen(jsx: string): string[] {
+  const ids: string[] = []
+  for (const match of jsx.matchAll(MODAL_ID_PATTERN)) {
+    ids.push(match[1])
+  }
+  return ids
+}
+
 function extractModalIds(screens: ExtractedScreen[]): string[] {
   const ids = new Set<string>()
-  const pattern = /<Modal\s[^>]*\bid="([^"]+)"/g
-
   for (const screen of screens) {
-    for (const match of screen.jsx.matchAll(pattern)) {
-      ids.add(match[1])
+    for (const id of extractModalIdsForScreen(screen.jsx)) {
+      ids.add(id)
     }
   }
-
   return [...ids].sort()
 }
 
@@ -58,7 +65,12 @@ function buildRoutesFile(screens: ExtractedScreen[]): string {
   const routeEntries = screens
     .map((s) => {
       const name = screenIdToComponentName(s.id)
-      return `  {\n    id: '${s.id}',\n    path: '/${s.id}',\n    component: ${name},\n  }`
+      const screenModalIds = extractModalIdsForScreen(s.jsx)
+      const modalIdsField =
+        screenModalIds.length > 0
+          ? `,\n    modalIds: [${screenModalIds.map((id) => `'${id}'`).join(', ')}] as const`
+          : ''
+      return `  {\n    id: '${s.id}',\n    path: '/${s.id}',\n    component: ${name}${modalIdsField},\n  }`
     })
     .join(',\n')
 

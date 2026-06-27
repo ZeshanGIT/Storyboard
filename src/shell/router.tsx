@@ -4,6 +4,13 @@ export type RouteEntry = {
   id: string
   path: string
   component: ComponentType
+  modalIds?: readonly string[]
+}
+
+export function modalIdsByScreenFromRoutes(
+  routes: readonly Pick<RouteEntry, 'id' | 'modalIds'>[],
+): Map<string, readonly string[]> {
+  return new Map(routes.map((route) => [route.id, route.modalIds ?? []]))
 }
 
 function normalizePath(pathname: string): string {

@@ -16,6 +16,7 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { wireframeAffordanceClass } from './affordances'
+import { type NoteProps, WireframeNote } from './note'
 
 export type InputType =
   | 'text'
@@ -29,7 +30,7 @@ export type InputType =
   | 'number'
   | 'date'
 
-export type InputProps = {
+export type InputProps = NoteProps & {
   type?: InputType
   label?: string
   placeholder?: string
@@ -46,7 +47,7 @@ function RequiredMark() {
   return <span className="text-destructive"> *</span>
 }
 
-export function Input({
+function InputControl({
   type = 'text',
   label,
   placeholder,
@@ -57,7 +58,7 @@ export function Input({
   options,
   disabled,
   danger,
-}: InputProps) {
+}: Omit<InputProps, 'note'>) {
   const optionList = options ?? []
   const invalid = Boolean(error)
   const helperText = error ?? hint
@@ -230,5 +231,13 @@ export function Input({
       {helperText ? <FieldDescription>{helperText}</FieldDescription> : null}
       {error ? <FieldError>{error}</FieldError> : null}
     </Field>
+  )
+}
+
+export function Input({ note, ...props }: InputProps) {
+  return (
+    <WireframeNote note={note}>
+      <InputControl {...props} />
+    </WireframeNote>
   )
 }

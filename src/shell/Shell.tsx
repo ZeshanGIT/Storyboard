@@ -74,7 +74,11 @@ export function Shell({ contentDocuments }: ShellProps) {
         <main className="mx-auto max-w-3xl px-6 py-8">
           {view === 'preview' ? (
             activeEntry ? (
-              <PreviewView validScreenIds={validScreenIds} document={activeEntry.component} />
+              <PreviewView
+                validScreenIds={validScreenIds}
+                routes={activeEntry.routes}
+                document={activeEntry.component}
+              />
             ) : (
               <p className="text-muted-foreground">No MDX documents in src/content.</p>
             )

@@ -46,6 +46,7 @@ export type DocumentRoute = {
   id: string
   path: string
   component: ComponentType
+  modalIds?: readonly string[]
 }
 
 export type ContentDocumentEntry = {

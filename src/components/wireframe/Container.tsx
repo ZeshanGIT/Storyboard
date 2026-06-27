@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { wireframeAffordanceClass } from './affordances'
+import { type NoteProps, WireframeNote } from './note'
 
 export type ContainerDistribute = 'start' | 'space-between' | 'space-around' | 'end'
 export type ContainerAlign = 'start' | 'center' | 'end'
 
-export type ContainerProps = {
+export type ContainerProps = NoteProps & {
   row?: boolean
   border?: boolean
   distribute?: ContainerDistribute
@@ -35,20 +36,23 @@ export function Container({
   align = 'start',
   disabled,
   danger,
+  note,
   children,
 }: ContainerProps) {
   return (
-    <div
-      className={cn(
-        'flex gap-4',
-        row ? 'flex-row' : 'flex-col',
-        row && distributeClass[distribute],
-        alignClass[align],
-        border && 'border border-border p-4',
-        wireframeAffordanceClass(disabled, danger),
-      )}
-    >
-      {children}
-    </div>
+    <WireframeNote note={note}>
+      <div
+        className={cn(
+          'flex gap-4',
+          row ? 'flex-row' : 'flex-col',
+          row && distributeClass[distribute],
+          alignClass[align],
+          border && 'border border-border p-4',
+          wireframeAffordanceClass(disabled, danger),
+        )}
+      >
+        {children}
+      </div>
+    </WireframeNote>
   )
 }

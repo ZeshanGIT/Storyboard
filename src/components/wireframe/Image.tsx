@@ -1,9 +1,10 @@
 import { cn } from '@/lib/utils'
 import { wireframeAffordanceClass } from './affordances'
+import { type NoteProps, WireframeNote } from './note'
 
 export type ImageAspect = 'square' | 'portrait' | 'landscape' | 'wide'
 
-export type ImageProps = {
+export type ImageProps = NoteProps & {
   aspect?: ImageAspect
   disabled?: boolean
   danger?: boolean
@@ -16,18 +17,20 @@ const aspectClass: Record<ImageAspect, string> = {
   wide: 'aspect-[21/9] w-full',
 }
 
-export function Image({ aspect = 'landscape', disabled, danger }: ImageProps) {
+export function Image({ aspect = 'landscape', disabled, danger, note }: ImageProps) {
   return (
-    <div
-      role="img"
-      aria-label="Image placeholder"
-      className={cn(
-        'flex items-center justify-center border border-dashed border-border bg-muted/30 text-xs text-muted-foreground',
-        aspectClass[aspect],
-        wireframeAffordanceClass(disabled, danger),
-      )}
-    >
-      Image
-    </div>
+    <WireframeNote note={note}>
+      <div
+        role="img"
+        aria-label="Image placeholder"
+        className={cn(
+          'flex items-center justify-center border border-dashed border-border bg-muted/30 text-xs text-muted-foreground',
+          aspectClass[aspect],
+          wireframeAffordanceClass(disabled, danger),
+        )}
+      >
+        Image
+      </div>
+    </WireframeNote>
   )
 }

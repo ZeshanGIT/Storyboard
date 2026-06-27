@@ -2,7 +2,7 @@
 
 **Agent reference** — attached on every wireframe build. Keep this file minimal; the API follows the same rule: maximum spec with minimum surface.
 
-No imports. Strings `"quoted"`. Booleans = bare flags. Self-close: `Input` `Image` `Icon` `Divider`. All except `Screen`: `disabled` `danger`.
+No imports. Strings `"quoted"`. Booleans = bare flags. Self-close: `Input` `Image` `Icon` `Divider`. All components: `disabled` `danger` `note`.
 
 Only `<Screen>` blocks register for prototype/graph. First `Screen` = entry.
 
@@ -12,6 +12,10 @@ Only `<Screen>` blocks register for prototype/graph. First `Screen` = entry.
 - `Modal` `id` unique per screen; must not match a `Screen` id.
 - `Link goto` → screen id | modal id on **current** screen | `_close` | `_back`
 - `Text` children = plain text only
+
+## Global props
+
+`note` — author annotation. Yellow dot top-right; hover shows popover with note text. Preview and prototype.
 
 ## Components
 

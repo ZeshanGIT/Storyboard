@@ -2,10 +2,11 @@ import type { LucideIcon } from 'lucide-react'
 import * as LucideIcons from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { wireframeAffordanceClass } from './affordances'
+import { type NoteProps, WireframeNote } from './note'
 
 export type IconSize = 'sm' | 'md' | 'lg'
 
-export type IconProps = {
+export type IconProps = NoteProps & {
   name: string
   size?: IconSize
   disabled?: boolean
@@ -31,28 +32,32 @@ function resolveLucideIcon(name: string): LucideIcon | undefined {
   return icons[key]
 }
 
-export function Icon({ name, size = 'md', disabled, danger }: IconProps) {
+export function Icon({ name, size = 'md', disabled, danger, note }: IconProps) {
   const LucideIconComponent = resolveLucideIcon(name)
 
   if (!LucideIconComponent) {
     return (
-      <span
-        className={cn(
-          'inline-flex items-center justify-center rounded-none border border-dashed border-border px-1 text-[10px] text-muted-foreground',
-          sizeClass[size],
-          wireframeAffordanceClass(disabled, danger),
-        )}
-        title={`icon:${name}`}
-      >
-        ?
-      </span>
+      <WireframeNote note={note} className="inline-flex w-fit self-start">
+        <span
+          className={cn(
+            'inline-flex items-center justify-center rounded-none border border-dashed border-border px-1 text-[10px] text-muted-foreground',
+            sizeClass[size],
+            wireframeAffordanceClass(disabled, danger),
+          )}
+          title={`icon:${name}`}
+        >
+          ?
+        </span>
+      </WireframeNote>
     )
   }
 
   return (
-    <LucideIconComponent
-      className={cn(sizeClass[size], wireframeAffordanceClass(disabled, danger))}
-      aria-hidden
-    />
+    <WireframeNote note={note} className="inline-flex w-fit self-start">
+      <LucideIconComponent
+        className={cn(sizeClass[size], wireframeAffordanceClass(disabled, danger))}
+        aria-hidden
+      />
+    </WireframeNote>
   )
 }

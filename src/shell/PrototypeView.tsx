@@ -1,6 +1,6 @@
 import { getCodegenError } from '../runtime/codegen-error'
 import { WireframeViewProvider } from '../runtime/WireframeViewContext'
-import { type RouteEntry, usePrototypeRouter } from './router'
+import { modalIdsByScreenFromRoutes, type RouteEntry, usePrototypeRouter } from './router'
 
 export type PrototypeViewProps = {
   routes: readonly RouteEntry[]
@@ -12,6 +12,7 @@ export function PrototypeView({ routes, documentFilename }: PrototypeViewProps) 
   const { navigate, activeRoute } = usePrototypeRouter(routes)
   const Active = activeRoute?.component
   const validScreenIds = routes.map((route) => route.id)
+  const modalIdsByScreen = modalIdsByScreenFromRoutes(routes)
 
   if (codegenError) {
     return (
@@ -26,7 +27,12 @@ export function PrototypeView({ routes, documentFilename }: PrototypeViewProps) 
   }
 
   return (
-    <WireframeViewProvider view="prototype" navigate={navigate} validScreenIds={validScreenIds}>
+    <WireframeViewProvider
+      view="prototype"
+      navigate={navigate}
+      validScreenIds={validScreenIds}
+      modalIdsByScreen={modalIdsByScreen}
+    >
       <div className="min-h-[200px]">{Active ? <Active /> : <p>No routes defined.</p>}</div>
     </WireframeViewProvider>
   )
