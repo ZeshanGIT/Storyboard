@@ -1,8 +1,7 @@
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import { type ComponentType, useRef } from 'react'
-import { cn } from '@/lib/utils'
 import { WireframeViewProvider } from '@/runtime/WireframeViewContext'
-import { SCREEN_NODE_HEIGHT, SCREEN_NODE_WIDTH } from './build-react-flow-graph'
+import { ScreenGraphNodeShell } from './ScreenGraphNodeShell'
 import type { MeasuredScreenNodeSize } from './screen-node-size'
 import { useGraphLinkHandles } from './useGraphLinkHandles'
 
@@ -26,14 +25,12 @@ export function ScreenGraphNode({ data }: NodeProps<ScreenGraphNodeType>) {
   const Screen = data.component
 
   return (
-    <div
-      ref={containerRef}
-      className={cn(
-        'relative box-border overflow-hidden border bg-background p-2',
-        data.isEntry && 'border-2 border-foreground',
-        data.selected && 'ring-2 ring-foreground',
-      )}
-      style={{ width: SCREEN_NODE_WIDTH, height: SCREEN_NODE_HEIGHT }}
+    <ScreenGraphNodeShell
+      containerRef={containerRef}
+      isEntry={data.isEntry}
+      selected={data.selected}
+      width={data.measuredSize.width}
+      height={data.measuredSize.height}
     >
       <WireframeViewProvider
         view="graph"
@@ -41,9 +38,7 @@ export function ScreenGraphNode({ data }: NodeProps<ScreenGraphNodeType>) {
         validScreenIds={data.validScreenIds}
         modalIdsByScreen={data.modalIdsByScreen}
       >
-        <div className="pointer-events-none origin-top-left scale-[0.65]">
-          <Screen />
-        </div>
+        <Screen />
       </WireframeViewProvider>
       {data.outgoingLinkIds.map((linkId) => {
         const point = handles.get(linkId)
@@ -60,6 +55,6 @@ export function ScreenGraphNode({ data }: NodeProps<ScreenGraphNodeType>) {
         )
       })}
       <Handle type="target" position={Position.Left} className="opacity-0" />
-    </div>
+    </ScreenGraphNodeShell>
   )
 }
