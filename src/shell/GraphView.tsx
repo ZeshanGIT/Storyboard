@@ -47,10 +47,7 @@ const FIT_VIEW_PADDING = 0.04
 
 type GraphFlowCanvasProps = {
   flowGraph: { nodes: Node[]; edges: Edge[] }
-  graphSignature: string
-  mode: GraphDisplayMode
-  layoutResetKey: number
-  selectedId: string | null
+  layoutSignature: string
   onSelectNode: (id: string) => void
   onClearSelection: () => void
   onRequestLayoutReset: () => void
@@ -58,10 +55,7 @@ type GraphFlowCanvasProps = {
 
 function GraphFlowCanvas({
   flowGraph,
-  graphSignature,
-  mode,
-  layoutResetKey,
-  selectedId,
+  layoutSignature,
   onSelectNode,
   onClearSelection,
   onRequestLayoutReset,
@@ -69,55 +63,25 @@ function GraphFlowCanvas({
   const [nodes, setNodes, onNodesChange] = useNodesState(flowGraph.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(flowGraph.edges)
   const { fitView } = useReactFlow()
-  const selectedIdRef = useRef(selectedId)
-  selectedIdRef.current = selectedId
-
-  const prevModeRef = useRef<GraphDisplayMode | null>(null)
-  const prevGraphSignatureRef = useRef<string | null>(null)
-  const prevLayoutResetKeyRef = useRef(0)
 
   useEffect(() => {
     setNodes(flowGraph.nodes)
     setEdges(flowGraph.edges)
   }, [flowGraph, setNodes, setEdges])
 
-  const runFitView = useCallback(
-    (options?: { centerSelected?: boolean }) => {
+  const runFitView = useCallback(() => {
+    requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        const id = selectedIdRef.current
-        if (options?.centerSelected && id) {
-          fitView({ nodes: [{ id }], padding: FIT_VIEW_PADDING, duration: 200 })
-          return
-        }
         fitView({ padding: FIT_VIEW_PADDING, duration: 200 })
       })
-    },
-    [fitView],
-  )
+    })
+  }, [fitView])
 
+  // Re-fit when layout inputs change (mode, measureKey, positions); not on selection.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: layoutSignature is the intentional trigger
   useEffect(() => {
-    const graphChanged = prevGraphSignatureRef.current !== graphSignature
-    const modeChanged = prevModeRef.current !== mode
-    const layoutReset = prevLayoutResetKeyRef.current !== layoutResetKey
-
-    prevGraphSignatureRef.current = graphSignature
-    prevModeRef.current = mode
-    prevLayoutResetKeyRef.current = layoutResetKey
-
-    if (!graphChanged && !modeChanged && !layoutReset) return
-
-    if (layoutReset) {
-      runFitView()
-      return
-    }
-
-    if (modeChanged && !graphChanged) {
-      runFitView({ centerSelected: true })
-      return
-    }
-
     runFitView()
-  }, [graphSignature, mode, layoutResetKey, runFitView])
+  }, [layoutSignature, runFitView])
 
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
@@ -233,6 +197,14 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
 
   const isScreenLayoutReady = mode === 'compact' || screenNodeSizes !== null
 
+  const layoutSignature = useMemo(() => {
+    const positionPart = [...positions.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([id, pos]) => `${id}:${pos.x},${pos.y}`)
+      .join('|')
+    return `${measureKey}|${mode}|${layoutResetKey}|${positionPart}`
+  }, [measureKey, mode, layoutResetKey, positions])
+
   const onSelectNode = useCallback((id: string) => {
     setSelectedId(id)
   }, [])
@@ -287,10 +259,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
               <div className="h-full">
                 <GraphFlowCanvas
                   flowGraph={flowGraph}
-                  graphSignature={graphSignature}
-                  mode={mode}
-                  layoutResetKey={layoutResetKey}
-                  selectedId={selectedId}
+                  layoutSignature={layoutSignature}
                   onSelectNode={onSelectNode}
                   onClearSelection={onClearSelection}
                   onRequestLayoutReset={onRequestLayoutReset}
