@@ -100,9 +100,11 @@ Nodes are large relative to Compact View. The layout algorithm accounts for vari
 
 ### Edges
 
-Edges originate from the **specific link or button** that triggers navigation, not from the center of the node. The user can trace which control leads to which destination.
+Edges connect **screen node boundaries** (out from the bottom, in from the top) so routes stay stable while panning and zooming. Parallel links from the same screen are separate edges.
 
-Modal-opening links do not draw edges to other screens. They may show a short local connector or highlight on the triggering control within the node.
+**Hover a link or button** inside a screen node to highlight the edge for that navigation. Other edges dim while hovered. This shows which control maps to which connection without anchoring lines to pixel positions inside the wireframe.
+
+Modal-opening links do not draw edges to other screens. They may show a local affordance on the triggering control within the node.
 
 ### Canvas controls
 
@@ -223,7 +225,7 @@ The first version is complete when a reviewer can confirm all of the following w
 1. Graph View appears as a third shell tab and respects the active document picker.
 2. Every screen in the active document appears as a node; the entry screen is visually distinct.
 3. Every screen-to-screen link (non-disabled) appears as a directed edge; modal/back/close links do not create screen-to-screen edges.
-4. Screen View shows scaled wireframe content per node with edges anchored to triggering controls.
+4. Screen View shows scaled wireframe content per node; edges use boundary anchors; hovering a navigable link highlights its edge.
 5. Compact View shows title, connection counts, and node-anchored edges.
 6. User can pan, zoom, fit-to-screen, and use a minimap.
 7. Clicking a node selects it without leaving Graph View or switching to another tab.

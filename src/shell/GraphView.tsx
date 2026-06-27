@@ -22,6 +22,8 @@ import {
   buildReactFlowGraph,
   COMPACT_NODE_HEIGHT,
   COMPACT_NODE_WIDTH,
+  GRAPH_EDGE_Z_INDEX,
+  GRAPH_HIGHLIGHTED_EDGE_Z_INDEX,
 } from './graph/build-react-flow-graph'
 import { CompactGraphNode } from './graph/CompactGraphNode'
 import { GraphLoadingState } from './graph/GraphLoadingState'
@@ -46,28 +48,55 @@ const graphNodeTypes: NodeTypes = {
 const FIT_VIEW_PADDING = 0.04
 
 type GraphFlowCanvasProps = {
-  flowGraph: { nodes: Node[]; edges: Edge[] }
+  nodes: Node[]
+  edges: Edge[]
+  highlightedLinkId: string | null
+  onHighlightLink: (linkId: string | null) => void
   layoutSignature: string
   onSelectNode: (id: string) => void
   onClearSelection: () => void
   onRequestLayoutReset: () => void
 }
 
+function linkIdFromEdge(edge: Edge): string | undefined {
+  const linkId = edge.data?.linkId
+  return typeof linkId === 'string' ? linkId : undefined
+}
+
+function applyEdgeHighlight(edges: Edge[], highlightedLinkId: string | null): Edge[] {
+  if (!highlightedLinkId) return edges
+
+  return edges.map((edge) => {
+    const isHighlighted = linkIdFromEdge(edge) === highlightedLinkId
+    return {
+      ...edge,
+      zIndex: isHighlighted ? GRAPH_HIGHLIGHTED_EDGE_Z_INDEX : GRAPH_EDGE_Z_INDEX,
+      className: isHighlighted ? 'wireframe-graph-edge-highlighted' : 'wireframe-graph-edge-dimmed',
+    }
+  })
+}
+
 function GraphFlowCanvas({
-  flowGraph,
+  nodes,
+  edges,
+  highlightedLinkId,
+  onHighlightLink,
   layoutSignature,
   onSelectNode,
   onClearSelection,
   onRequestLayoutReset,
 }: GraphFlowCanvasProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(flowGraph.nodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(flowGraph.edges)
+  const [flowNodes, setNodes, onNodesChange] = useNodesState(nodes)
+  const [flowEdges, setEdges, onEdgesChange] = useEdgesState(edges)
   const { fitView } = useReactFlow()
 
   useEffect(() => {
-    setNodes(flowGraph.nodes)
-    setEdges(flowGraph.edges)
-  }, [flowGraph, setNodes, setEdges])
+    setNodes(nodes)
+  }, [nodes, setNodes])
+
+  useEffect(() => {
+    setEdges(applyEdgeHighlight(edges, highlightedLinkId))
+  }, [edges, highlightedLinkId, setEdges])
 
   const runFitView = useCallback(() => {
     requestAnimationFrame(() => {
@@ -94,22 +123,37 @@ function GraphFlowCanvas({
     onRequestLayoutReset()
   }, [onRequestLayoutReset])
 
+  const onEdgeMouseEnter = useCallback(
+    (_event: React.MouseEvent, edge: Edge) => {
+      const linkId = linkIdFromEdge(edge)
+      if (linkId) onHighlightLink(linkId)
+    },
+    [onHighlightLink],
+  )
+
+  const onEdgeMouseLeave = useCallback(() => {
+    onHighlightLink(null)
+  }, [onHighlightLink])
+
   return (
     <ReactFlow
       className="h-full"
-      nodes={nodes}
-      edges={edges}
+      nodes={flowNodes}
+      edges={flowEdges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodeTypes={graphNodeTypes}
       onNodeClick={onNodeClick}
       onPaneClick={onClearSelection}
+      onEdgeMouseEnter={onEdgeMouseEnter}
+      onEdgeMouseLeave={onEdgeMouseLeave}
       nodesDraggable={false}
       nodesConnectable={false}
       elementsSelectable={false}
       defaultEdgeOptions={{
-        type: 'smoothstep',
-        zIndex: 0,
+        type: 'default',
+        zIndex: GRAPH_EDGE_Z_INDEX,
+        interactionWidth: 20,
       }}
     >
       <Background />
@@ -129,6 +173,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [layoutResetKey, setLayoutResetKey] = useState(0)
   const [screenNodeSizes, setScreenNodeSizes] = useState<ScreenNodeSizeMap | null>(null)
+  const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null)
   const { showLinkIndicators, showNoteIndicators } = useWireframeDisplayPreferences()
 
   const graphSignature = useMemo(
@@ -182,7 +227,11 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     return layoutNavigationGraph(layoutNodes, layoutEdges)
   }, [navigationGraph, mode, screenNodeSizes])
 
-  const flowGraph = useMemo(
+  const onGraphLinkHover = useCallback((linkId: string | null) => {
+    setHighlightedLinkId(linkId)
+  }, [])
+
+  const baseFlowGraph = useMemo(
     () =>
       buildReactFlowGraph({
         graph: navigationGraph,
@@ -191,8 +240,9 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
         selectedId,
         positions,
         screenNodeSizes: mode === 'screen' ? (screenNodeSizes ?? undefined) : undefined,
+        onGraphLinkHover,
       }),
-    [navigationGraph, routes, mode, selectedId, positions, screenNodeSizes],
+    [navigationGraph, routes, mode, selectedId, positions, screenNodeSizes, onGraphLinkHover],
   )
 
   const isScreenLayoutReady = mode === 'compact' || screenNodeSizes !== null
@@ -211,6 +261,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
 
   const onClearSelection = useCallback(() => {
     setSelectedId(null)
+    setHighlightedLinkId(null)
   }, [])
 
   const onRequestLayoutReset = useCallback(() => {
@@ -258,7 +309,10 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
             <ReactFlowProvider>
               <div className="h-full">
                 <GraphFlowCanvas
-                  flowGraph={flowGraph}
+                  nodes={baseFlowGraph.nodes}
+                  edges={baseFlowGraph.edges}
+                  highlightedLinkId={highlightedLinkId}
+                  onHighlightLink={onGraphLinkHover}
                   layoutSignature={layoutSignature}
                   onSelectNode={onSelectNode}
                   onClearSelection={onClearSelection}

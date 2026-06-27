@@ -25,11 +25,38 @@
   border: 1px solid var(--border);
 }
 
-/* Nodes paint above edge SVG so paths do not show through wireframe cards */
+/* Nodes sit below edges so connection lines stay visible and hoverable */
 .react-flow__node.wireframe-graph-node {
   z-index: 2;
 }
 
+.react-flow__edge {
+  z-index: 3;
+}
+
 .react-flow__edge-path {
   stroke-width: 1.5;
+}
+
+.react-flow__handle.wireframe-graph-boundary-handle {
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  pointer-events: none;
+}
+
+.react-flow__edge.wireframe-graph-edge-dimmed .react-flow__edge-path {
+  opacity: 0.25;
+}
+
+.react-flow__edge.wireframe-graph-edge-highlighted {
+  z-index: 4;
+}
+
+.react-flow__edge.wireframe-graph-edge-highlighted .react-flow__edge-path {
+  stroke-width: 2.5;
+  opacity: 1;
 }

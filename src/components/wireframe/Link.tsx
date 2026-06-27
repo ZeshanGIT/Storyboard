@@ -87,6 +87,7 @@ export function Link({
     validScreenIds,
     modalIdsByScreen,
     reportError,
+    onGraphLinkHover,
   } = useWireframeView()
   const { showLinkIndicators } = useWireframeDisplayPreferences()
   const linkClass = showLinkIndicators ? linkAffordanceClass : 'inline-flex w-fit self-start'
@@ -149,15 +150,23 @@ export function Link({
   const isButton = Boolean(primaryBtn || secondaryBtn)
   const variant = buttonVariant(Boolean(primaryBtn), Boolean(secondaryBtn), danger)
   const graphAttrs =
-    view === 'graph'
+    view === 'graph' && graphLinkId
       ? {
           'data-graph-link-id': graphLinkId,
           tabIndex: -1 as const,
-          className: cn('pointer-events-none'),
+          onMouseEnter: () => onGraphLinkHover(graphLinkId),
+          onMouseLeave: () => onGraphLinkHover(null),
+          onFocus: () => onGraphLinkHover(graphLinkId),
+          onBlur: () => onGraphLinkHover(null),
+          className: cn('cursor-default'),
         }
       : undefined
 
   if (!isButton) {
+    const graphLinkClass =
+      view === 'graph'
+        ? 'text-left text-primary no-underline hover:no-underline'
+        : 'text-left text-primary underline-offset-4 hover:underline'
     return (
       <WireframeNote note={note} className="w-fit self-start">
         <button
@@ -167,7 +176,8 @@ export function Link({
           {...graphAttrs}
           className={cn(
             linkClass,
-            'text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
+            graphLinkClass,
+            'disabled:pointer-events-none disabled:opacity-50',
             danger && 'text-destructive',
             graphAttrs?.className,
           )}

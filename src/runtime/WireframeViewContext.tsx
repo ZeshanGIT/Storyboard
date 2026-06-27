@@ -13,6 +13,7 @@ export type WireframeViewContextValue = {
   openModal: (id: string) => void
   closeModal: () => void
   reportError: (message: string) => void
+  onGraphLinkHover: (linkId: string | null) => void
 }
 
 const defaultValue: WireframeViewContextValue = {
@@ -25,6 +26,7 @@ const defaultValue: WireframeViewContextValue = {
   openModal: () => {},
   closeModal: () => {},
   reportError: () => {},
+  onGraphLinkHover: () => {},
 }
 
 const WireframeViewContext = createContext<WireframeViewContextValue>(defaultValue)
@@ -34,6 +36,7 @@ export type WireframeViewProviderProps = {
   navigate: (path: string) => void
   validScreenIds: readonly string[]
   modalIdsByScreen: ReadonlyMap<string, readonly string[]>
+  onGraphLinkHover?: (linkId: string | null) => void
   children: ReactNode
 }
 
@@ -42,6 +45,7 @@ export function WireframeViewProvider({
   navigate,
   validScreenIds,
   modalIdsByScreen,
+  onGraphLinkHover = () => {},
   children,
 }: WireframeViewProviderProps) {
   const { reportError } = useWireframeErrors()
@@ -71,6 +75,7 @@ export function WireframeViewProvider({
       openModal,
       closeModal,
       reportError,
+      onGraphLinkHover,
     }),
     [
       view,
@@ -82,6 +87,7 @@ export function WireframeViewProvider({
       openModal,
       closeModal,
       reportError,
+      onGraphLinkHover,
     ],
   )
 

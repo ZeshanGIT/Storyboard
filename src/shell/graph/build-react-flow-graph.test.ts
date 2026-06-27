@@ -58,3 +58,58 @@ describe('buildReactFlowGraph screen mode', () => {
     expect(buildReactFlowGraph({ ...base, screenNodeSizes: new Map() }).nodes).toHaveLength(0)
   })
 })
+
+const linkedGraph: NavigationGraph = {
+  nodes: [
+    { id: 'home', title: 'Home', order: 0, isEntry: true },
+    { id: 'login', title: 'Login', order: 1, isEntry: false },
+  ],
+  edges: [
+    {
+      id: 'home:0->login',
+      fromScreenId: 'home',
+      toScreenId: 'login',
+      linkId: 'home:0',
+    },
+  ],
+}
+
+describe('buildReactFlowGraph screen mode edges', () => {
+  it('uses boundary edges with linkId data and no per-link sourceHandle', () => {
+    const Home = () => null
+    const Login = () => null
+    const screenNodeSizes = new Map([
+      ['home', { width: 140, height: 90 }],
+      ['login', { width: 220, height: 310 }],
+    ])
+
+    const { edges } = buildReactFlowGraph({
+      graph: linkedGraph,
+      routes: [
+        { id: 'home', path: '/home', component: Home },
+        { id: 'login', path: '/login', component: Login },
+      ],
+      mode: 'screen',
+      selectedId: null,
+      positions: new Map([
+        ['home', { x: 0, y: 0 }],
+        ['login', { x: 0, y: 200 }],
+      ]),
+      screenNodeSizes,
+    })
+
+    expect(edges).toHaveLength(1)
+    expect(edges[0]).toEqual(
+      expect.objectContaining({
+        source: 'home',
+        target: 'login',
+        type: 'default',
+        sourceHandle: 'out-bottom',
+        targetHandle: 'in-top',
+        data: { linkId: 'home:0' },
+        interactionWidth: 20,
+      }),
+    )
+    expect(edges[0]?.sourceHandle).not.toBeUndefined()
+  })
+})
