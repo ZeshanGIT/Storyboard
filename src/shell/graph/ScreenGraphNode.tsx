@@ -2,6 +2,7 @@ import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import { type ComponentType, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { WireframeViewProvider } from '@/runtime/WireframeViewContext'
+import { SCREEN_NODE_HEIGHT, SCREEN_NODE_WIDTH } from './build-react-flow-graph'
 import { useGraphLinkHandles } from './useGraphLinkHandles'
 
 export type ScreenGraphNodeData = {
@@ -26,10 +27,11 @@ export function ScreenGraphNode({ data }: NodeProps<ScreenGraphNodeType>) {
     <div
       ref={containerRef}
       className={cn(
-        'rounded-md border bg-background p-2',
+        'relative box-border overflow-hidden border bg-background p-2',
         data.isEntry && 'border-2 border-foreground',
         data.selected && 'ring-2 ring-foreground',
       )}
+      style={{ width: SCREEN_NODE_WIDTH, height: SCREEN_NODE_HEIGHT }}
     >
       <WireframeViewProvider
         view="graph"

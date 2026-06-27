@@ -1,5 +1,6 @@
 import { Handle, type Node, type NodeProps, Position } from '@xyflow/react'
 import { cn } from '@/lib/utils'
+import { COMPACT_NODE_HEIGHT, COMPACT_NODE_WIDTH } from './build-react-flow-graph'
 
 export type CompactGraphNodeData = {
   title: string
@@ -17,10 +18,11 @@ export function CompactGraphNode({ data }: NodeProps<CompactGraphNodeType>) {
   return (
     <div
       className={cn(
-        'min-w-[180px] rounded-md border bg-background p-3 text-sm shadow-none',
+        'box-border border bg-background p-3 text-sm shadow-none',
         data.isEntry && 'border-2 border-foreground',
         data.selected && 'ring-2 ring-foreground',
       )}
+      style={{ width: COMPACT_NODE_WIDTH, height: COMPACT_NODE_HEIGHT }}
     >
       <Handle type="target" position={Position.Top} className="opacity-0" />
       <p className="font-medium">{data.title}</p>

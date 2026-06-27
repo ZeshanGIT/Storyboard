@@ -76,8 +76,8 @@ export function Shell({ contentDocuments }: ShellProps) {
 
         <main
           className={cn(
-            'mx-auto px-6 py-8',
-            view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl',
+            'mx-auto',
+            view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl px-6 py-8',
           )}
         >
           {view === 'preview' ? (

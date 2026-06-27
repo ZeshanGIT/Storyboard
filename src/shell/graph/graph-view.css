@@ -1,0 +1,35 @@
+/* WireframeX graph view — sharp corners, edge layering */
+.react-flow {
+  border-radius: 0;
+}
+
+.react-flow__controls {
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none;
+}
+
+.react-flow__minimap {
+  border-radius: 0;
+  border: 1px solid var(--border);
+}
+
+/* Nodes paint above edge SVG so paths do not show through wireframe cards */
+.react-flow__node.wireframe-graph-node {
+  z-index: 2;
+}
+
+.react-flow__edge-path {
+  stroke-width: 1.5;
+}

@@ -14,6 +14,10 @@ export type LayoutEdgeInput = {
   to: string
 }
 
+const LAYOUT_MARGIN = 24
+const LAYOUT_NODE_SEP = 96
+const LAYOUT_RANK_SEP = 120
+
 export function layoutNavigationGraph(
   nodes: readonly LayoutNodeInput[],
   edges: readonly LayoutEdgeInput[],
@@ -21,14 +25,21 @@ export function layoutNavigationGraph(
 ): Map<string, { x: number; y: number }> {
   const graph = new dagre.graphlib.Graph()
   graph.setDefaultEdgeLabel(() => ({}))
-  graph.setGraph({ rankdir: direction })
+  graph.setGraph({
+    rankdir: direction,
+    nodesep: LAYOUT_NODE_SEP,
+    ranksep: LAYOUT_RANK_SEP,
+    marginx: LAYOUT_MARGIN,
+    marginy: LAYOUT_MARGIN,
+    ranker: 'network-simplex',
+  })
 
   for (const node of nodes) {
     graph.setNode(node.id, { width: node.width, height: node.height })
   }
 
   for (const edge of edges) {
-    graph.setEdge(edge.from, edge.to)
+    graph.setEdge(edge.from, edge.to, { minlen: 1 })
   }
 
   dagre.layout(graph)

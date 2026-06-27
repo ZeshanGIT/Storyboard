@@ -52,6 +52,9 @@ function buildCompactGraph({
     id: node.id,
     type: 'compact',
     position: positions.get(node.id) ?? { x: 0, y: 0 },
+    className: 'wireframe-graph-node',
+    style: { width: COMPACT_NODE_WIDTH, height: COMPACT_NODE_HEIGHT, zIndex: 2 },
+    zIndex: 2,
     data: {
       title: node.title,
       screenId: node.id,
@@ -67,7 +70,10 @@ function buildCompactGraph({
     id: edge.id,
     source: edge.fromScreenId,
     target: edge.toScreenId,
+    type: 'smoothstep',
+    pathOptions: { borderRadius: 0, offset: 24 },
     markerEnd: { type: MarkerType.ArrowClosed },
+    zIndex: 0,
   }))
 
   return { nodes, edges }
@@ -102,6 +108,9 @@ function buildScreenGraph({
         id: node.id,
         type: 'screen' as const,
         position: positions.get(node.id) ?? { x: 0, y: 0 },
+        className: 'wireframe-graph-node',
+        style: { width: SCREEN_NODE_WIDTH, height: SCREEN_NODE_HEIGHT, zIndex: 2 },
+        zIndex: 2,
         data: {
           screenId: node.id,
           title: node.title,
@@ -121,7 +130,10 @@ function buildScreenGraph({
     source: edge.fromScreenId,
     target: edge.toScreenId,
     sourceHandle: edge.linkId,
+    type: 'smoothstep',
+    pathOptions: { borderRadius: 0, offset: 24 },
     markerEnd: { type: MarkerType.ArrowClosed },
+    zIndex: 0,
   }))
 
   return { nodes, edges }

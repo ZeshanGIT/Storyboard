@@ -1,5 +1,6 @@
 import {
   Background,
+  ControlButton,
   Controls,
   type Edge,
   MiniMap,
@@ -11,6 +12,7 @@ import {
   useNodesState,
   useReactFlow,
 } from '@xyflow/react'
+import { RotateCcw } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { NavigationGraph } from '../plugin/types'
@@ -23,6 +25,7 @@ import {
   SCREEN_NODE_WIDTH,
 } from './graph/build-react-flow-graph'
 import { CompactGraphNode } from './graph/CompactGraphNode'
+import './graph/graph-view.css'
 import { type GraphDisplayMode, layoutNavigationGraph } from './graph/layout-navigation-graph'
 import { ScreenGraphNode } from './graph/ScreenGraphNode'
 import type { RouteEntry } from './router'
@@ -38,22 +41,28 @@ const graphNodeTypes: NodeTypes = {
   screen: ScreenGraphNode,
 }
 
+const FIT_VIEW_PADDING = 0.04
+
 type GraphFlowCanvasProps = {
   flowGraph: { nodes: Node[]; edges: Edge[] }
   graphSignature: string
   mode: GraphDisplayMode
+  layoutResetKey: number
   selectedId: string | null
   onSelectNode: (id: string) => void
   onClearSelection: () => void
+  onRequestLayoutReset: () => void
 }
 
 function GraphFlowCanvas({
   flowGraph,
   graphSignature,
   mode,
+  layoutResetKey,
   selectedId,
   onSelectNode,
   onClearSelection,
+  onRequestLayoutReset,
 }: GraphFlowCanvasProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(flowGraph.nodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(flowGraph.edges)
@@ -63,30 +72,50 @@ function GraphFlowCanvas({
 
   const prevModeRef = useRef<GraphDisplayMode | null>(null)
   const prevGraphSignatureRef = useRef<string | null>(null)
+  const prevLayoutResetKeyRef = useRef(0)
 
   useEffect(() => {
     setNodes(flowGraph.nodes)
     setEdges(flowGraph.edges)
   }, [flowGraph, setNodes, setEdges])
 
+  const runFitView = useCallback(
+    (options?: { centerSelected?: boolean }) => {
+      requestAnimationFrame(() => {
+        const id = selectedIdRef.current
+        if (options?.centerSelected && id) {
+          fitView({ nodes: [{ id }], padding: FIT_VIEW_PADDING, duration: 200 })
+          return
+        }
+        fitView({ padding: FIT_VIEW_PADDING, duration: 200 })
+      })
+    },
+    [fitView],
+  )
+
   useEffect(() => {
     const graphChanged = prevGraphSignatureRef.current !== graphSignature
     const modeChanged = prevModeRef.current !== mode
+    const layoutReset = prevLayoutResetKeyRef.current !== layoutResetKey
 
     prevGraphSignatureRef.current = graphSignature
     prevModeRef.current = mode
+    prevLayoutResetKeyRef.current = layoutResetKey
 
-    if (!graphChanged && !modeChanged) return
+    if (!graphChanged && !modeChanged && !layoutReset) return
 
-    requestAnimationFrame(() => {
-      const id = selectedIdRef.current
-      if (modeChanged && !graphChanged && id) {
-        fitView({ nodes: [{ id }], padding: 0.2 })
-      } else {
-        fitView({ padding: 0.2 })
-      }
-    })
-  }, [graphSignature, mode, fitView])
+    if (layoutReset) {
+      runFitView()
+      return
+    }
+
+    if (modeChanged && !graphChanged) {
+      runFitView({ centerSelected: true })
+      return
+    }
+
+    runFitView()
+  }, [graphSignature, mode, layoutResetKey, runFitView])
 
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
@@ -94,6 +123,10 @@ function GraphFlowCanvas({
     },
     [onSelectNode],
   )
+
+  const onResetLayout = useCallback(() => {
+    onRequestLayoutReset()
+  }, [onRequestLayoutReset])
 
   return (
     <ReactFlow
@@ -108,10 +141,18 @@ function GraphFlowCanvas({
       nodesDraggable={false}
       nodesConnectable={false}
       elementsSelectable={false}
+      defaultEdgeOptions={{
+        type: 'smoothstep',
+        zIndex: 0,
+      }}
     >
       <Background />
-      <Controls />
-      <MiniMap />
+      <Controls showFitView showZoom showInteractive={false}>
+        <ControlButton onClick={onResetLayout} title="Reset arrangement">
+          <RotateCcw className="size-4" aria-hidden />
+        </ControlButton>
+      </Controls>
+      <MiniMap pannable zoomable />
     </ReactFlow>
   )
 }
@@ -120,6 +161,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const codegenErrors = getCodegenErrors()
   const [mode, setMode] = useState<GraphDisplayMode>('screen')
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [layoutResetKey, setLayoutResetKey] = useState(0)
 
   const nodeWidth = mode === 'compact' ? COMPACT_NODE_WIDTH : SCREEN_NODE_WIDTH
   const nodeHeight = mode === 'compact' ? COMPACT_NODE_HEIGHT : SCREEN_NODE_HEIGHT
@@ -164,6 +206,10 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     setSelectedId(null)
   }, [])
 
+  const onRequestLayoutReset = useCallback(() => {
+    setLayoutResetKey((key) => key + 1)
+  }, [])
+
   if (codegenErrors.length > 0) {
     return (
       <p className="text-red-900">
@@ -177,8 +223,8 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   }
 
   return (
-    <div className="flex h-full flex-col gap-3">
-      <div className="flex items-center justify-between gap-4">
+    <div className="flex h-full flex-col">
+      <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border px-6 py-3">
         <p className="text-sm text-muted-foreground">
           {navigationGraph.nodes.length} screens, {navigationGraph.edges.length} connections
         </p>
@@ -189,16 +235,18 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
           </TabsList>
         </Tabs>
       </div>
-      <div className="min-h-0 flex-1 rounded-md border border-border bg-muted/20">
+      <div className="min-h-0 flex-1 border-border bg-muted/20">
         <ReactFlowProvider>
           <div className="h-full">
             <GraphFlowCanvas
               flowGraph={flowGraph}
               graphSignature={graphSignature}
               mode={mode}
+              layoutResetKey={layoutResetKey}
               selectedId={selectedId}
               onSelectNode={onSelectNode}
               onClearSelection={onClearSelection}
+              onRequestLayoutReset={onRequestLayoutReset}
             />
           </div>
         </ReactFlowProvider>
