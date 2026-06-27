@@ -15,9 +15,12 @@ import {
   buildReactFlowGraph,
   COMPACT_NODE_HEIGHT,
   COMPACT_NODE_WIDTH,
+  SCREEN_NODE_HEIGHT,
+  SCREEN_NODE_WIDTH,
 } from './graph/build-react-flow-graph'
 import { CompactGraphNode } from './graph/CompactGraphNode'
 import { type GraphDisplayMode, layoutNavigationGraph } from './graph/layout-navigation-graph'
+import { ScreenGraphNode } from './graph/ScreenGraphNode'
 import type { RouteEntry } from './router'
 
 export type GraphViewProps = {
@@ -28,21 +31,17 @@ export type GraphViewProps = {
 
 const graphNodeTypes: NodeTypes = {
   compact: CompactGraphNode,
+  screen: ScreenGraphNode,
 }
 
-type CompactGraphCanvasProps = {
+type GraphCanvasProps = {
   nodes: Node[]
   edges: ReturnType<typeof buildReactFlowGraph>['edges']
   onSelectNode: (id: string) => void
   onClearSelection: () => void
 }
 
-function CompactGraphCanvas({
-  nodes,
-  edges,
-  onSelectNode,
-  onClearSelection,
-}: CompactGraphCanvasProps) {
+function GraphCanvas({ nodes, edges, onSelectNode, onClearSelection }: GraphCanvasProps) {
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       onSelectNode(node.id)
@@ -76,11 +75,14 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const [mode, setMode] = useState<GraphDisplayMode>('screen')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
+  const nodeWidth = mode === 'compact' ? COMPACT_NODE_WIDTH : SCREEN_NODE_WIDTH
+  const nodeHeight = mode === 'compact' ? COMPACT_NODE_HEIGHT : SCREEN_NODE_HEIGHT
+
   const positions = useMemo(() => {
     const layoutNodes = navigationGraph.nodes.map((node) => ({
       id: node.id,
-      width: COMPACT_NODE_WIDTH,
-      height: COMPACT_NODE_HEIGHT,
+      width: nodeWidth,
+      height: nodeHeight,
     }))
     const layoutEdges = navigationGraph.edges.map((edge) => ({
       id: edge.id,
@@ -88,12 +90,12 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       to: edge.toScreenId,
     }))
     return layoutNavigationGraph(layoutNodes, layoutEdges)
-  }, [navigationGraph])
+  }, [navigationGraph, nodeWidth, nodeHeight])
 
   const fitViewKey = useMemo(
     () =>
-      `${navigationGraph.nodes.map((node) => node.id).join(',')}|${navigationGraph.edges.map((edge) => edge.id).join(',')}`,
-    [navigationGraph],
+      `${mode}|${navigationGraph.nodes.map((node) => node.id).join(',')}|${navigationGraph.edges.map((edge) => edge.id).join(',')}`,
+    [mode, navigationGraph],
   )
 
   const { nodes, edges } = useMemo(
@@ -101,11 +103,11 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       buildReactFlowGraph({
         graph: navigationGraph,
         routes,
-        mode: 'compact',
+        mode,
         selectedId,
         positions,
       }),
-    [navigationGraph, routes, selectedId, positions],
+    [navigationGraph, routes, mode, selectedId, positions],
   )
 
   const onSelectNode = useCallback((id: string) => {
@@ -142,22 +144,16 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
         </Tabs>
       </div>
       <div className="min-h-0 flex-1 rounded-md border border-border bg-muted/20">
-        {mode === 'compact' ? (
-          <ReactFlowProvider key={fitViewKey}>
-            <div className="h-full">
-              <CompactGraphCanvas
-                nodes={nodes}
-                edges={edges}
-                onSelectNode={onSelectNode}
-                onClearSelection={onClearSelection}
-              />
-            </div>
-          </ReactFlowProvider>
-        ) : (
-          <p className="p-4 text-sm text-muted-foreground">
-            Screen view shows scaled wireframes per node. Available in the next task.
-          </p>
-        )}
+        <ReactFlowProvider key={fitViewKey}>
+          <div className="h-full">
+            <GraphCanvas
+              nodes={nodes}
+              edges={edges}
+              onSelectNode={onSelectNode}
+              onClearSelection={onClearSelection}
+            />
+          </div>
+        </ReactFlowProvider>
       </div>
     </div>
   )

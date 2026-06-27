@@ -1,11 +1,14 @@
 import { type Edge, MarkerType, type Node } from '@xyflow/react'
 import type { NavigationGraph } from '../../plugin/types'
-import type { RouteEntry } from '../router'
+import { modalIdsByScreenFromRoutes, type RouteEntry } from '../router'
 import type { CompactGraphNodeType } from './CompactGraphNode'
 import type { GraphDisplayMode } from './layout-navigation-graph'
+import type { ScreenGraphNodeType } from './ScreenGraphNode'
 
 export const COMPACT_NODE_WIDTH = 180
 export const COMPACT_NODE_HEIGHT = 100
+export const SCREEN_NODE_WIDTH = 320
+export const SCREEN_NODE_HEIGHT = 400
 
 export type BuildReactFlowGraphInput = {
   graph: NavigationGraph
@@ -70,6 +73,60 @@ function buildCompactGraph({
   return { nodes, edges }
 }
 
+function buildScreenGraph({
+  graph,
+  routes,
+  selectedId,
+  positions,
+}: Omit<BuildReactFlowGraphInput, 'mode'>): {
+  nodes: ScreenGraphNodeType[]
+  edges: Edge[]
+} {
+  const routeById = new Map(routes.map((route) => [route.id, route]))
+  const validScreenIds = routes.map((route) => route.id)
+  const modalIdsByScreen = modalIdsByScreenFromRoutes(routes)
+  const outgoingByScreen = new Map<string, string[]>()
+
+  for (const edge of graph.edges) {
+    const list = outgoingByScreen.get(edge.fromScreenId) ?? []
+    list.push(edge.linkId)
+    outgoingByScreen.set(edge.fromScreenId, list)
+  }
+
+  const nodes: ScreenGraphNodeType[] = graph.nodes.flatMap((node) => {
+    const route = routeById.get(node.id)
+    if (!route) return []
+
+    return [
+      {
+        id: node.id,
+        type: 'screen' as const,
+        position: positions.get(node.id) ?? { x: 0, y: 0 },
+        data: {
+          screenId: node.id,
+          title: node.title,
+          isEntry: node.isEntry,
+          selected: node.id === selectedId,
+          outgoingLinkIds: outgoingByScreen.get(node.id) ?? [],
+          component: route.component,
+          validScreenIds,
+          modalIdsByScreen,
+        },
+      },
+    ]
+  })
+
+  const edges: Edge[] = graph.edges.map((edge) => ({
+    id: edge.id,
+    source: edge.fromScreenId,
+    target: edge.toScreenId,
+    sourceHandle: edge.linkId,
+    markerEnd: { type: MarkerType.ArrowClosed },
+  }))
+
+  return { nodes, edges }
+}
+
 export function buildReactFlowGraph(input: BuildReactFlowGraphInput): {
   nodes: Node[]
   edges: Edge[]
@@ -78,5 +135,5 @@ export function buildReactFlowGraph(input: BuildReactFlowGraphInput): {
     return buildCompactGraph(input)
   }
 
-  return { nodes: [], edges: [] }
+  return buildScreenGraph(input)
 }
