@@ -1,5 +1,5 @@
 import { useNodeId, useUpdateNodeInternals } from '@xyflow/react'
-import { type RefObject, useCallback, useEffect, useState } from 'react'
+import { type RefObject, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 
 export type GraphLinkHandlePosition = {
   x: number
@@ -13,6 +13,7 @@ export function useGraphLinkHandles(
   const nodeId = useNodeId()
   const updateNodeInternals = useUpdateNodeInternals()
   const [handles, setHandles] = useState<Map<string, GraphLinkHandlePosition>>(() => new Map())
+  const [handlesVersion, setHandlesVersion] = useState(0)
 
   const measure = useCallback(() => {
     const container = containerRef.current
@@ -34,10 +35,15 @@ export function useGraphLinkHandles(
     }
 
     setHandles(next)
+    setHandlesVersion((version) => version + 1)
+  }, [containerRef, linkIds])
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: run after Handle elements commit
+  useLayoutEffect(() => {
     if (nodeId) {
       updateNodeInternals(nodeId)
     }
-  }, [containerRef, linkIds, nodeId, updateNodeInternals])
+  }, [handlesVersion, nodeId, updateNodeInternals])
 
   useEffect(() => {
     const container = containerRef.current

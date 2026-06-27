@@ -1,13 +1,17 @@
 import {
   Background,
   Controls,
+  type Edge,
   MiniMap,
   type Node,
   type NodeTypes,
   ReactFlow,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
 } from '@xyflow/react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { NavigationGraph } from '../plugin/types'
 import { getCodegenErrors } from '../runtime/codegen-error'
@@ -34,14 +38,56 @@ const graphNodeTypes: NodeTypes = {
   screen: ScreenGraphNode,
 }
 
-type GraphCanvasProps = {
-  nodes: Node[]
-  edges: ReturnType<typeof buildReactFlowGraph>['edges']
+type GraphFlowCanvasProps = {
+  flowGraph: { nodes: Node[]; edges: Edge[] }
+  graphSignature: string
+  mode: GraphDisplayMode
+  selectedId: string | null
   onSelectNode: (id: string) => void
   onClearSelection: () => void
 }
 
-function GraphCanvas({ nodes, edges, onSelectNode, onClearSelection }: GraphCanvasProps) {
+function GraphFlowCanvas({
+  flowGraph,
+  graphSignature,
+  mode,
+  selectedId,
+  onSelectNode,
+  onClearSelection,
+}: GraphFlowCanvasProps) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(flowGraph.nodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(flowGraph.edges)
+  const { fitView } = useReactFlow()
+  const selectedIdRef = useRef(selectedId)
+  selectedIdRef.current = selectedId
+
+  const prevModeRef = useRef(mode)
+  const prevGraphSignatureRef = useRef(graphSignature)
+
+  useEffect(() => {
+    setNodes(flowGraph.nodes)
+    setEdges(flowGraph.edges)
+  }, [flowGraph, setNodes, setEdges])
+
+  useEffect(() => {
+    const graphChanged = prevGraphSignatureRef.current !== graphSignature
+    const modeChanged = prevModeRef.current !== mode
+
+    prevGraphSignatureRef.current = graphSignature
+    prevModeRef.current = mode
+
+    if (!graphChanged && !modeChanged) return
+
+    requestAnimationFrame(() => {
+      const id = selectedIdRef.current
+      if (modeChanged && !graphChanged && id) {
+        fitView({ nodes: [{ id }], padding: 0.2 })
+      } else {
+        fitView({ padding: 0.2 })
+      }
+    })
+  }, [graphSignature, mode, fitView])
+
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       onSelectNode(node.id)
@@ -54,6 +100,8 @@ function GraphCanvas({ nodes, edges, onSelectNode, onClearSelection }: GraphCanv
       className="h-full"
       nodes={nodes}
       edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
       nodeTypes={graphNodeTypes}
       onNodeClick={onNodeClick}
       onPaneClick={onClearSelection}
@@ -61,7 +109,6 @@ function GraphCanvas({ nodes, edges, onSelectNode, onClearSelection }: GraphCanv
       nodesConnectable={false}
       elementsSelectable={false}
       proOptions={{ hideAttribution: true }}
-      fitView
     >
       <Background />
       <Controls />
@@ -78,6 +125,12 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const nodeWidth = mode === 'compact' ? COMPACT_NODE_WIDTH : SCREEN_NODE_WIDTH
   const nodeHeight = mode === 'compact' ? COMPACT_NODE_HEIGHT : SCREEN_NODE_HEIGHT
 
+  const graphSignature = useMemo(
+    () =>
+      `${navigationGraph.nodes.map((node) => node.id).join(',')}|${navigationGraph.edges.map((edge) => edge.id).join(',')}`,
+    [navigationGraph],
+  )
+
   const positions = useMemo(() => {
     const layoutNodes = navigationGraph.nodes.map((node) => ({
       id: node.id,
@@ -92,13 +145,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     return layoutNavigationGraph(layoutNodes, layoutEdges)
   }, [navigationGraph, nodeWidth, nodeHeight])
 
-  const fitViewKey = useMemo(
-    () =>
-      `${mode}|${navigationGraph.nodes.map((node) => node.id).join(',')}|${navigationGraph.edges.map((edge) => edge.id).join(',')}`,
-    [mode, navigationGraph],
-  )
-
-  const { nodes, edges } = useMemo(
+  const flowGraph = useMemo(
     () =>
       buildReactFlowGraph({
         graph: navigationGraph,
@@ -144,11 +191,13 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
         </Tabs>
       </div>
       <div className="min-h-0 flex-1 rounded-md border border-border bg-muted/20">
-        <ReactFlowProvider key={fitViewKey}>
+        <ReactFlowProvider>
           <div className="h-full">
-            <GraphCanvas
-              nodes={nodes}
-              edges={edges}
+            <GraphFlowCanvas
+              flowGraph={flowGraph}
+              graphSignature={graphSignature}
+              mode={mode}
+              selectedId={selectedId}
               onSelectNode={onSelectNode}
               onClearSelection={onClearSelection}
             />
