@@ -60,7 +60,7 @@ function formatGotoTarget(target: GotoTarget): string {
   return target.raw
 }
 
-function collectModalIdsByScreen(
+export function collectModalIdsByScreen(
   tree: Root,
   screenIds: Set<string>,
 ): { modalIdsByScreen: Map<string, Set<string>>; errors: CodegenError[] } {
