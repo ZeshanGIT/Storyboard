@@ -14,7 +14,7 @@ No pixel-perfect mockups, design tooling, rich styling/animations/brand theming,
 
 ## Build phases
 
-Small vertical slices. ✓1 Foundation ✓2 Navigation ✓3 Primitives ✓4 Multi-document | 5 Analysis 6 Views 7 Polish → `VISION.md`, `FUTURE.md`
+Small vertical slices. ✓1 Foundation ✓2 Navigation ✓3 Primitives ✓4 Multi-document ✓5 Graph view | 6 Analysis (validation) 7 Polish → `VISION.md`, `FUTURE.md`
 
 ## Commands
 
@@ -76,6 +76,7 @@ Run `npm run build` + `npm run check` before claiming done.
 | CONTEXT | architecture, status, flows |
 | AGENTS | conventions, scope, checklist |
 | MDX-COMPONENTS | minimal wireframe API |
+| GRAPH_VIEW | graph tab UX requirements |
 | VISION | product direction |
 
 ## Design decisions (preserve)
@@ -89,11 +90,12 @@ Run `npm run build` + `npm run check` before claiming done.
 
 ## Skills
 
-No auto-discovered project skills (only `.agents/skills/` is scanned). Manual skills live in `.agents/skill-archive/` (`shadcn`, `brainstorming`, `caveman`, etc.) — attach via `@.agents/skill-archive/shadcn/SKILL.md` when needed. User instructions here override skill defaults.
+Only `.agents/skills/` auto-discovered. Manual → `.agents/skill-archive/` (`@.agents/skill-archive/<name>/SKILL.md`). Cross-ref slash names → `skill-archive-routing` skill or Read target there. Post-install → `./scripts/archive-skills.sh`. User instructions override skill defaults.
 
 ## Checklist
 
 - [ ] `VISION.md` if product behavior
+- [ ] `GRAPH_VIEW.md` if graph tab behavior changes
 - [ ] `CONTEXT.md` if architecture/codegen
 - [ ] Wireframe-styled primitives
 - [ ] New components → `mdx-components.ts`

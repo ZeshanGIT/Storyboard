@@ -7,6 +7,7 @@
 | 1 | CONTEXT | built, codegen, shell, file map |
 | 2 | AGENTS | conventions, commands, checklist |
 | MDX authoring | MDX-COMPONENTS | minimal API |
+| Graph tab UX | GRAPH_VIEW | graph view requirements |
 | Product | VISION | north star |
 | Backlog | FUTURE, POC | historical |
 
@@ -14,13 +15,13 @@ Don't duplicate AGENTS conventions or VISION philosophy here.
 
 ## What this is
 
-Text-first UX spec: MDX + React components describe screens/nav — not mockups. One source → docs + prototype + nav graph (latter not built). Storybook for UX flows.
+Text-first UX spec: MDX + React components describe screens/nav — not mockups. One source → Preview + Prototype + Graph View. Storybook for UX flows.
 
 Primitives = structure/behavior (wireframe-styled). Shell = Tailwind/shadcn.
 
 ## Status
 
-POC shipped + extended. `npm run dev` → codegen, dual-view shell, document picker.
+POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Prototype / Graph), document picker.
 
 | Area | Status |
 |------|--------|
@@ -54,11 +55,12 @@ Examples: `wireframe.mdx` (app), `components.mdx` (catalog).
 
 ```
 src/content/*.mdx
-  → remark extract-screens + validators
+  → remark extract-screens + validators + navigation graph
   → src/generated/documents/{slug}/screens.generated.tsx
                         routes.generated.tsx
+                        navigation-graph.generated.ts
   → content-documents.generated.tsx, routes.generated.tsx
-  → Preview: stacked screens | Prototype: routes (first = entry)
+  → Preview: stacked screens | Prototype: routes (first = entry) | Graph: navigationGraph
 ```
 
 Vite plugin: `runFullCodegen` on `buildStart` + MDX save → full reload. CLI: `npm run codegen`.
@@ -70,9 +72,9 @@ src/content/*.mdx
 src/generated/              # gitignored AUTO-GENERATED
 src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
-src/runtime/                # WireframeViewContext, WireframeErrorProvider
-src/shell/                  # Shell, DocumentMenu, PreviewView, PrototypeView, router
-src/plugin/                 # extract, validate, generate
+src/runtime/                # WireframeViewContext (preview|prototype|graph), WireframeErrorProvider
+src/shell/                  # Shell, DocumentMenu, PreviewView, PrototypeView, GraphView, graph/, router
+src/plugin/                 # extract, validate, generate, navigation graph
 src/mdx-components.ts
 src/App.tsx
 ```
@@ -81,10 +83,11 @@ src/App.tsx
 
 ### Content documents
 
-Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger switches files (persists across Preview/Prototype). `wireframe.mdx` sorts first.
+Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger switches files (persists across all shell views). `wireframe.mdx` sorts first.
 
 - **Preview:** all `<Screen>` blocks, `gap-8`
 - **Prototype:** generated routes only (`key={slug}` resets router)
+- **Graph:** per-doc `navigationGraph`; Screen or Compact sub-mode; full-width canvas
 
 ### Screen / Link / Modal
 
@@ -100,6 +103,7 @@ Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger swi
 | prototype | modal id | `openModal(id)` |
 | prototype | `_close` | `closeModal()` |
 | prototype | `_back` | `history.back()` |
+| graph | any | non-interactive; edges from screen→screen links only |
 
 Plain string `goto`. `GotoTarget` union in `routes.generated.tsx`. Flags: `primary-btn`, `secondary-btn`, `disabled`, `danger`.
 
@@ -119,7 +123,7 @@ Third shell tab; active document picker applies. Codegen `navigationGraph` → S
 
 ## Tooling
 
-Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-js/typescript-plugin`) | Tailwind 4 + shadcn | Biome (excludes `src/generated/`, `*.mdx`) | Vitest plugin tests
+Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-js/typescript-plugin`) | Tailwind 4 + shadcn | `@xyflow/react` + `@dagrejs/dagre` (Graph View) | Biome (excludes `src/generated/`, `*.mdx`) | Vitest plugin tests
 
 ## Locked decisions
 
@@ -133,4 +137,4 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 
 ## Next
 
-[`FUTURE.md`](FUTURE.md): nav graph, unreachable/orphan validation, doc export, vision extras, type consolidation. Plans: `docs/superpowers/plans/`.
+[`FUTURE.md`](FUTURE.md): unreachable/orphan validation, doc export, vision extras, type consolidation. Plans: `docs/superpowers/plans/`.
