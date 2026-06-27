@@ -15,7 +15,7 @@ Full specification: [`wireframe-component-spec-updated.md`](wireframe-component-
 - Each `<Screen>` needs a unique `id` (pattern: `^[a-zA-Z][a-zA-Z0-9_-]*$`).
 - `<Modal>` ids are unique **within each screen** and must not match any Screen id. The same Modal id may be reused on different screens.
 - `goto` to a Modal id resolves only to modals declared in the **current** screen.
-- Navigation uses `<Link goto="…">` or type-safe `goto={Screens.Login}` from generated `screens-map.generated.ts`.
+- Navigation uses `<Link goto="…">` with string literals. Valid screen ids are typed via `GotoTarget` from [`routes.generated.tsx`](../src/generated/routes.generated.tsx) (run `npm run codegen` first).
 - Reserved `goto` values: `_close` (dismiss open modal), `_back` (browser back / previous screen).
 - First `<Screen>` in the file is the prototype entry screen.
 
@@ -48,7 +48,7 @@ Root container for one application screen.
 ```mdx
 <Screen id="home" title="Home">
   <Text variant="h1">Welcome back</Text>
-  <Link goto={Screens.Login}>Login</Link>
+  <Link goto="login">Login</Link>
 </Screen>
 ```
 
@@ -70,7 +70,7 @@ Without `primary-btn` / `secondary-btn`, renders as an inline text link. `danger
 
 ```mdx
 <Link goto="dashboard">Go to Dashboard</Link>
-<Link goto={Screens.Signup} primary-btn>Create Account</Link>
+<Link goto="signup" primary-btn>Create Account</Link>
 <Link goto="confirmDelete" danger secondary-btn>Delete</Link>
 
 <Link goto="projectDetail">
@@ -295,17 +295,25 @@ Horizontal separator. Self-closing.
 
 ---
 
-## Type-safe screen references
+## Typed `goto` targets
 
-Codegen emits `Screens` from screen ids:
+Codegen exports route and modal ids from `src/generated/routes.generated.tsx`:
 
-```mdx
-import { Screens } from '../generated/screens-map.generated'
-
-<Link goto={Screens.Login}>Login</Link>
+```typescript
+export type ScreenRouteId = (typeof routes)[number]['id']  // 'home' | 'login' | ...
+export type ModalId = (typeof modalIds)[number]
+export type ReservedGoto = '_close' | '_back'
+export type GotoTarget = ScreenRouteId | ModalId | ReservedGoto
 ```
 
-Id `login` → `Screens.Login`. Invalid keys fail at codegen.
+`Link` uses `goto?: GotoTarget`, so MDX autocomplete and typechecking apply to string literals after codegen:
+
+```mdx
+<Link goto="login">Login</Link>
+<Link goto="missing">Broken</Link>  {/* type error after codegen */}
+```
+
+Run `npm run codegen` (or `npm run dev`) after adding screens or modals so types stay in sync.
 
 ---
 

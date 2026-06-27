@@ -21,19 +21,37 @@ const screens: ExtractedScreen[] = [
 ]
 
 describe('generateWireframeFiles', () => {
-  it('writes three generated files', async () => {
+  it('writes screens and routes with GotoTarget types', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'wfx-'))
     await generateWireframeFiles(screens, dir)
 
-    const map = await readFile(join(dir, 'screens-map.generated.ts'), 'utf8')
     const routes = await readFile(join(dir, 'routes.generated.tsx'), 'utf8')
     const components = await readFile(join(dir, 'screens.generated.tsx'), 'utf8')
 
-    expect(map).toContain("Home: 'home'")
-    expect(map).toContain("Login: 'login'")
+    expect(routes).toContain("id: 'home'")
     expect(routes).toContain("path: '/home'")
     expect(routes).toContain('component: Home')
+    expect(routes).toContain('export type ScreenRouteId')
+    expect(routes).toContain('export type GotoTarget')
     expect(components).toContain('export function Home()')
     expect(components).toContain('<Text>Hi</Text>')
+    expect(components).not.toContain('Screens')
+  })
+
+  it('includes modal ids in generated types', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'wfx-'))
+    const withModal: ExtractedScreen[] = [
+      {
+        id: 'home',
+        title: 'Home',
+        jsx: '<Screen id="home"><Link goto="confirm">Open</Link><Modal id="confirm" /></Screen>',
+        order: 0,
+      },
+    ]
+    await generateWireframeFiles(withModal, dir)
+
+    const routes = await readFile(join(dir, 'routes.generated.tsx'), 'utf8')
+    expect(routes).toContain("'confirm'")
+    expect(routes).toContain('export type ModalId')
   })
 })

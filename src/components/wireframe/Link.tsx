@@ -3,11 +3,12 @@ import { useEffect, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useScreenId } from '@/components/wireframe/ScreenContext'
+import type { GotoTarget } from '@/generated/routes.generated'
 import { cn } from '@/lib/utils'
 import { RESERVED_GOTO, useWireframeView } from '@/runtime/WireframeViewContext'
 
 export type LinkProps = {
-  goto?: string
+  goto?: GotoTarget
   'primary-btn'?: boolean
   'secondary-btn'?: boolean
   disabled?: boolean
@@ -31,7 +32,7 @@ function formatRuntimeGotoError(
   const where = screenId ? `in screen "${screenId}" on link "${label}"` : `on link "${label}"`
 
   if (goto === undefined) {
-    return `Invalid goto ${where} — Screens.* reference is undefined (known targets: ${known})`
+    return `Invalid goto ${where} — goto is undefined (known targets: ${known})`
   }
 
   if (goto.length === 0) {

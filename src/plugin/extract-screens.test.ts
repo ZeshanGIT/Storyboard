@@ -5,7 +5,7 @@ import { CodegenError } from './types'
 const SAMPLE = `
 <Screen id="home" title="Home">
   <Text>Welcome back</Text>
-  <Link goto={Screens.Login}>Login</Link>
+  <Link goto="login">Login</Link>
 </Screen>
 
 <Screen id="login" title="Login">

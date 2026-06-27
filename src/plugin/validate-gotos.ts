@@ -1,7 +1,6 @@
 import type { Root } from 'mdast'
 import type { MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx'
 import { visit } from 'unist-util-visit'
-import { screenIdToScreensKey } from './naming'
 import { CodegenError, type ExtractedScreen } from './types'
 
 type MdxJsxElement = MdxJsxFlowElement | MdxJsxTextElement
@@ -17,10 +16,7 @@ const isScreenNode = isNamedNode('Screen')
 const isModalNode = isNamedNode('Modal')
 const isLinkNode = isNamedNode('Link')
 
-type GotoTarget =
-  | { kind: 'screen-id'; value: string }
-  | { kind: 'screens-key'; key: string }
-  | { kind: 'unknown'; raw: string }
+type GotoTarget = { kind: 'screen-id'; value: string } | { kind: 'unknown'; raw: string }
 
 function getStringAttr(node: MdxJsxElement, name: string): string | undefined {
   const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === name)
@@ -39,11 +35,6 @@ function getGotoTarget(node: MdxJsxElement): GotoTarget | undefined {
 
   if (attr.value.type === 'mdxJsxAttributeValueExpression') {
     const expr = attr.value.value.trim()
-    const screensMatch = expr.match(/^Screens\.(\w+)$/)
-    if (screensMatch) {
-      return { kind: 'screens-key', key: screensMatch[1] }
-    }
-
     const stringMatch = expr.match(/^(['"])(.*)\1$/)
     if (stringMatch) {
       return { kind: 'screen-id', value: stringMatch[2] }
@@ -66,25 +57,7 @@ function getLinkLabel(node: MdxJsxElement): string | undefined {
 
 function formatGotoTarget(target: GotoTarget): string {
   if (target.kind === 'screen-id') return `"${target.value}"`
-  if (target.kind === 'screens-key') return `Screens.${target.key}`
   return target.raw
-}
-
-function resolveGotoId(
-  target: GotoTarget,
-  validIds: Set<string>,
-  screensKeyToId: Map<string, string>,
-): string | undefined {
-  if (target.kind === 'screen-id') {
-    return validIds.has(target.value) ? target.value : undefined
-  }
-
-  if (target.kind === 'screens-key') {
-    const id = screensKeyToId.get(target.key)
-    return id && validIds.has(id) ? id : undefined
-  }
-
-  return undefined
 }
 
 function collectModalIdsByScreen(
@@ -148,8 +121,6 @@ function collectModalIdsByScreen(
 export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): CodegenError[] {
   const errors: CodegenError[] = []
   const screenIds = new Set(screens.map((s) => s.id))
-  const screensKeyToId = new Map(screens.map((s) => [screenIdToScreensKey(s.id), s.id] as const))
-  const knownKeys = [...screensKeyToId.keys()].join(', ')
   const { modalIdsByScreen, errors: modalErrors } = collectModalIdsByScreen(tree, screenIds)
   errors.push(...modalErrors)
 
@@ -181,26 +152,29 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
       return
     }
 
-    if (target.kind === 'screen-id' && RESERVED_GOTO.has(target.value)) {
+    if (target.kind === 'unknown') {
+      errors.push(
+        new CodegenError(
+          'INVALID_GOTO',
+          `Link${linkContext} in screen "${activeScreenId ?? 'unknown'}" — goto must be a string literal (got expression: ${target.raw})`,
+          activeScreenId,
+        ),
+      )
+      return
+    }
+
+    if (RESERVED_GOTO.has(target.value)) {
       return
     }
 
     const validGotoIds = new Set([...screenIds, ...activeScreenModalIds])
-    const resolved = resolveGotoId(target, validGotoIds, screensKeyToId)
-    if (resolved) return
+    if (validGotoIds.has(target.value)) return
 
     const label = formatGotoTarget(target)
-    const hint =
-      target.kind === 'screens-key'
-        ? ` — Screens.${target.key} is not defined (known keys: ${knownKeys})`
-        : target.kind === 'screen-id'
-          ? ` — no screen with id "${target.value}", and no modal with id "${target.value}" in this screen`
-          : ''
-
     errors.push(
       new CodegenError(
         'INVALID_GOTO',
-        `Invalid goto ${label}${linkContext} in screen "${activeScreenId ?? 'unknown'}"${hint}`,
+        `Invalid goto ${label}${linkContext} in screen "${activeScreenId ?? 'unknown'}" — no screen with id "${target.value}", and no modal with id "${target.value}" in this screen`,
         activeScreenId,
       ),
     )

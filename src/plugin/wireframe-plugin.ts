@@ -104,7 +104,6 @@ export function wireframePlugin(): Plugin {
       const modules = [
         ...(server.moduleGraph.getModulesByFile(`${generatedDir}/screens.generated.tsx`) ?? []),
         ...(server.moduleGraph.getModulesByFile(`${generatedDir}/routes.generated.tsx`) ?? []),
-        ...(server.moduleGraph.getModulesByFile(`${generatedDir}/screens-map.generated.ts`) ?? []),
       ]
       for (const mod of modules) {
         server.moduleGraph.invalidateModule(mod)

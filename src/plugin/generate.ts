@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { screenIdToComponentName, screenIdToScreensKey } from './naming'
+import { screenIdToComponentName } from './naming'
 import type { ExtractedScreen } from './types'
 
 const WIREFRAME_COMPONENTS = [
@@ -26,6 +26,19 @@ function wireframeImportLine(screens: ExtractedScreen[]): string {
   return `import { ${used.join(', ')} } from '../components/wireframe'`
 }
 
+function extractModalIds(screens: ExtractedScreen[]): string[] {
+  const ids = new Set<string>()
+  const pattern = /<Modal\s[^>]*\bid="([^"]+)"/g
+
+  for (const screen of screens) {
+    for (const match of screen.jsx.matchAll(pattern)) {
+      ids.add(match[1])
+    }
+  }
+
+  return [...ids].sort()
+}
+
 const HEADER = '// AUTO-GENERATED — do not edit\n\n'
 
 export async function generateWireframeFiles(
@@ -34,9 +47,12 @@ export async function generateWireframeFiles(
 ): Promise<void> {
   await mkdir(outDir, { recursive: true })
 
-  const mapEntries = screens.map((s) => `  ${screenIdToScreensKey(s.id)}: '${s.id}',`).join('\n')
-
-  const mapContent = `${HEADER}export const Screens = {\n${mapEntries}\n} as const\n\nexport type ScreenId = (typeof Screens)[keyof typeof Screens]\n`
+  const modalIds = extractModalIds(screens)
+  const modalIdEntries = modalIds.map((id) => `  '${id}',`).join('\n')
+  const modalIdsBlock =
+    modalIds.length > 0
+      ? `export const modalIds = [\n${modalIdEntries}\n] as const\n`
+      : 'export const modalIds = [] as const\n'
 
   const componentNames = screens.map((s) => screenIdToComponentName(s.id))
   const componentExports = screens
@@ -46,13 +62,7 @@ export async function generateWireframeFiles(
     })
     .join('\n\n')
 
-  const needsScreens = screens.some((s) => s.jsx.includes('Screens.'))
-  const screensImports = [
-    wireframeImportLine(screens),
-    ...(needsScreens ? ["import { Screens } from './screens-map.generated'"] : []),
-  ].join('\n')
-
-  const screensContent = `${HEADER}${screensImports}\n\n${componentExports}\n`
+  const screensContent = `${HEADER}${wireframeImportLine(screens)}\n\n${componentExports}\n`
 
   const routeImports = componentNames.join(', ')
   const routeEntries = screens
@@ -62,9 +72,19 @@ export async function generateWireframeFiles(
     })
     .join(',\n')
 
-  const routesContent = `${HEADER}import { ${routeImports} } from './screens.generated'\n\nexport const routes = [\n${routeEntries},\n] as const\n`
+  const routesContent = `${HEADER}import { ${routeImports} } from './screens.generated'
 
-  await writeFile(join(outDir, 'screens-map.generated.ts'), mapContent, 'utf8')
+export const routes = [
+${routeEntries},
+] as const
+
+${modalIdsBlock}
+export type ScreenRouteId = (typeof routes)[number]['id']
+export type ModalId = (typeof modalIds)[number]
+export type ReservedGoto = '_close' | '_back'
+export type GotoTarget = ScreenRouteId | ModalId | ReservedGoto
+`
+
   await writeFile(join(outDir, 'screens.generated.tsx'), screensContent, 'utf8')
   await writeFile(join(outDir, 'routes.generated.tsx'), routesContent, 'utf8')
 }

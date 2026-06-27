@@ -1,9 +1,7 @@
-import { Screens } from '../generated/screens-map.generated'
-
 <Screen id="home" title="Home">
   <Text variant="h1">Welcome back</Text>
-  <Link goto={Screens.Login}>Login</Link>
-  <Link goto={Screens.Signup}>Create account</Link>
+  <Link goto="login">Login</Link>
+  <Link goto="signup">Create account</Link>
 </Screen>
 
 <Screen id="login" title="Login">
@@ -12,7 +10,7 @@ import { Screens } from '../generated/screens-map.generated'
     <Text variant="h1">Sign in</Text>
     <Input label="Email" placeholder="you@example.com" required />
     <Input label="Password" type="password" required />
-    <Link goto={Screens.Home} primary-btn>
+    <Link goto="home" primary-btn>
       Sign in
     </Link>
   </Container>
@@ -35,7 +33,7 @@ import { Screens } from '../generated/screens-map.generated'
       <Text>Password must be at least 8 characters</Text>
       <Text>Email must be valid</Text>
     </Container>
-    <Link goto={Screens.Home} primary-btn>
+    <Link goto="home" primary-btn>
       Create account
     </Link>
   </Container>
