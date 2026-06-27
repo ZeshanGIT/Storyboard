@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 
 export type NoteProps = {
   note?: string
@@ -12,7 +13,9 @@ type WireframeNoteProps = NoteProps & {
 }
 
 export function WireframeNote({ note, children, className }: WireframeNoteProps) {
-  if (!note) {
+  const { showNoteIndicators } = useWireframeDisplayPreferences()
+
+  if (!note || !showNoteIndicators) {
     return <>{children}</>
   }
 

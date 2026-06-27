@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useScreenId } from '@/components/wireframe/ScreenContext'
 import type { GotoTarget } from '@/generated/routes.generated'
 import { cn } from '@/lib/utils'
+import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 import { RESERVED_GOTO, useWireframeView } from '@/runtime/WireframeViewContext'
 import { type NoteProps, WireframeNote } from './note'
 
@@ -54,6 +55,8 @@ function isValidGoto(
   return validScreenIds.has(goto) || screenModalIds.has(goto)
 }
 
+const linkAffordanceClass = 'inline-flex w-fit self-start border border-blue-400 px-1.5 py-0.5'
+
 function buttonVariant(
   primaryBtn: boolean,
   secondaryBtn: boolean,
@@ -85,6 +88,8 @@ export function Link({
     modalIdsByScreen,
     reportError,
   } = useWireframeView()
+  const { showLinkIndicators } = useWireframeDisplayPreferences()
+  const linkClass = showLinkIndicators ? linkAffordanceClass : 'inline-flex w-fit self-start'
 
   const screenModalIds = useMemo(() => {
     const ids = screenId ? modalIdsByScreen.get(screenId) : undefined
@@ -123,7 +128,9 @@ export function Link({
   if (!valid) {
     return (
       <WireframeNote note={note} className="w-fit self-start">
-        <Badge variant="destructive">{children}</Badge>
+        <span className={linkClass}>
+          <Badge variant="destructive">{children}</Badge>
+        </span>
       </WireframeNote>
     )
   }
@@ -132,7 +139,7 @@ export function Link({
     const href = goto === '_close' || goto === '_back' ? '#' : goto ? `#${goto}` : '#'
     return (
       <WireframeNote note={note} className="w-fit self-start">
-        <a href={href} className="text-primary underline-offset-4 hover:underline">
+        <a href={href} className={cn(linkClass, 'text-primary underline-offset-4 hover:underline')}>
           {children}
         </a>
       </WireframeNote>
@@ -159,7 +166,8 @@ export function Link({
           onClick={handleClick}
           {...graphAttrs}
           className={cn(
-            'w-fit self-start text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
+            linkClass,
+            'text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
             danger && 'text-destructive',
             graphAttrs?.className,
           )}

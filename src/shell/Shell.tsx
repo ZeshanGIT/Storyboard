@@ -3,9 +3,11 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import type { ContentDocumentEntry } from '../generated/content-documents.generated'
 import { getCodegenErrors } from '../runtime/codegen-error'
+import { WireframeDisplayPreferencesProvider } from '../runtime/WireframeDisplayPreferences'
 import { WireframeErrorProvider } from '../runtime/WireframeErrorProvider'
 import { DocumentMenu } from './DocumentMenu'
 import { GraphView } from './GraphView'
+import { IndicatorToggles } from './IndicatorToggles'
 import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
 
@@ -52,62 +54,67 @@ export function Shell({ contentDocuments }: ShellProps) {
 
   return (
     <WireframeErrorProvider initialErrors={initialErrors}>
-      <div className="min-h-screen bg-background text-foreground">
-        <header className="border-b px-6 py-4">
-          <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
-            {contentDocuments.length > 0 ? (
-              <DocumentMenu
-                documents={contentDocuments}
-                activeSlug={activeDocumentSlug}
-                onSelect={setActiveDocumentSlug}
-              />
-            ) : (
-              <h1 className="text-lg font-semibold tracking-tight">Documents</h1>
-            )}
-            <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>
-              <TabsList>
-                <TabsTrigger value="preview">MDX Preview</TabsTrigger>
-                <TabsTrigger value="prototype">Prototype View</TabsTrigger>
-                <TabsTrigger value="graph">Graph View</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </header>
+      <WireframeDisplayPreferencesProvider>
+        <div className="min-h-screen bg-background text-foreground">
+          <header className="border-b px-6 py-4">
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+              {contentDocuments.length > 0 ? (
+                <DocumentMenu
+                  documents={contentDocuments}
+                  activeSlug={activeDocumentSlug}
+                  onSelect={setActiveDocumentSlug}
+                />
+              ) : (
+                <h1 className="text-lg font-semibold tracking-tight">Documents</h1>
+              )}
+              <div className="flex flex-wrap items-center gap-4">
+                <IndicatorToggles />
+                <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>
+                  <TabsList>
+                    <TabsTrigger value="preview">MDX Preview</TabsTrigger>
+                    <TabsTrigger value="prototype">Prototype View</TabsTrigger>
+                    <TabsTrigger value="graph">Graph View</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+            </div>
+          </header>
 
-        <main
-          className={cn(
-            'mx-auto',
-            view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl px-6 py-8',
-          )}
-        >
-          {view === 'preview' ? (
-            activeEntry ? (
-              <PreviewView
-                validScreenIds={validScreenIds}
+          <main
+            className={cn(
+              'mx-auto',
+              view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl px-6 py-8',
+            )}
+          >
+            {view === 'preview' ? (
+              activeEntry ? (
+                <PreviewView
+                  validScreenIds={validScreenIds}
+                  routes={activeEntry.routes}
+                  document={activeEntry.component}
+                />
+              ) : (
+                <p className="text-muted-foreground">No MDX documents in src/content.</p>
+              )
+            ) : view === 'graph' && activeEntry ? (
+              <GraphView
+                key={activeEntry.slug}
+                navigationGraph={activeEntry.navigationGraph}
                 routes={activeEntry.routes}
-                document={activeEntry.component}
+                documentFilename={`${activeEntry.slug}.mdx`}
+              />
+            ) : activeEntry ? (
+              <PrototypeView
+                key={activeEntry.slug}
+                routes={activeEntry.routes}
+                documentFilename={`${activeEntry.slug}.mdx`}
               />
             ) : (
               <p className="text-muted-foreground">No MDX documents in src/content.</p>
-            )
-          ) : view === 'graph' && activeEntry ? (
-            <GraphView
-              key={activeEntry.slug}
-              navigationGraph={activeEntry.navigationGraph}
-              routes={activeEntry.routes}
-              documentFilename={`${activeEntry.slug}.mdx`}
-            />
-          ) : activeEntry ? (
-            <PrototypeView
-              key={activeEntry.slug}
-              routes={activeEntry.routes}
-              documentFilename={`${activeEntry.slug}.mdx`}
-            />
-          ) : (
-            <p className="text-muted-foreground">No MDX documents in src/content.</p>
-          )}
-        </main>
-      </div>
+            )}
+          </main>
+        </div>
+      </WireframeDisplayPreferencesProvider>
     </WireframeErrorProvider>
   )
 }
