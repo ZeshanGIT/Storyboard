@@ -37,17 +37,9 @@ export type InputProps = {
   error?: string
   required?: boolean
   defaultValue?: string
-  options?: string
+  options?: readonly string[]
   disabled?: boolean
   danger?: boolean
-}
-
-function parseOptions(options?: string): string[] {
-  if (!options) return []
-  return options
-    .split(',')
-    .map((option) => option.trim())
-    .filter(Boolean)
 }
 
 function RequiredMark() {
@@ -66,7 +58,7 @@ export function Input({
   disabled,
   danger,
 }: InputProps) {
-  const optionList = parseOptions(options)
+  const optionList = options ?? []
   const invalid = Boolean(error)
   const helperText = error ?? hint
 

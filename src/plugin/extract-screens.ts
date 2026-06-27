@@ -15,6 +15,7 @@ function isScreenNode(node: { type?: string; name?: string | null }): node is Sc
 
 import { CodegenError, type CodegenResult, type ExtractedScreen } from './types'
 import { collectGotoErrors } from './validate-gotos'
+import { collectTextErrors } from './validate-text'
 
 const processor = remark().use(remarkMdx)
 
@@ -95,6 +96,7 @@ export function extractScreens(source: string): CodegenResult {
     })
 
     errors.push(...collectGotoErrors(tree, screens))
+    errors.push(...collectTextErrors(tree))
 
     if (errors.length > 0) {
       return { ok: false, errors }

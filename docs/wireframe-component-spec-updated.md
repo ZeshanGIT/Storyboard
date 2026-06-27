@@ -102,17 +102,24 @@ Displays a block of text. Used for headings, body copy, labels, and captions.
 
 | Prop | Required | Description |
 |------|----------|-------------|
-| `variant` | No | `h1`, `h2`, `h3`, `h4`, `body` (default). Communicates heading level and hierarchy to the renderer. |
+| `h1` | No | Renders as a level-1 heading. |
+| `h2` | No | Renders as a level-2 heading. |
+| `h3` | No | Renders as a level-3 heading. |
+| `h4` | No | Renders as a level-4 heading. |
 | `disabled` | No | Rendered with a disabled affordance (reduced opacity). |
 | `danger` | No | Rendered with a danger affordance. |
+
+Use at most one of `h1`–`h4` per `Text`. With no heading flag, renders as body copy.
 
 **Validation:**
 - Warning: empty or whitespace-only children.
 - Error: non-text child nodes.
+- Error: more than one heading flag (`h1`–`h4`) on the same `Text`.
+- Error: deprecated `variant` attribute.
 
 ```mdx
-<Text variant="h1">Dashboard</Text>
-<Text variant="h2">Recent Projects</Text>
+<Text h1>Dashboard</Text>
+<Text h2>Recent Projects</Text>
 <Text>You have 3 pending tasks.</Text>
 <Text danger>This action cannot be undone.</Text>
 ```
@@ -134,7 +141,7 @@ A user input control. Self-closing.
 | `error` | No | — | Inline error message. Puts the control in an error state. Overrides `hint`. |
 | `required` | No | — | Marks the field as required with a visual indicator. |
 | `defaultValue` | No | — | Pre-filled value shown in Prototype View. |
-| `options` | No | — | Comma-separated options for `select` and `radio` types. |
+| `options` | No | — | String array for `select` and `radio` types: `options={["A", "B"]}`. |
 | `disabled` | No | — | Non-interactive. |
 | `danger` | No | — | Danger affordance. |
 
@@ -160,7 +167,7 @@ A user input control. Self-closing.
 ```mdx
 <Input label="Email" placeholder="you@example.com" required />
 <Input label="Password" type="password" hint="At least 8 characters" required />
-<Input label="Role" type="select" options="Admin, Editor, Viewer" />
+<Input label="Role" type="select" options={["Admin", "Editor", "Viewer"]} />
 <Input label="Notifications" type="toggle" defaultValue="true" />
 <Input label="Bio" type="textarea" />
 <Input label="Username" error="Already taken" />
@@ -197,14 +204,14 @@ General-purpose layout container. Column by default. Replaces Card, Row, and Col
 
 {/* Horizontal row */}
 <Container row distribute="space-between">
-  <Text variant="h2">Projects</Text>
+  <Text h2>Projects</Text>
   <Link goto="newProject" secondary-btn>New Project</Link>
 </Container>
 
 {/* Card-equivalent */}
 <Link goto="projectDetail">
   <Container border>
-    <Text variant="h3">Project Alpha</Text>
+    <Text h3>Project Alpha</Text>
     <Text>Last updated yesterday</Text>
   </Container>
 </Link>
@@ -290,7 +297,7 @@ Use `Text` for the modal heading. Use a `Link goto="_close"` to provide an expli
 
 {/* Modal declaration (anywhere in the same Screen) */}
 <Modal id="deleteConfirm">
-  <Text variant="h2">Delete project?</Text>
+  <Text h2>Delete project?</Text>
   <Text danger>This cannot be undone.</Text>
   <Container row>
     <Link goto="_close" secondary-btn>Cancel</Link>
@@ -371,6 +378,7 @@ A horizontal visual separator. Self-closing.
 - `goto` does not resolve to a known Screen id, a Modal id in the current screen, or a reserved destination
 - `Input` has an unsupported `type`
 - `Icon` missing `name`
+- `Text` uses deprecated `variant` or multiple heading flags (`h1`–`h4`)
 - Component appears where disallowed by nesting rules
 
 **Warnings:**
@@ -390,7 +398,7 @@ A horizontal visual separator. Self-closing.
 <Screen id="login" title="Login">
   <TopBar title="MyApp" />
   <Container>
-    <Text variant="h1">Sign in</Text>
+    <Text h1>Sign in</Text>
     <Input label="Email" placeholder="you@example.com" required />
     <Input label="Password" type="password" required />
     <Input label="Remember me" type="checkbox" />
@@ -403,7 +411,7 @@ A horizontal visual separator. Self-closing.
 <Screen id="signup" title="Sign Up">
   <TopBar title="MyApp" showBack />
   <Container>
-    <Text variant="h1">Create your account</Text>
+    <Text h1>Create your account</Text>
     <Container row>
       <Input label="First name" required />
       <Input label="Last name" required />
@@ -421,19 +429,19 @@ A horizontal visual separator. Self-closing.
     <Link goto="settings"><Icon name="settings" /></Link>
   </TopBar>
   <Container row distribute="space-between">
-    <Text variant="h1">Your Projects</Text>
+    <Text h1>Your Projects</Text>
     <Link goto="newProject" secondary-btn>New Project</Link>
   </Container>
   <Container row>
     <Link goto="projectDetail">
       <Container border>
-        <Text variant="h3">Project Alpha</Text>
+        <Text h3>Project Alpha</Text>
         <Text>Last updated yesterday</Text>
       </Container>
     </Link>
     <Link goto="projectDetail">
       <Container border>
-        <Text variant="h3">Project Beta</Text>
+        <Text h3>Project Beta</Text>
         <Text>Last updated 3 days ago</Text>
       </Container>
     </Link>
@@ -443,7 +451,7 @@ A horizontal visual separator. Self-closing.
 <Screen id="projectDetail" title="Project Detail">
   <TopBar title="Project Alpha" showBack />
   <Image alt="Project cover" aspect="wide" />
-  <Text variant="h1">Project Alpha</Text>
+  <Text h1>Project Alpha</Text>
   <Text>A description of what this project is about.</Text>
   <Divider />
   <Container row distribute="space-between">
@@ -452,7 +460,7 @@ A horizontal visual separator. Self-closing.
   </Container>
 
   <Modal id="deleteConfirm">
-    <Text variant="h2">Delete project?</Text>
+    <Text h2>Delete project?</Text>
     <Text danger>This will permanently delete Project Alpha and all its data.</Text>
     <Container row>
       <Link goto="_close" secondary-btn>Cancel</Link>
@@ -464,13 +472,13 @@ A horizontal visual separator. Self-closing.
 <Screen id="settings" title="Settings">
   <TopBar title="Settings" showBack />
   <Container>
-    <Text variant="h2">Notifications</Text>
+    <Text h2>Notifications</Text>
     <Input label="Email notifications" type="toggle" defaultValue="true" />
     <Input label="Push notifications" type="toggle" />
     <Divider />
-    <Text variant="h2">Account</Text>
+    <Text h2>Account</Text>
     <Input label="Display name" />
-    <Input label="Language" type="select" options="English, French, Spanish, German" />
+    <Input label="Language" type="select" options={["English", "French", "Spanish", "German"]} />
     <Link goto="dashboard" primary-btn>Save Changes</Link>
     <Divider />
     <Link goto="login" danger secondary-btn>Sign Out</Link>

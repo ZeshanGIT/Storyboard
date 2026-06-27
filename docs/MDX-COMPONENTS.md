@@ -1,333 +1,52 @@
 # MDX Wireframe Components
 
-Reference for components available in `src/content/wireframe.mdx` without imports. Registered in [`src/mdx-components.ts`](../src/mdx-components.ts).
+No imports. String props in `"quotes"`. Booleans = bare flags.
 
-Wireframe components express **product intent** — structure, hierarchy, and navigation — not visual design. Use double quotes for string props. Use bare flags for booleans (`required`, `primary-btn`, `showBack`).
+**Global flags** (all except `Screen`): `disabled`, `danger`
 
-Full specification: [`wireframe-component-spec-updated.md`](wireframe-component-spec-updated.md).
+**Self-closing:** `Input`, `Image`, `Icon`, `Divider`
 
----
+MDX may also use Tailwind (`className`), custom HTML, CSS, JavaScript, and other React components — not limited to wireframe primitives.
 
-## Authoring basics
+**Screen registration:** Prototype View, Graph View, and nav analysis only see `<Screen>` blocks. Content outside `<Screen>` is ignored by those views. Each registered screen needs a `<Screen>` tag.
 
-### Screen IDs and navigation
+## Rules
 
-- Each `<Screen>` needs a unique `id` (pattern: `^[a-zA-Z][a-zA-Z0-9_-]*$`).
-- `<Modal>` ids are unique **within each screen** and must not match any Screen id. The same Modal id may be reused on different screens.
-- `goto` to a Modal id resolves only to modals declared in the **current** screen.
-- Navigation uses `<Link goto="…">` with string literals. Valid screen ids are typed via `GotoTarget` from [`routes.generated.tsx`](../src/generated/routes.generated.tsx) (run `npm run codegen` first).
-- Reserved `goto` values: `_close` (dismiss open modal), `_back` (browser back / previous screen).
-- First `<Screen>` in the file is the prototype entry screen.
-
-### Global boolean props
-
-All components except `Screen` accept optional bare flags:
-
-| Prop | Effect |
-|------|--------|
-| `disabled` | Non-interactive; reduced opacity |
-| `danger` | Destructive affordance |
-
-### Self-closing components
-
-No children: `<Input … />`, `<Image … />`, `<Icon … />`, `<Divider … />`.
-
----
+- `Screen` `id` unique. First `Screen` = entry.
+- `Modal` `id` unique per screen; must not match a `Screen` id. Same modal id OK on other screens.
+- `Link goto` → screen id | modal id on **current** screen | `_close` | `_back`
+- `Text` children = plain text only
 
 ## Components
 
 ### `Screen`
-
-Root container for one application screen.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `id` | Yes | Unique screen identifier; `goto` target |
-| `title` | No | Optional label shown in MDX Preview only |
-
-```mdx
-<Screen id="home" title="Home">
-  <Text variant="h1">Welcome back</Text>
-  <Link goto="login">Login</Link>
-</Screen>
-```
-
----
+`id` (req), `title` (preview label only)
 
 ### `Link`
-
-Clickable navigation. Wraps text or other components (e.g. bordered `Container`).
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `goto` | Yes | Screen id, Modal id, `_close`, or `_back` |
-| `primary-btn` | No | Primary button appearance |
-| `secondary-btn` | No | Secondary button appearance |
-| `disabled` | No | Non-interactive |
-| `danger` | No | Destructive affordance |
-
-Without `primary-btn` / `secondary-btn`, renders as an inline text link. `danger` combines with button variants.
-
-```mdx
-<Link goto="dashboard">Go to Dashboard</Link>
-<Link goto="signup" primary-btn>Create Account</Link>
-<Link goto="confirmDelete" danger secondary-btn>Delete</Link>
-
-<Link goto="projectDetail">
-  <Container border>
-    <Text variant="h3">Project Alpha</Text>
-    <Text>Last updated yesterday</Text>
-  </Container>
-</Link>
-```
-
----
+`goto` (req). Flags: `primary-btn`, `secondary-btn` — else text link. Wraps children (e.g. `Container`).
 
 ### `Text`
-
-Headings, body copy, labels, captions. **Text children only** — no nested components.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `variant` | No | `h1`, `h2`, `h3`, `h4`, `body` (default) |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-```mdx
-<Text variant="h1">Dashboard</Text>
-<Text variant="h2">Recent Projects</Text>
-<Text>You have 3 pending tasks.</Text>
-<Text danger>This action cannot be undone.</Text>
-```
-
----
+Flags: `h1` `h2` `h3` `h4` — one max; default body.
 
 ### `Input`
+`type` default `text`: `text` `password` `textarea` `checkbox` `radio` `toggle` `select` `search` `number` `date`
 
-Form control placeholder. Self-closing. Read-only in Prototype View.
-
-| Prop | Required | Default | Description |
-|------|----------|---------|-------------|
-| `type` | No | `text` | See supported types below |
-| `label` | No | — | Field label |
-| `placeholder` | No | — | Empty-state placeholder |
-| `hint` | No | — | Helper text below control |
-| `error` | No | — | Error message; overrides `hint` |
-| `required` | No | — | Shows required indicator on label |
-| `defaultValue` | No | — | Pre-filled value in prototype |
-| `options` | No | — | Comma-separated list for `select` / `radio` |
-| `disabled` | No | — | Non-interactive |
-| `danger` | No | — | Danger affordance |
-
-**Supported `type` values:**
-
-| Type | Renders as |
-|------|------------|
-| `text` | Single-line text field |
-| `password` | Obscured text field |
-| `textarea` | Multi-line field |
-| `checkbox` | Checkbox with label |
-| `radio` | Radio group (`options` required) |
-| `toggle` | Switch |
-| `select` | Dropdown (`options` required) |
-| `search` | Search field with icon |
-| `number` | Numeric input |
-| `date` | Date input placeholder |
-
-```mdx
-<Input label="Email" placeholder="you@example.com" required />
-<Input label="Password" type="password" hint="At least 8 characters" required />
-<Input label="Role" type="select" options="Admin, Editor, Viewer" />
-<Input label="Notifications" type="toggle" defaultValue="true" />
-<Input label="Bio" type="textarea" />
-<Input label="Username" error="Already taken" />
-```
-
----
+Props: `label` `placeholder` `hint` `error` (overrides hint) `required` `defaultValue` `options` (array; req for `radio`/`select`)
 
 ### `Container`
-
-Layout container. Column by default; replaces separate Card / Row / Column patterns.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `row` | No | Horizontal layout |
-| `border` | No | Visible bounding box (card-like) |
-| `distribute` | No | Main-axis distribution when `row`: `start`, `space-between`, `space-around`, `end` |
-| `align` | No | Cross-axis alignment: `start`, `center`, `end` |
-| `disabled` | No | Disabled affordance on container |
-| `danger` | No | Danger affordance |
-
-```mdx
-<Container>
-  <Input label="First name" />
-  <Input label="Last name" />
-  <Link goto="save" primary-btn>Save</Link>
-</Container>
-
-<Container row distribute="space-between">
-  <Text variant="h2">Projects</Text>
-  <Link goto="newProject" secondary-btn>New Project</Link>
-</Container>
-
-<Container border>
-  <Text variant="h3">Terms</Text>
-  <Text>By continuing you agree to our terms.</Text>
-</Container>
-```
-
----
+Column default. Flags: `row` `border`. When `row`: `distribute` (`start` `space-between` `space-around` `end`), `align` (`start` `center` `end`)
 
 ### `Image`
-
-Image placeholder. Self-closing.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `aspect` | No | `square`, `portrait`, `landscape` (default), `wide` |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-```mdx
-<Image aspect="wide" />
-<Image aspect="square" />
-<Image />
-```
-
----
+`aspect`: `square` `portrait` `landscape` (default) `wide`
 
 ### `Icon`
-
-Named [Lucide](https://lucide.dev/icons/) icon. Self-closing. Use kebab-case names (`bell`, `trash-2`, `chevron-right`).
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `name` | Yes | Lucide icon name |
-| `size` | No | `sm`, `md` (default), `lg` |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-```mdx
-<Icon name="bell" />
-<Icon name="settings" size="sm" />
-<Link goto="notifications"><Icon name="bell" /></Link>
-```
-
----
+`name` (req, Lucide kebab-case e.g. `bell` `trash-2`). `size`: `sm` `md` `lg`
 
 ### `Modal`
-
-Overlay dialog. Declare inside a `Screen`. Opens when a `Link` `goto` matches the modal `id`. Dismiss via backdrop, Escape, or `<Link goto="_close">`.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `id` | Yes | Unique within this screen; must not match any Screen id. May repeat across screens. |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-Use `<Text variant="h2">` for the heading. Always include a cancel action.
-
-```mdx
-<Link goto="deleteConfirm" danger secondary-btn>Delete Project</Link>
-
-<Modal id="deleteConfirm">
-  <Text variant="h2">Delete project?</Text>
-  <Text danger>This cannot be undone.</Text>
-  <Container row>
-    <Link goto="_close" secondary-btn>Cancel</Link>
-    <Link goto="dashboard" danger primary-btn>Delete</Link>
-  </Container>
-</Modal>
-```
-
----
+`id` (req). Inside `Screen`. Open via matching `Link goto`. Dismiss: backdrop, Escape, `goto="_close"`. Use `Text h2` + cancel link.
 
 ### `TopBar`
-
-Screen header. Usually first child of `Screen`.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `title` | No | App or section title |
-| `showBack` | No | Back control (`_back`) |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-Children layout horizontally — typically `Link` + `Icon` actions.
-
-```mdx
-<TopBar title="MyApp" showBack>
-  <Link goto="notifications"><Icon name="bell" /></Link>
-  <Link goto="settings"><Icon name="settings" /></Link>
-</TopBar>
-```
-
----
+`title`, `showBack`. Children laid out horizontally (`Link`, `Icon`).
 
 ### `Divider`
-
-Horizontal separator. Self-closing.
-
-| Prop | Required | Description |
-|------|----------|-------------|
-| `label` | No | Text inset in rule (e.g. `"or"`) |
-| `disabled` | No | Disabled affordance |
-| `danger` | No | Danger affordance |
-
-```mdx
-<Divider />
-<Divider label="or" />
-```
-
----
-
-## Nesting rules
-
-| Parent | Disallowed children |
-|--------|---------------------|
-| `Screen` | `Screen` |
-| `Modal` | `Screen`, `Modal`, `TopBar` |
-| `TopBar` | `Screen`, `Modal`, `TopBar`, `Container`, `Input` |
-| `Link` | `Screen`, `TopBar`, `Modal`, `Link` |
-| `Container` | `Screen`, `TopBar` |
-| `Text` | Any component (plain text only) |
-| `Image`, `Icon`, `Input`, `Divider` | Any (self-closing) |
-
----
-
-## Typed `goto` targets
-
-Codegen exports route and modal ids from `src/generated/routes.generated.tsx`:
-
-```typescript
-export type ScreenRouteId = (typeof routes)[number]['id']  // 'home' | 'login' | ...
-export type ModalId = (typeof modalIds)[number]
-export type ReservedGoto = '_close' | '_back'
-export type GotoTarget = ScreenRouteId | ModalId | ReservedGoto
-```
-
-`Link` uses `goto?: GotoTarget`, so MDX autocomplete and typechecking apply to string literals after codegen:
-
-```mdx
-<Link goto="login">Login</Link>
-<Link goto="missing">Broken</Link>  {/* type error after codegen */}
-```
-
-Run `npm run codegen` (or `npm run dev`) after adding screens or modals so types stay in sync.
-
----
-
-## Quick reference
-
-| Component | Purpose |
-|-----------|---------|
-| `Screen` | Navigable screen root |
-| `Link` | Navigation and actions |
-| `Text` | Copy and headings |
-| `Input` | Form fields |
-| `Container` | Layout / grouping |
-| `Image` | Image placeholder |
-| `Icon` | Lucide icon |
-| `Modal` | Overlay dialog |
-| `TopBar` | Screen header |
-| `Divider` | Section separator |
+`label` optional (e.g. `"or"`)

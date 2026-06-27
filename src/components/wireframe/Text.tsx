@@ -2,16 +2,19 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { wireframeAffordanceClass } from './affordances'
 
-export type TextVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'body'
+export type TextLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'body'
 
 export type TextProps = {
-  variant?: TextVariant
+  h1?: boolean
+  h2?: boolean
+  h3?: boolean
+  h4?: boolean
   disabled?: boolean
   danger?: boolean
   children: ReactNode
 }
 
-const variantTag = {
+const levelTag = {
   h1: 'h1',
   h2: 'h2',
   h3: 'h3',
@@ -19,7 +22,7 @@ const variantTag = {
   body: 'p',
 } as const
 
-const variantClass: Record<TextVariant, string> = {
+const levelClass: Record<TextLevel, string> = {
   h1: 'text-2xl font-semibold tracking-tight',
   h2: 'text-xl font-semibold tracking-tight',
   h3: 'text-lg font-medium',
@@ -27,10 +30,19 @@ const variantClass: Record<TextVariant, string> = {
   body: 'text-sm text-muted-foreground',
 }
 
-export function Text({ variant = 'body', disabled, danger, children }: TextProps) {
-  const Tag = variantTag[variant]
+function resolveLevel(h1?: boolean, h2?: boolean, h3?: boolean, h4?: boolean): TextLevel {
+  if (h1) return 'h1'
+  if (h2) return 'h2'
+  if (h3) return 'h3'
+  if (h4) return 'h4'
+  return 'body'
+}
+
+export function Text({ h1, h2, h3, h4, disabled, danger, children }: TextProps) {
+  const level = resolveLevel(h1, h2, h3, h4)
+  const Tag = levelTag[level]
   return (
-    <Tag className={cn(variantClass[variant], wireframeAffordanceClass(disabled, danger))}>
+    <Tag className={cn(levelClass[level], wireframeAffordanceClass(disabled, danger))}>
       {children}
     </Tag>
   )

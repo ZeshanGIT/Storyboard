@@ -1,5 +1,5 @@
 <Screen id="home" title="Home">
-  <Text variant="h1">Welcome back</Text>
+  <Text h1>Welcome back</Text>
   <Link goto="login">Login</Link>
   <Link goto="signup">Create account</Link>
 </Screen>
@@ -7,7 +7,7 @@
 <Screen id="login" title="Login">
   <TopBar title="MyApp" showBack />
   <Container>
-    <Text variant="h1">Sign in</Text>
+    <Text h1>Sign in</Text>
     <Input label="Email" placeholder="you@example.com" required />
     <Input label="Password" type="password" required />
     <Link goto="home" primary-btn>
@@ -19,9 +19,9 @@
 <Screen id="signup" title="Sign up">
   <TopBar title="MyApp" showBack />
   <Container>
-    <Text variant="h1">Create your account</Text>
+    <Text h1>Create your account</Text>
     <Container>
-      <Text variant="h2">Your details</Text>
+      <Text h2>Your details</Text>
       <Input label="Email" placeholder="you@example.com" required />
       <Input label="Password" type="password" hint="At least 8 characters" required />
     </Container>

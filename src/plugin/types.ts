@@ -11,6 +11,7 @@ export type CodegenErrorCode =
   | 'MISSING_SCREEN_ID'
   | 'MISSING_MODAL_ID'
   | 'INVALID_GOTO'
+  | 'INVALID_TEXT'
   | 'PARSE_ERROR'
 
 export class CodegenError extends Error {
