@@ -15,7 +15,7 @@ Only `<Screen>` blocks register for prototype/graph. First `Screen` = entry.
 
 ## Global props
 
-`note` — author annotation. Yellow dot top-right; hover shows popover with note text. Preview and prototype.
+`note` — author annotation. Yellow dot top-right; hover shows tooltip with note text.
 
 ## Components
 
