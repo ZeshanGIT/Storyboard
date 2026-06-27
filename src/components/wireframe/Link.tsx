@@ -10,6 +10,7 @@ import { type NoteProps, WireframeNote } from './note'
 
 export type LinkProps = NoteProps & {
   goto?: GotoTarget
+  'graph-link-id'?: string
   'primary-btn'?: boolean
   'secondary-btn'?: boolean
   disabled?: boolean
@@ -69,6 +70,7 @@ export function Link({
   disabled,
   danger,
   note,
+  'graph-link-id': graphLinkId,
   'primary-btn': primaryBtn,
   'secondary-btn': secondaryBtn,
 }: LinkProps) {
@@ -97,12 +99,12 @@ export function Link({
   )
 
   useEffect(() => {
-    if (valid || view === 'preview') return
+    if (valid || view === 'preview' || view === 'graph') return
     reportError(formatRuntimeGotoError(screenId, label, goto, knownTargets))
   }, [goto, valid, view, reportError, screenId, label, knownTargets])
 
   const handleClick = () => {
-    if (disabled || !goto) return
+    if (disabled || !goto || view === 'graph') return
     if (goto === '_close') {
       closeModal()
       return
@@ -139,6 +141,14 @@ export function Link({
 
   const isButton = Boolean(primaryBtn || secondaryBtn)
   const variant = buttonVariant(Boolean(primaryBtn), Boolean(secondaryBtn), danger)
+  const graphAttrs =
+    view === 'graph'
+      ? {
+          'data-graph-link-id': graphLinkId,
+          tabIndex: -1 as const,
+          className: cn('pointer-events-none'),
+        }
+      : undefined
 
   if (!isButton) {
     return (
@@ -147,9 +157,11 @@ export function Link({
           type="button"
           disabled={disabled}
           onClick={handleClick}
+          {...graphAttrs}
           className={cn(
             'w-fit self-start text-left text-primary underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50',
             danger && 'text-destructive',
+            graphAttrs?.className,
           )}
         >
           {children}
@@ -164,8 +176,13 @@ export function Link({
         type="button"
         variant={variant}
         disabled={disabled}
-        className={cn('w-fit self-start', danger && !primaryBtn && 'text-destructive')}
         onClick={handleClick}
+        {...graphAttrs}
+        className={cn(
+          'w-fit self-start',
+          danger && !primaryBtn && 'text-destructive',
+          graphAttrs?.className,
+        )}
       >
         {children}
       </Button>

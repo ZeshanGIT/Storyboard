@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react'
 import { useWireframeErrors } from './WireframeErrorProvider'
 
-export type WireframeView = 'preview' | 'prototype'
+export type WireframeView = 'preview' | 'prototype' | 'graph'
 
 export type WireframeViewContextValue = {
   view: WireframeView

@@ -1,7 +1,8 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { injectGraphLinkIds } from './inject-graph-link-ids'
 import { screenIdToComponentName } from './naming'
-import type { ExtractedScreen, NavigationGraph } from './types'
+import type { ExtractedScreen, NavigationEdge, NavigationGraph } from './types'
 
 const WIREFRAME_COMPONENTS = [
   'Screen',
@@ -48,11 +49,19 @@ function extractModalIds(screens: ExtractedScreen[]): string[] {
   return [...ids].sort()
 }
 
-function buildScreensFile(screens: ExtractedScreen[]): string {
+function buildScreensFile(screens: ExtractedScreen[], graph: NavigationGraph): string {
+  const edgesByScreen = new Map<string, NavigationEdge[]>()
+  for (const edge of graph.edges) {
+    const list = edgesByScreen.get(edge.fromScreenId) ?? []
+    list.push(edge)
+    edgesByScreen.set(edge.fromScreenId, list)
+  }
+
   const componentExports = screens
     .map((s) => {
       const name = screenIdToComponentName(s.id)
-      return `export function ${name}() {\n  return (\n    ${s.jsx}\n  )\n}`
+      const jsx = injectGraphLinkIds(s.jsx, s.id, edgesByScreen.get(s.id) ?? [])
+      return `export function ${name}() {\n  return (\n    ${jsx}\n  )\n}`
     })
     .join('\n\n')
 
@@ -103,7 +112,7 @@ export async function generateDocumentFiles(
   const docDir = join(outDir, 'documents', slug)
   await mkdir(docDir, { recursive: true })
 
-  await writeFile(join(docDir, 'screens.generated.tsx'), buildScreensFile(screens), 'utf8')
+  await writeFile(join(docDir, 'screens.generated.tsx'), buildScreensFile(screens, graph), 'utf8')
   await writeFile(join(docDir, 'routes.generated.tsx'), buildRoutesFile(screens), 'utf8')
   await writeFile(
     join(docDir, 'navigation-graph.generated.ts'),
