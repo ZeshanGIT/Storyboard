@@ -4,6 +4,7 @@ import { modalIdsByScreenFromRoutes, type RouteEntry } from '../router'
 import type { CompactGraphNodeType } from './CompactGraphNode'
 import type { GraphDisplayMode } from './layout-navigation-graph'
 import type { ScreenGraphNodeType } from './ScreenGraphNode'
+import type { ScreenNodeSizeMap } from './screen-node-size'
 
 export const COMPACT_NODE_WIDTH = 180
 export const COMPACT_NODE_HEIGHT = 100
@@ -16,6 +17,7 @@ export type BuildReactFlowGraphInput = {
   mode: GraphDisplayMode
   selectedId: string | null
   positions: Map<string, { x: number; y: number }>
+  screenNodeSizes?: ScreenNodeSizeMap
 }
 
 function countConnections(graph: NavigationGraph): {
@@ -84,7 +86,10 @@ function buildScreenGraph({
   routes,
   selectedId,
   positions,
-}: Omit<BuildReactFlowGraphInput, 'mode'>): {
+  screenNodeSizes,
+}: Omit<BuildReactFlowGraphInput, 'mode'> & {
+  screenNodeSizes: ScreenNodeSizeMap
+}): {
   nodes: ScreenGraphNodeType[]
   edges: Edge[]
 } {
@@ -101,7 +106,8 @@ function buildScreenGraph({
 
   const nodes: ScreenGraphNodeType[] = graph.nodes.flatMap((node) => {
     const route = routeById.get(node.id)
-    if (!route) return []
+    const measured = screenNodeSizes.get(node.id)
+    if (!route || !measured) return []
 
     return [
       {
@@ -109,7 +115,7 @@ function buildScreenGraph({
         type: 'screen' as const,
         position: positions.get(node.id) ?? { x: 0, y: 0 },
         className: 'wireframe-graph-node',
-        style: { width: SCREEN_NODE_WIDTH, height: SCREEN_NODE_HEIGHT, zIndex: 2 },
+        style: { width: measured.width, height: measured.height, zIndex: 2 },
         zIndex: 2,
         data: {
           screenId: node.id,
@@ -120,6 +126,7 @@ function buildScreenGraph({
           component: route.component,
           validScreenIds,
           modalIdsByScreen,
+          measuredSize: measured,
         },
       },
     ]
@@ -147,5 +154,9 @@ export function buildReactFlowGraph(input: BuildReactFlowGraphInput): {
     return buildCompactGraph(input)
   }
 
-  return buildScreenGraph(input)
+  if (!input.screenNodeSizes) {
+    return { nodes: [], edges: [] }
+  }
+
+  return buildScreenGraph({ ...input, screenNodeSizes: input.screenNodeSizes })
 }

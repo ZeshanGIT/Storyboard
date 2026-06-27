@@ -3,6 +3,7 @@ import { type ComponentType, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { WireframeViewProvider } from '@/runtime/WireframeViewContext'
 import { SCREEN_NODE_HEIGHT, SCREEN_NODE_WIDTH } from './build-react-flow-graph'
+import type { MeasuredScreenNodeSize } from './screen-node-size'
 import { useGraphLinkHandles } from './useGraphLinkHandles'
 
 export type ScreenGraphNodeData = {
@@ -14,6 +15,7 @@ export type ScreenGraphNodeData = {
   component: ComponentType
   validScreenIds: readonly string[]
   modalIdsByScreen: ReadonlyMap<string, readonly string[]>
+  measuredSize: MeasuredScreenNodeSize
 }
 
 export type ScreenGraphNodeType = Node<ScreenGraphNodeData, 'screen'>
