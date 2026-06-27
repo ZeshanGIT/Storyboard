@@ -8,8 +8,6 @@ import type { ScreenNodeSizeMap } from './screen-node-size'
 
 export const COMPACT_NODE_WIDTH = 180
 export const COMPACT_NODE_HEIGHT = 100
-export const SCREEN_NODE_WIDTH = 320
-export const SCREEN_NODE_HEIGHT = 400
 
 export type BuildReactFlowGraphInput = {
   graph: NavigationGraph

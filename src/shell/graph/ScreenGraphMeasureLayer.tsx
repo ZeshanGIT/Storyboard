@@ -68,7 +68,7 @@ export function ScreenGraphMeasureLayer({
   const handleSize = (screenId: string, size: { width: number; height: number }) => {
     collectedRef.current.set(screenId, size)
     if (isScreenMeasurementComplete(expectedScreenIds, collectedRef.current)) {
-      onMeasured(collectedRef.current)
+      onMeasured(new Map(collectedRef.current))
     }
   }
 

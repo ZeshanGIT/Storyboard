@@ -15,19 +15,21 @@ import {
 import { RotateCcw } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 import type { NavigationGraph } from '../plugin/types'
 import { getCodegenErrors } from '../runtime/codegen-error'
 import {
   buildReactFlowGraph,
   COMPACT_NODE_HEIGHT,
   COMPACT_NODE_WIDTH,
-  SCREEN_NODE_HEIGHT,
-  SCREEN_NODE_WIDTH,
 } from './graph/build-react-flow-graph'
 import { CompactGraphNode } from './graph/CompactGraphNode'
+import { GraphLoadingState } from './graph/GraphLoadingState'
 import './graph/graph-view.css'
 import { type GraphDisplayMode, layoutNavigationGraph } from './graph/layout-navigation-graph'
+import { ScreenGraphMeasureLayer } from './graph/ScreenGraphMeasureLayer'
 import { ScreenGraphNode } from './graph/ScreenGraphNode'
+import type { ScreenNodeSizeMap } from './graph/screen-node-size'
 import type { RouteEntry } from './router'
 
 export type GraphViewProps = {
@@ -162,9 +164,8 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const [mode, setMode] = useState<GraphDisplayMode>('screen')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [layoutResetKey, setLayoutResetKey] = useState(0)
-
-  const nodeWidth = mode === 'compact' ? COMPACT_NODE_WIDTH : SCREEN_NODE_WIDTH
-  const nodeHeight = mode === 'compact' ? COMPACT_NODE_HEIGHT : SCREEN_NODE_HEIGHT
+  const [screenNodeSizes, setScreenNodeSizes] = useState<ScreenNodeSizeMap | null>(null)
+  const { showLinkIndicators, showNoteIndicators } = useWireframeDisplayPreferences()
 
   const graphSignature = useMemo(
     () =>
@@ -172,19 +173,50 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     [navigationGraph],
   )
 
+  const measureKey = `${graphSignature}|${showLinkIndicators}|${showNoteIndicators}`
+  const prevMeasureInputsRef = useRef<{ measureKey: string; mode: GraphDisplayMode } | null>(null)
+
+  useEffect(() => {
+    const prev = prevMeasureInputsRef.current
+    prevMeasureInputsRef.current = { measureKey, mode }
+
+    if (!prev) {
+      if (mode !== 'screen') setScreenNodeSizes(null)
+      return
+    }
+
+    if (prev.measureKey === measureKey && prev.mode === mode) return
+
+    setScreenNodeSizes(null)
+  }, [measureKey, mode])
+
   const positions = useMemo(() => {
-    const layoutNodes = navigationGraph.nodes.map((node) => ({
-      id: node.id,
-      width: nodeWidth,
-      height: nodeHeight,
-    }))
+    const layoutNodes =
+      mode === 'compact'
+        ? navigationGraph.nodes.map((node) => ({
+            id: node.id,
+            width: COMPACT_NODE_WIDTH,
+            height: COMPACT_NODE_HEIGHT,
+          }))
+        : screenNodeSizes
+          ? navigationGraph.nodes.flatMap((node) => {
+              const size = screenNodeSizes.get(node.id)
+              return size ? [{ id: node.id, width: size.width, height: size.height }] : []
+            })
+          : []
+
+    if (layoutNodes.length !== navigationGraph.nodes.length) {
+      return new Map<string, { x: number; y: number }>()
+    }
+
     const layoutEdges = navigationGraph.edges.map((edge) => ({
       id: edge.id,
       from: edge.fromScreenId,
       to: edge.toScreenId,
     }))
+
     return layoutNavigationGraph(layoutNodes, layoutEdges)
-  }, [navigationGraph, nodeWidth, nodeHeight])
+  }, [navigationGraph, mode, screenNodeSizes])
 
   const flowGraph = useMemo(
     () =>
@@ -194,9 +226,12 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
         mode,
         selectedId,
         positions,
+        screenNodeSizes: mode === 'screen' ? (screenNodeSizes ?? undefined) : undefined,
       }),
-    [navigationGraph, routes, mode, selectedId, positions],
+    [navigationGraph, routes, mode, selectedId, positions, screenNodeSizes],
   )
+
+  const isScreenLayoutReady = mode === 'compact' || screenNodeSizes !== null
 
   const onSelectNode = useCallback((id: string) => {
     setSelectedId(id)
@@ -236,20 +271,34 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
         </Tabs>
       </div>
       <div className="min-h-0 flex-1 border-border bg-muted/20">
-        <ReactFlowProvider>
-          <div className="h-full">
-            <GraphFlowCanvas
-              flowGraph={flowGraph}
-              graphSignature={graphSignature}
-              mode={mode}
-              layoutResetKey={layoutResetKey}
-              selectedId={selectedId}
-              onSelectNode={onSelectNode}
-              onClearSelection={onClearSelection}
-              onRequestLayoutReset={onRequestLayoutReset}
-            />
-          </div>
-        </ReactFlowProvider>
+        <div className="relative h-full">
+          {mode === 'screen' && screenNodeSizes === null ? (
+            <>
+              <ScreenGraphMeasureLayer
+                graph={navigationGraph}
+                routes={routes}
+                onMeasured={setScreenNodeSizes}
+              />
+              <GraphLoadingState />
+            </>
+          ) : null}
+          {isScreenLayoutReady ? (
+            <ReactFlowProvider>
+              <div className="h-full">
+                <GraphFlowCanvas
+                  flowGraph={flowGraph}
+                  graphSignature={graphSignature}
+                  mode={mode}
+                  layoutResetKey={layoutResetKey}
+                  selectedId={selectedId}
+                  onSelectNode={onSelectNode}
+                  onClearSelection={onClearSelection}
+                  onRequestLayoutReset={onRequestLayoutReset}
+                />
+              </div>
+            </ReactFlowProvider>
+          ) : null}
+        </div>
       </div>
     </div>
   )
