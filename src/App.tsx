@@ -1,8 +1,8 @@
-import { routes } from './generated/routes.generated'
+import { contentDocuments } from './generated/content-documents.generated'
 import { Shell } from './shell/Shell'
 
 function App() {
-  return <Shell routes={routes} />
+  return <Shell contentDocuments={contentDocuments} />
 }
 
 export default App

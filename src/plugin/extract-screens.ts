@@ -1,6 +1,7 @@
 import type { Root } from 'mdast'
 import type { MdxJsxFlowElement, MdxJsxTextElement } from 'mdast-util-mdx-jsx'
 import { remark } from 'remark'
+import remarkFrontmatter from 'remark-frontmatter'
 import remarkMdx from 'remark-mdx'
 import { visit } from 'unist-util-visit'
 
@@ -17,7 +18,7 @@ import { CodegenError, type CodegenResult, type ExtractedScreen } from './types'
 import { collectGotoErrors } from './validate-gotos'
 import { collectTextErrors } from './validate-text'
 
-const processor = remark().use(remarkMdx)
+const processor = remark().use(remarkFrontmatter).use(remarkMdx)
 
 function getStringAttr(node: ScreenNode, name: string): string | undefined {
   const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === name)

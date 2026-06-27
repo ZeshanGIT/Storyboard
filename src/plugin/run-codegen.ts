@@ -1,19 +1,8 @@
-import { readFile } from 'node:fs/promises'
-import { runCodegen } from './codegen'
-import { resolveGeneratedDir, resolveWireframePath, WIREFRAME_MDX } from './paths'
+import { runFullCodegen } from './run-full-codegen'
 
 const root = process.cwd()
-const outDir = resolveGeneratedDir(root)
 
-let source: string
-try {
-  source = await readFile(resolveWireframePath(root), 'utf8')
-} catch {
-  console.error(`[wireframe] No wireframe MDX at ${WIREFRAME_MDX}`)
-  process.exit(1)
-}
-
-const result = await runCodegen(source, outDir)
+const result = await runFullCodegen(root)
 if (!result.ok) {
   for (const error of result.errors) {
     console.error(`[wireframe] Codegen failed: ${error.message}`)

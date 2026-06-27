@@ -4,9 +4,10 @@ import { type RouteEntry, usePrototypeRouter } from './router'
 
 export type PrototypeViewProps = {
   routes: readonly RouteEntry[]
+  documentFilename: string
 }
 
-export function PrototypeView({ routes }: PrototypeViewProps) {
+export function PrototypeView({ routes, documentFilename }: PrototypeViewProps) {
   const codegenError = getCodegenError()
   const { navigate, activeRoute } = usePrototypeRouter(routes)
   const Active = activeRoute?.component
@@ -15,9 +16,13 @@ export function PrototypeView({ routes }: PrototypeViewProps) {
   if (codegenError) {
     return (
       <p className="text-red-900">
-        Prototype unavailable until codegen errors in <code>wireframe.mdx</code> are fixed.
+        Prototype unavailable until codegen errors in <code>{documentFilename}</code> are fixed.
       </p>
     )
+  }
+
+  if (routes.length === 0) {
+    return <p className="text-muted-foreground">No screens in {documentFilename}.</p>
   }
 
   return (

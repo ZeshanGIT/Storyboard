@@ -1,0 +1,323 @@
+---
+title: Component Catalog
+---
+
+<Screen id="cmp-index" title="Component catalog">
+  <Text h1>Wireframe components</Text>
+  <Text>Every primitive, variant, and prop. Pick a section.</Text>
+  <Container>
+    <Link goto="cmp-text">Text</Link>
+    <Link goto="cmp-link">Link</Link>
+    <Link goto="cmp-input-text">Input — text types</Link>
+    <Link goto="cmp-input-choice">Input — choice types</Link>
+    <Link goto="cmp-input-states">Input — states</Link>
+    <Link goto="cmp-container">Container</Link>
+    <Link goto="cmp-image">Image</Link>
+    <Link goto="cmp-icon">Icon</Link>
+    <Link goto="cmp-topbar">TopBar</Link>
+    <Link goto="cmp-divider">Divider</Link>
+    <Link goto="cmp-modal">Modal</Link>
+  </Container>
+</Screen>
+
+<Screen id="cmp-text" title="Text">
+  <TopBar title="Text" showBack />
+  <Text h2>Heading levels</Text>
+  <Text h1>Heading 1 (h1)</Text>
+  <Text h2>Heading 2 (h2)</Text>
+  <Text h3>Heading 3 (h3)</Text>
+  <Text h4>Heading 4 (h4)</Text>
+  <Text>Body text — default when no heading flag</Text>
+  <Divider label="affordances" />
+  <Text h3 disabled>Disabled heading</Text>
+  <Text disabled>Disabled body</Text>
+  <Text h3 danger>Danger heading</Text>
+  <Text danger>Danger body</Text>
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-link" title="Link">
+  <TopBar title="Link" showBack />
+  <Text h2>Variants</Text>
+  <Text h4>Text link (default)</Text>
+  <Link goto="cmp-index">Text link</Link>
+  <Text h4>Primary button</Text>
+  <Link goto="cmp-index" primary-btn>
+    Primary button
+  </Link>
+  <Text h4>Secondary button</Text>
+  <Link goto="cmp-index" secondary-btn>
+    Secondary button
+  </Link>
+  <Divider label="affordances" />
+  <Text h4>Disabled</Text>
+  <Link goto="cmp-index" disabled>
+    Disabled text link
+  </Link>
+  <Link goto="cmp-index" primary-btn disabled>
+    Disabled primary
+  </Link>
+  <Link goto="cmp-index" secondary-btn disabled>
+    Disabled secondary
+  </Link>
+  <Text h4>Danger</Text>
+  <Link goto="cmp-index" danger>
+    Danger text link
+  </Link>
+  <Link goto="cmp-index" primary-btn danger>
+    Danger primary
+  </Link>
+  <Link goto="cmp-index" secondary-btn danger>
+    Danger secondary
+  </Link>
+  <Divider label="wrapped content" />
+  <Text h4>Link wrapping Container</Text>
+  <Link goto="cmp-index">
+    <Container border>
+      <Text h4>Project Alpha</Text>
+      <Text>Last updated yesterday</Text>
+    </Container>
+  </Link>
+  <Text h4>Reserved goto</Text>
+  <Link goto="_back">Back (_back)</Link>
+</Screen>
+
+<Screen id="cmp-input-text" title="Input — text types">
+  <TopBar title="Input — text types" showBack />
+  <Text h2>type="text" (default)</Text>
+  <Input label="Name" placeholder="Jane Doe" />
+  <Input label="Name" placeholder="Jane Doe" hint="As shown on your profile" />
+  <Input label="Name" placeholder="Jane Doe" required />
+  <Input label="Name" placeholder="Jane Doe" defaultValue="Jane Doe" />
+  <Divider />
+  <Text h2>type="password"</Text>
+  <Input type="password" label="Password" placeholder="••••••••" />
+  <Text h2>type="search"</Text>
+  <Input type="search" label="Search" placeholder="Search…" />
+  <Text h2>type="number"</Text>
+  <Input type="number" label="Quantity" placeholder="0" defaultValue="1" />
+  <Text h2>type="date"</Text>
+  <Input type="date" label="Birth date" />
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-input-choice" title="Input — choice types">
+  <TopBar title="Input — choice types" showBack />
+  <Text h2>type="textarea"</Text>
+  <Input type="textarea" label="Bio" placeholder="Tell us about yourself" />
+  <Text h2>type="checkbox"</Text>
+  <Input type="checkbox" label="Remember me" />
+  <Input type="checkbox" label="Remember me" defaultValue="true" />
+  <Text h2>type="toggle"</Text>
+  <Input type="toggle" label="Notifications" />
+  <Input type="toggle" label="Notifications" defaultValue="true" />
+  <Text h2>type="radio"</Text>
+  <Input type="radio" label="Plan" options={['Free', 'Pro', 'Team']} defaultValue="Pro" />
+  <Text h2>type="select"</Text>
+  <Input type="select" label="Country" placeholder="Choose country" options={['US', 'UK', 'CA']} defaultValue="US" />
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-input-states" title="Input — states">
+  <TopBar title="Input — states" showBack />
+  <Text h2>hint</Text>
+  <Input label="Username" placeholder="jane" hint="Letters and numbers only" />
+  <Text h2>error (overrides hint)</Text>
+  <Input label="Email" placeholder="you@example.com" hint="We never share your email" error="Invalid email address" />
+  <Text h2>required</Text>
+  <Input label="Email" placeholder="you@example.com" required />
+  <Text h2>disabled</Text>
+  <Input label="Read-only field" defaultValue="Cannot edit" disabled />
+  <Input type="checkbox" label="Disabled checkbox" disabled />
+  <Input type="toggle" label="Disabled toggle" disabled />
+  <Text h2>danger</Text>
+  <Input label="Confirm delete" placeholder="Type DELETE" danger />
+  <Input type="checkbox" label="I understand this is permanent" danger />
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-container" title="Container">
+  <TopBar title="Container" showBack />
+  <Text h2>Column (default)</Text>
+  <Container border>
+    <Text>First item</Text>
+    <Text>Second item</Text>
+    <Text>Third item</Text>
+  </Container>
+  <Text h2>row</Text>
+  <Container row border>
+    <Text>Left</Text>
+    <Text>Center</Text>
+    <Text>Right</Text>
+  </Container>
+  <Text h2>distribute (row only)</Text>
+  <Text h4>distribute="start" (default)</Text>
+  <Container row border distribute="start">
+    <Text>A</Text>
+    <Text>B</Text>
+  </Container>
+  <Text h4>distribute="space-between"</Text>
+  <Container row border distribute="space-between">
+    <Text>A</Text>
+    <Text>B</Text>
+  </Container>
+  <Text h4>distribute="space-around"</Text>
+  <Container row border distribute="space-around">
+    <Text>A</Text>
+    <Text>B</Text>
+  </Container>
+  <Text h4>distribute="end"</Text>
+  <Container row border distribute="end">
+    <Text>A</Text>
+    <Text>B</Text>
+  </Container>
+  <Text h2>align</Text>
+  <Text h4>align="start" (default)</Text>
+  <Container row border align="start">
+    <Text>Short</Text>
+    <Container border>
+      <Text>Taller</Text>
+      <Text>block</Text>
+    </Container>
+  </Container>
+  <Text h4>align="center"</Text>
+  <Container row border align="center">
+    <Text>Short</Text>
+    <Container border>
+      <Text>Taller</Text>
+      <Text>block</Text>
+    </Container>
+  </Container>
+  <Text h4>align="end"</Text>
+  <Container row border align="end">
+    <Text>Short</Text>
+    <Container border>
+      <Text>Taller</Text>
+      <Text>block</Text>
+    </Container>
+  </Container>
+  <Text h2>border</Text>
+  <Container border>
+    <Text>Bordered container</Text>
+  </Container>
+  <Divider label="affordances" />
+  <Container border disabled>
+    <Text>Disabled container</Text>
+  </Container>
+  <Container border danger>
+    <Text>Danger container</Text>
+  </Container>
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-image" title="Image">
+  <TopBar title="Image" showBack />
+  <Text h2>aspect (default landscape)</Text>
+  <Image />
+  <Text h2>aspect="square"</Text>
+  <Image aspect="square" />
+  <Text h2>aspect="portrait"</Text>
+  <Image aspect="portrait" />
+  <Text h2>aspect="landscape"</Text>
+  <Image aspect="landscape" />
+  <Text h2>aspect="wide"</Text>
+  <Image aspect="wide" />
+  <Divider label="affordances" />
+  <Image aspect="square" disabled />
+  <Image aspect="square" danger />
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-icon" title="Icon">
+  <TopBar title="Icon" showBack />
+  <Text h2>name (Lucide kebab-case)</Text>
+  <Container row>
+    <Icon name="bell" />
+    <Icon name="trash-2" />
+    <Icon name="settings" />
+    <Icon name="user" />
+  </Container>
+  <Text h2>size (default md)</Text>
+  <Container row align="center">
+    <Icon name="star" size="sm" />
+    <Icon name="star" size="md" />
+    <Icon name="star" size="lg" />
+  </Container>
+  <Text h2>Unknown name (fallback)</Text>
+  <Icon name="not-a-real-icon" />
+  <Divider label="affordances" />
+  <Container row>
+    <Icon name="bell" disabled />
+    <Icon name="trash-2" danger />
+  </Container>
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-topbar" title="TopBar">
+  <Text h2>title only</Text>
+  <TopBar title="MyApp" />
+  <Divider />
+  <Text h2>showBack</Text>
+  <TopBar title="MyApp" showBack />
+  <Divider />
+  <Text h2>children (horizontal actions)</Text>
+  <TopBar title="Inbox">
+    <Icon name="search" />
+    <Icon name="bell" />
+  </TopBar>
+  <TopBar title="Settings" showBack>
+    <Link goto="cmp-index">Done</Link>
+  </TopBar>
+  <Divider label="affordances" />
+  <TopBar title="Disabled bar" showBack disabled />
+  <TopBar title="Danger bar" danger>
+    <Icon name="trash-2" danger />
+  </TopBar>
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-divider" title="Divider">
+  <TopBar title="Divider" showBack />
+  <Text h2>Plain (no label)</Text>
+  <Text>Above</Text>
+  <Divider />
+  <Text>Below</Text>
+  <Text h2>label</Text>
+  <Text>Above</Text>
+  <Divider label="or" />
+  <Text>Below</Text>
+  <Divider label="affordances" />
+  <Divider disabled />
+  <Divider label="danger" danger />
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>
+
+<Screen id="cmp-modal" title="Modal">
+  <TopBar title="Modal" showBack />
+  <Text h2>Open via Link goto matching Modal id</Text>
+  <Text>Dismiss: backdrop click, Escape, or goto="_close".</Text>
+  <Link goto="cmp-confirm-modal" primary-btn>
+    Open confirm modal
+  </Link>
+  <Link goto="cmp-info-modal" secondary-btn>
+    Open info modal
+  </Link>
+  <Modal id="cmp-confirm-modal">
+    <Text h2>Delete item?</Text>
+    <Text>This action cannot be undone.</Text>
+    <Container row distribute="space-between">
+      <Link goto="_close">Cancel</Link>
+      <Link goto="cmp-index" primary-btn danger>
+        Delete
+      </Link>
+    </Container>
+  </Modal>
+  <Modal id="cmp-info-modal">
+    <Text h2>About modals</Text>
+    <Text>Modal id must be unique per screen and must not match a Screen id.</Text>
+    <Link goto="_close" primary-btn>
+      Got it
+    </Link>
+  </Modal>
+  <Link goto="cmp-index">Back to catalog</Link>
+</Screen>

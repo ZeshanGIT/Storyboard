@@ -2,6 +2,7 @@ import path from 'node:path'
 import mdx from '@mdx-js/rollup'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import remarkFrontmatter from 'remark-frontmatter'
 import { defineConfig } from 'vite'
 import { wireframePlugin } from './src/plugin/wireframe-plugin'
 
@@ -19,6 +20,7 @@ export default defineConfig({
       ...mdx({
         // MDX files live in src/content/; resolves to src/mdx-components.ts
         providerImportSource: '../mdx-components.ts',
+        remarkPlugins: [remarkFrontmatter],
       }),
     },
     react({

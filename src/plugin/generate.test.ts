@@ -26,11 +26,15 @@ describe('generateWireframeFiles', () => {
     await generateWireframeFiles(screens, dir)
 
     const routes = await readFile(join(dir, 'routes.generated.tsx'), 'utf8')
-    const components = await readFile(join(dir, 'screens.generated.tsx'), 'utf8')
+    const components = await readFile(
+      join(dir, 'documents/wireframe/screens.generated.tsx'),
+      'utf8',
+    )
+    const docRoutes = await readFile(join(dir, 'documents/wireframe/routes.generated.tsx'), 'utf8')
 
-    expect(routes).toContain("id: 'home'")
-    expect(routes).toContain("path: '/home'")
-    expect(routes).toContain('component: Home')
+    expect(docRoutes).toContain("id: 'home'")
+    expect(docRoutes).toContain("path: '/home'")
+    expect(docRoutes).toContain('component: Home')
     expect(routes).toContain('export type ScreenRouteId')
     expect(routes).toContain('export type GotoTarget')
     expect(components).toContain('export function Home()')
@@ -51,7 +55,9 @@ describe('generateWireframeFiles', () => {
     await generateWireframeFiles(withModal, dir)
 
     const routes = await readFile(join(dir, 'routes.generated.tsx'), 'utf8')
+    const docRoutes = await readFile(join(dir, 'documents/wireframe/routes.generated.tsx'), 'utf8')
     expect(routes).toContain("'confirm'")
+    expect(docRoutes).toContain("'confirm'")
     expect(routes).toContain('export type ModalId')
   })
 })

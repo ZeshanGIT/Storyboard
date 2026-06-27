@@ -1,7 +1,12 @@
 import { resolve } from 'node:path'
 
+export const CONTENT_DIR = 'src/content'
 export const WIREFRAME_MDX = 'src/content/wireframe.mdx'
 export const GENERATED_DIR = 'src/generated'
+
+export function resolveContentDir(root: string): string {
+  return resolve(root, CONTENT_DIR)
+}
 
 export function resolveWireframePath(root: string): string {
   return resolve(root, WIREFRAME_MDX)

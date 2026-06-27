@@ -1,8 +1,7 @@
-import { readFile } from 'node:fs/promises'
 import type { Plugin, ViteDevServer } from 'vite'
-import { runCodegen } from './codegen'
-import { resolveGeneratedDir, resolveWireframePath, WIREFRAME_MDX } from './paths'
+import { resolveGeneratedDir } from './paths'
 import { wireframePluginState } from './plugin-state'
+import { runFullCodegen } from './run-full-codegen'
 
 export type WireframePluginState = {
   lastErrors: typeof wireframePluginState.lastErrors
@@ -38,19 +37,7 @@ export function wireframePlugin(): Plugin {
   let root = process.cwd()
 
   async function regenerate(): Promise<boolean> {
-    const mdxPath = resolveWireframePath(root)
-    const outDir = resolveGeneratedDir(root)
-
-    let source: string
-    try {
-      source = await readFile(mdxPath, 'utf8')
-    } catch {
-      wireframePluginState.lastErrors = []
-      console.warn(`[wireframe] No wireframe MDX at ${WIREFRAME_MDX} — skipping codegen`)
-      return false
-    }
-
-    const result = await runCodegen(source, outDir)
+    const result = await runFullCodegen(root)
     if (!result.ok) {
       wireframePluginState.lastErrors = result.errors
       for (const error of result.errors) {
@@ -102,8 +89,10 @@ export function wireframePlugin(): Plugin {
 
       const generatedDir = resolveGeneratedDir(root)
       const modules = [
-        ...(server.moduleGraph.getModulesByFile(`${generatedDir}/screens.generated.tsx`) ?? []),
         ...(server.moduleGraph.getModulesByFile(`${generatedDir}/routes.generated.tsx`) ?? []),
+        ...(server.moduleGraph.getModulesByFile(
+          `${generatedDir}/content-documents.generated.tsx`,
+        ) ?? []),
       ]
       for (const mod of modules) {
         server.moduleGraph.invalidateModule(mod)
