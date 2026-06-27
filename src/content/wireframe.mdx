@@ -1,33 +1,42 @@
 import { Screens } from '../generated/screens-map.generated'
 
 <Screen id="home" title="Home">
-  <Text>Welcome back</Text>
+  <Text variant="h1">Welcome back</Text>
   <Link goto={Screens.Login}>Login</Link>
   <Link goto={Screens.Signup}>Create account</Link>
 </Screen>
 
 <Screen id="login" title="Login">
-  <Heading level={1}>Sign in</Heading>
-  <Input label="Email" type="email" placeholder="you@example.com" />
-  <Input label="Password" type="password" />
-  <Button type="submit">Sign in</Button>
-  <Link goto={Screens.Home}>Back</Link>
+  <TopBar title="MyApp" showBack />
+  <Container>
+    <Text variant="h1">Sign in</Text>
+    <Input label="Email" placeholder="you@example.com" required />
+    <Input label="Password" type="password" required />
+    <Link goto={Screens.Home} primary-btn>
+      Sign in
+    </Link>
+  </Container>
 </Screen>
 
 <Screen id="signup" title="Sign up">
-  <Heading level={1}>Create account</Heading>
-  <Section title="Your details">
-    <Input label="Email" type="email" placeholder="you@example.com" />
-    <Input label="Password" type="password" />
-  </Section>
-  <Separator />
-  <Card title="Terms">
-    <Text>By signing up you agree to our terms of service.</Text>
-  </Card>
-  <List>
-    <ListItem>Password must be at least 8 characters</ListItem>
-    <ListItem>Email must be valid</ListItem>
-  </List>
-  <Button type="submit">Create account</Button>
-  <Link goto={Screens.Home}>Back</Link>
+  <TopBar title="MyApp" showBack />
+  <Container>
+    <Text variant="h1">Create your account</Text>
+    <Container>
+      <Text variant="h2">Your details</Text>
+      <Input label="Email" placeholder="you@example.com" required />
+      <Input label="Password" type="password" hint="At least 8 characters" required />
+    </Container>
+    <Divider />
+    <Container border>
+      <Text>By signing up you agree to our terms of service.</Text>
+    </Container>
+    <Container>
+      <Text>Password must be at least 8 characters</Text>
+      <Text>Email must be valid</Text>
+    </Container>
+    <Link goto={Screens.Home} primary-btn>
+      Create account
+    </Link>
+  </Container>
 </Screen>

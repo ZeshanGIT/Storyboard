@@ -1,29 +1,27 @@
 import {
-  Button,
-  Card,
-  Heading,
+  Container,
+  Divider,
+  Icon,
+  Image,
   Input,
   Link,
-  List,
-  ListItem,
+  Modal,
   Screen,
-  Section,
-  Separator,
   Text,
+  TopBar,
 } from './components/wireframe'
 
 const components = {
   Screen,
   Text,
   Link,
-  Heading,
   Input,
-  Button,
-  Section,
-  Card,
-  List,
-  ListItem,
-  Separator,
+  Container,
+  Image,
+  Icon,
+  Modal,
+  TopBar,
+  Divider,
 }
 
 declare global {

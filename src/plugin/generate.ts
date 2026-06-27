@@ -7,14 +7,13 @@ const WIREFRAME_COMPONENTS = [
   'Screen',
   'Text',
   'Link',
-  'Heading',
   'Input',
-  'Button',
-  'Section',
-  'Card',
-  'ListItem',
-  'List',
-  'Separator',
+  'Container',
+  'Image',
+  'Icon',
+  'Modal',
+  'TopBar',
+  'Divider',
 ] as const
 
 function wireframeComponentsUsed(jsx: string): string[] {

@@ -6,23 +6,28 @@ import { CodegenError, type ExtractedScreen } from './types'
 
 type MdxJsxElement = MdxJsxFlowElement | MdxJsxTextElement
 
-function isScreenNode(node: { type?: string; name?: string | null }): node is MdxJsxElement {
-  return (
-    (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') &&
-    node.name === 'Screen'
-  )
+const RESERVED_GOTO = new Set(['_close', '_back'])
+
+function isNamedNode(name: string) {
+  return (node: { type?: string; name?: string | null }): node is MdxJsxElement =>
+    (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') && node.name === name
 }
 
-function isLinkNode(node: { type?: string; name?: string | null }): node is MdxJsxElement {
-  return (
-    (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') && node.name === 'Link'
-  )
-}
+const isScreenNode = isNamedNode('Screen')
+const isModalNode = isNamedNode('Modal')
+const isLinkNode = isNamedNode('Link')
 
 type GotoTarget =
   | { kind: 'screen-id'; value: string }
   | { kind: 'screens-key'; key: string }
   | { kind: 'unknown'; raw: string }
+
+function getStringAttr(node: MdxJsxElement, name: string): string | undefined {
+  const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === name)
+  if (!attr || attr.value === null || attr.value === undefined) return undefined
+  if (typeof attr.value === 'string') return attr.value
+  return undefined
+}
 
 function getGotoTarget(node: MdxJsxElement): GotoTarget | undefined {
   const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === 'goto')
@@ -65,7 +70,7 @@ function formatGotoTarget(target: GotoTarget): string {
   return target.raw
 }
 
-function resolveGotoScreenId(
+function resolveGotoId(
   target: GotoTarget,
   validIds: Set<string>,
   screensKeyToId: Map<string, string>,
@@ -75,24 +80,71 @@ function resolveGotoScreenId(
   }
 
   if (target.kind === 'screens-key') {
-    return screensKeyToId.get(target.key)
+    const id = screensKeyToId.get(target.key)
+    return id && validIds.has(id) ? id : undefined
   }
 
   return undefined
 }
 
+function collectModalIds(
+  tree: Root,
+  screenIds: Set<string>,
+): { modalIds: Set<string>; errors: CodegenError[] } {
+  const modalIds = new Set<string>()
+  const errors: CodegenError[] = []
+  let modalCount = 0
+
+  visit(tree, (node) => {
+    if (!isModalNode(node)) return
+
+    modalCount += 1
+    const id = getStringAttr(node, 'id')
+
+    if (!id) {
+      errors.push(
+        new CodegenError('MISSING_MODAL_ID', `Modal ${modalCount} is missing an id attribute`),
+      )
+      return
+    }
+
+    if (screenIds.has(id)) {
+      errors.push(
+        new CodegenError(
+          'DUPLICATE_SCREEN_ID',
+          `Modal id "${id}" conflicts with an existing Screen id`,
+          id,
+        ),
+      )
+      return
+    }
+
+    if (modalIds.has(id)) {
+      errors.push(new CodegenError('DUPLICATE_SCREEN_ID', `Duplicate modal id "${id}"`, id))
+      return
+    }
+
+    modalIds.add(id)
+  })
+
+  return { modalIds, errors }
+}
+
 export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): CodegenError[] {
   const errors: CodegenError[] = []
-  const validIds = new Set(screens.map((s) => s.id))
+  const screenIds = new Set(screens.map((s) => s.id))
   const screensKeyToId = new Map(screens.map((s) => [screenIdToScreensKey(s.id), s.id] as const))
   const knownKeys = [...screensKeyToId.keys()].join(', ')
+  const { modalIds, errors: modalErrors } = collectModalIds(tree, screenIds)
+  errors.push(...modalErrors)
+
+  const validGotoIds = new Set([...screenIds, ...modalIds])
 
   let activeScreenId: string | undefined
 
   visit(tree, (node) => {
     if (isScreenNode(node)) {
-      const idAttr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === 'id')
-      activeScreenId = idAttr && typeof idAttr.value === 'string' ? idAttr.value : undefined
+      activeScreenId = getStringAttr(node, 'id')
       return
     }
 
@@ -113,7 +165,11 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
       return
     }
 
-    const resolved = resolveGotoScreenId(target, validIds, screensKeyToId)
+    if (target.kind === 'screen-id' && RESERVED_GOTO.has(target.value)) {
+      return
+    }
+
+    const resolved = resolveGotoId(target, validGotoIds, screensKeyToId)
     if (resolved) return
 
     const label = formatGotoTarget(target)
@@ -121,7 +177,7 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
       target.kind === 'screens-key'
         ? ` — Screens.${target.key} is not defined (known keys: ${knownKeys})`
         : target.kind === 'screen-id'
-          ? ` — no screen with id "${target.value}"`
+          ? ` — no screen or modal with id "${target.value}"`
           : ''
 
     errors.push(

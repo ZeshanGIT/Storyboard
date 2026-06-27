@@ -8,7 +8,7 @@ export type PreviewViewProps = {
 export function PreviewView({ validScreenIds }: PreviewViewProps) {
   return (
     <WireframeViewProvider view="preview" navigate={() => {}} validScreenIds={validScreenIds}>
-      <div className="space-y-8">
+      <div className="flex flex-col gap-8">
         <WireframeDocument />
       </div>
     </WireframeViewProvider>
