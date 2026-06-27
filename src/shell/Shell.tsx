@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
 import type { ContentDocumentEntry } from '../generated/content-documents.generated'
 import { getCodegenErrors } from '../runtime/codegen-error'
 import { WireframeErrorProvider } from '../runtime/WireframeErrorProvider'
 import { DocumentMenu } from './DocumentMenu'
+import { GraphView } from './GraphView'
 import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
 
@@ -11,7 +13,7 @@ export type ShellProps = {
   contentDocuments: readonly ContentDocumentEntry[]
 }
 
-type ActiveView = 'preview' | 'prototype'
+type ActiveView = 'preview' | 'prototype' | 'graph'
 
 function defaultDocumentSlug(documents: readonly ContentDocumentEntry[]): string {
   const wireframe = documents.find((doc) => doc.slug === 'wireframe')
@@ -66,12 +68,18 @@ export function Shell({ contentDocuments }: ShellProps) {
               <TabsList>
                 <TabsTrigger value="preview">MDX Preview</TabsTrigger>
                 <TabsTrigger value="prototype">Prototype View</TabsTrigger>
+                <TabsTrigger value="graph">Graph View</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         </header>
 
-        <main className="mx-auto max-w-3xl px-6 py-8">
+        <main
+          className={cn(
+            'mx-auto px-6 py-8',
+            view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl',
+          )}
+        >
           {view === 'preview' ? (
             activeEntry ? (
               <PreviewView
@@ -82,6 +90,13 @@ export function Shell({ contentDocuments }: ShellProps) {
             ) : (
               <p className="text-muted-foreground">No MDX documents in src/content.</p>
             )
+          ) : view === 'graph' && activeEntry ? (
+            <GraphView
+              key={activeEntry.slug}
+              navigationGraph={activeEntry.navigationGraph}
+              routes={activeEntry.routes}
+              documentFilename={`${activeEntry.slug}.mdx`}
+            />
           ) : activeEntry ? (
             <PrototypeView
               key={activeEntry.slug}
