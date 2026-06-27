@@ -87,19 +87,26 @@ function resolveGotoId(
   return undefined
 }
 
-function collectModalIds(
+function collectModalIdsByScreen(
   tree: Root,
   screenIds: Set<string>,
-): { modalIds: Set<string>; errors: CodegenError[] } {
-  const modalIds = new Set<string>()
+): { modalIdsByScreen: Map<string, Set<string>>; errors: CodegenError[] } {
+  const modalIdsByScreen = new Map<string, Set<string>>()
   const errors: CodegenError[] = []
+  let activeScreenId: string | undefined
   let modalCount = 0
 
   visit(tree, (node) => {
+    if (isScreenNode(node)) {
+      activeScreenId = getStringAttr(node, 'id')
+      return
+    }
+
     if (!isModalNode(node)) return
 
     modalCount += 1
     const id = getStringAttr(node, 'id')
+    const screenContext = activeScreenId ?? 'unknown'
 
     if (!id) {
       errors.push(
@@ -112,22 +119,30 @@ function collectModalIds(
       errors.push(
         new CodegenError(
           'DUPLICATE_SCREEN_ID',
-          `Modal id "${id}" conflicts with an existing Screen id`,
-          id,
+          `Modal id "${id}" in screen "${screenContext}" conflicts with an existing Screen id`,
+          screenContext,
         ),
       )
       return
     }
 
-    if (modalIds.has(id)) {
-      errors.push(new CodegenError('DUPLICATE_SCREEN_ID', `Duplicate modal id "${id}"`, id))
+    const screenModals = modalIdsByScreen.get(screenContext) ?? new Set<string>()
+    if (screenModals.has(id)) {
+      errors.push(
+        new CodegenError(
+          'DUPLICATE_MODAL_ID',
+          `Duplicate modal id "${id}" in screen "${screenContext}"`,
+          screenContext,
+        ),
+      )
       return
     }
 
-    modalIds.add(id)
+    screenModals.add(id)
+    modalIdsByScreen.set(screenContext, screenModals)
   })
 
-  return { modalIds, errors }
+  return { modalIdsByScreen, errors }
 }
 
 export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): CodegenError[] {
@@ -135,16 +150,17 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
   const screenIds = new Set(screens.map((s) => s.id))
   const screensKeyToId = new Map(screens.map((s) => [screenIdToScreensKey(s.id), s.id] as const))
   const knownKeys = [...screensKeyToId.keys()].join(', ')
-  const { modalIds, errors: modalErrors } = collectModalIds(tree, screenIds)
+  const { modalIdsByScreen, errors: modalErrors } = collectModalIdsByScreen(tree, screenIds)
   errors.push(...modalErrors)
 
-  const validGotoIds = new Set([...screenIds, ...modalIds])
-
   let activeScreenId: string | undefined
+  let activeScreenModalIds = new Set<string>()
 
   visit(tree, (node) => {
     if (isScreenNode(node)) {
       activeScreenId = getStringAttr(node, 'id')
+      activeScreenModalIds =
+        (activeScreenId ? modalIdsByScreen.get(activeScreenId) : undefined) ?? new Set()
       return
     }
 
@@ -169,6 +185,7 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
       return
     }
 
+    const validGotoIds = new Set([...screenIds, ...activeScreenModalIds])
     const resolved = resolveGotoId(target, validGotoIds, screensKeyToId)
     if (resolved) return
 
@@ -177,7 +194,7 @@ export function collectGotoErrors(tree: Root, screens: ExtractedScreen[]): Codeg
       target.kind === 'screens-key'
         ? ` — Screens.${target.key} is not defined (known keys: ${knownKeys})`
         : target.kind === 'screen-id'
-          ? ` — no screen or modal with id "${target.value}"`
+          ? ` — no screen with id "${target.value}", and no modal with id "${target.value}" in this screen`
           : ''
 
     errors.push(

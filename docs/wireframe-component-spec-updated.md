@@ -20,8 +20,9 @@ The renderer uses a simple wireframe style.
 - Components are JSX-style tags inside MDX files.
 - String props use double quotes. Boolean props are bare flags: `<Link primary-btn>`.
 - Self-closing tags have no children: `<Divider />`, `<Image />`, `<Icon />`, `<Input />`.
-- `Screen` and `Modal` share a single id pool. Every id must be globally unique.
-- `goto` must resolve to a Screen id, Modal id, or reserved destination.
+- `Screen` ids must be globally unique.
+- `Modal` ids must be unique within each screen and must not match any Screen id. The same Modal id may be used on different screens.
+- `goto` must resolve to a Screen id, a Modal id declared in the current screen, or a reserved destination.
 - Reserved destinations: `_close` (closes the open Modal), `_back` (previous screen).
 - All components except `Screen` support `disabled` and `danger` as bare boolean props.
 - Unknown props are flagged as warnings by the validator.
@@ -40,7 +41,7 @@ Root container for a single application screen. The first Screen in the document
 
 | Prop | Required | Description |
 |------|----------|-------------|
-| `id` | Yes | Unique identifier. Shared pool with Modal ids. Used as `goto` target. Pattern: `/^[a-zA-Z][a-zA-Z0-9_-]*$/`. |
+| `id` | Yes | Globally unique screen identifier. Used as `goto` target. Pattern: `/^[a-zA-Z][a-zA-Z0-9_-]*$/`. |
 
 **Validation:**
 - Error: missing or duplicate `id`.
@@ -273,7 +274,7 @@ An overlay dialog. Declared anywhere inside a Screen. Opened when a Link's `goto
 
 | Prop | Required | Description |
 |------|----------|-------------|
-| `id` | Yes | Unique identifier. Shared pool with Screen ids. Referenced by `goto` to open this modal. |
+| `id` | Yes | Unique within this screen. Must not match any Screen id. May repeat across screens. Referenced by `goto` in the same screen to open this modal. |
 | `disabled` | No | Disabled affordance. |
 | `danger` | No | Danger affordance. |
 
@@ -364,8 +365,10 @@ A horizontal visual separator. Self-closing.
 
 **Errors:**
 - `Screen` or `Modal` missing `id`
-- Duplicate `id` across the shared Screen/Modal pool
-- `goto` does not resolve to a known id or reserved destination
+- Duplicate `Screen` id
+- Duplicate `Modal` id within the same screen
+- `Modal` id matches a `Screen` id
+- `goto` does not resolve to a known Screen id, a Modal id in the current screen, or a reserved destination
 - `Input` has an unsupported `type`
 - `Icon` missing `name`
 - Component appears where disallowed by nesting rules

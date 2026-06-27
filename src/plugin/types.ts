@@ -7,6 +7,7 @@ export type ExtractedScreen = {
 
 export type CodegenErrorCode =
   | 'DUPLICATE_SCREEN_ID'
+  | 'DUPLICATE_MODAL_ID'
   | 'MISSING_SCREEN_ID'
   | 'MISSING_MODAL_ID'
   | 'INVALID_GOTO'

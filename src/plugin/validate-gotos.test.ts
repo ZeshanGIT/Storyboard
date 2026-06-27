@@ -72,4 +72,66 @@ describe('validateGotos', () => {
     expect(result.errors.some((error) => error.code === 'DUPLICATE_SCREEN_ID')).toBe(true)
     expect(result.errors.some((error) => error.code === 'INVALID_GOTO')).toBe(true)
   })
+
+  it('allows the same modal id on different screens', () => {
+    const result = extractScreens(`
+<Screen id="home" title="Home">
+  <Link goto="confirm">Open</Link>
+  <Modal id="confirm">
+    <Link goto="_close">Close</Link>
+  </Modal>
+</Screen>
+<Screen id="settings" title="Settings">
+  <Link goto="confirm">Open</Link>
+  <Modal id="confirm">
+    <Link goto="_close">Close</Link>
+  </Modal>
+</Screen>
+`)
+    expect(result.ok).toBe(true)
+  })
+
+  it('rejects duplicate modal ids within the same screen', () => {
+    const result = extractScreens(`
+<Screen id="home" title="Home">
+  <Modal id="confirm" />
+  <Modal id="confirm" />
+</Screen>
+`)
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.errors[0].code).toBe('DUPLICATE_MODAL_ID')
+    expect(result.errors[0].message).toContain('screen "home"')
+  })
+
+  it('rejects modal ids that match a screen id', () => {
+    const result = extractScreens(`
+<Screen id="login" title="Login">...</Screen>
+<Screen id="home" title="Home">
+  <Modal id="login" />
+</Screen>
+`)
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.errors[0].code).toBe('DUPLICATE_SCREEN_ID')
+    expect(result.errors[0].message).toContain('Screen id')
+  })
+
+  it('rejects goto to a modal declared on another screen', () => {
+    const result = extractScreens(`
+<Screen id="home" title="Home">
+  <Link goto="confirm">Open</Link>
+</Screen>
+<Screen id="settings" title="Settings">
+  <Modal id="confirm">
+    <Link goto="_close">Close</Link>
+  </Modal>
+</Screen>
+`)
+    expect(result.ok).toBe(false)
+    if (result.ok) return
+    expect(result.errors[0].code).toBe('INVALID_GOTO')
+    expect(result.errors[0].message).toContain('screen "home"')
+    expect(result.errors[0].message).toContain('in this screen')
+  })
 })

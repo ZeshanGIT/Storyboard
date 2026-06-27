@@ -13,7 +13,8 @@ Full specification: [`wireframe-component-spec-updated.md`](wireframe-component-
 ### Screen IDs and navigation
 
 - Each `<Screen>` needs a unique `id` (pattern: `^[a-zA-Z][a-zA-Z0-9_-]*$`).
-- `Screen` and `Modal` share one id pool — no duplicates across both.
+- `<Modal>` ids are unique **within each screen** and must not match any Screen id. The same Modal id may be reused on different screens.
+- `goto` to a Modal id resolves only to modals declared in the **current** screen.
 - Navigation uses `<Link goto="…">` or type-safe `goto={Screens.Login}` from generated `screens-map.generated.ts`.
 - Reserved `goto` values: `_close` (dismiss open modal), `_back` (browser back / previous screen).
 - First `<Screen>` in the file is the prototype entry screen.
@@ -220,7 +221,7 @@ Overlay dialog. Declare inside a `Screen`. Opens when a `Link` `goto` matches th
 
 | Prop | Required | Description |
 |------|----------|-------------|
-| `id` | Yes | Unique id (shared pool with screens) |
+| `id` | Yes | Unique within this screen; must not match any Screen id. May repeat across screens. |
 | `disabled` | No | Disabled affordance |
 | `danger` | No | Danger affordance |
 
