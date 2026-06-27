@@ -11,8 +11,12 @@ describe('layoutNavigationGraph', () => {
       [{ id: 'e1', from: 'home', to: 'login' }],
     )
 
-    expect(positions.get('home')).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }))
-    expect(positions.get('login')).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }))
+    expect(positions.get('home')).toEqual(
+      expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }),
+    )
+    expect(positions.get('login')).toEqual(
+      expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }),
+    )
     expect(positions.get('home')?.y).toBeLessThan(positions.get('login')?.y ?? 0)
   })
 })
