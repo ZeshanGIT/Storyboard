@@ -61,8 +61,8 @@ function GraphFlowCanvas({
   const selectedIdRef = useRef(selectedId)
   selectedIdRef.current = selectedId
 
-  const prevModeRef = useRef(mode)
-  const prevGraphSignatureRef = useRef(graphSignature)
+  const prevModeRef = useRef<GraphDisplayMode | null>(null)
+  const prevGraphSignatureRef = useRef<string | null>(null)
 
   useEffect(() => {
     setNodes(flowGraph.nodes)
