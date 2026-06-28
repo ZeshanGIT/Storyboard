@@ -112,8 +112,8 @@ Modal-opening links do not draw edges to other screens. They may show a local af
 
 The user can:
 
-- **Pan** — click-drag or equivalent on empty canvas
-- **Zoom** — scroll/pinch or dedicated controls
+- **Pan** — click-drag on empty canvas, or scroll wheel / trackpad scroll
+- **Zoom** — pinch, ⌘/Ctrl + scroll, or dedicated controls
 - **Fit to screen** — reset zoom so the full graph is visible
 - **Minimap** — small overview in a corner for orientation on large graphs
 

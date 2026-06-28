@@ -5,6 +5,26 @@ export type GraphLinkRect = {
   height: number
 }
 
+export function graphLinkRectsEqual(
+  a: Map<string, GraphLinkRect>,
+  b: Map<string, GraphLinkRect>,
+): boolean {
+  if (a.size !== b.size) return false
+  for (const [key, val] of a) {
+    const other = b.get(key)
+    if (
+      !other ||
+      other.x !== val.x ||
+      other.y !== val.y ||
+      other.width !== val.width ||
+      other.height !== val.height
+    ) {
+      return false
+    }
+  }
+  return true
+}
+
 export function viewportDeltaToLocal(
   deltaX: number,
   deltaY: number,

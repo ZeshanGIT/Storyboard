@@ -29,6 +29,7 @@ import {
 import { CompactGraphNode } from './graph/CompactGraphNode'
 import type { NodeRect } from './graph/compute-edge-ports'
 import { GraphLoadingState } from './graph/GraphLoadingState'
+import { graphLinkRectsEqual } from './graph/measure-link-handle-positions'
 import './graph/graph-view.css'
 import { type GraphDisplayMode, layoutNavigationGraph } from './graph/layout-navigation-graph'
 import { ScreenGraphMeasureLayer } from './graph/ScreenGraphMeasureLayer'
@@ -48,23 +49,6 @@ const graphNodeTypes: NodeTypes = {
 }
 
 const FIT_VIEW_PADDING = 0.04
-
-function linkRectsEqual(a: Map<string, NodeRect>, b: Map<string, NodeRect>): boolean {
-  if (a.size !== b.size) return false
-  for (const [key, val] of a) {
-    const other = b.get(key)
-    if (
-      !other ||
-      other.x !== val.x ||
-      other.y !== val.y ||
-      other.width !== val.width ||
-      other.height !== val.height
-    ) {
-      return false
-    }
-  }
-  return true
-}
 
 type GraphFlowCanvasProps = {
   nodes: Node[]
@@ -170,6 +154,10 @@ function GraphFlowCanvas({
       nodesDraggable={false}
       nodesConnectable={false}
       elementsSelectable={false}
+      onlyRenderVisibleElements
+      panOnScroll
+      zoomOnScroll
+      zoomOnPinch
       defaultEdgeOptions={{
         type: 'default',
         zIndex: GRAPH_EDGE_Z_INDEX,
@@ -257,7 +245,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const onLinkRects = useCallback((screenId: string, rects: Map<string, NodeRect>) => {
     setLinkRectsByScreen((prev) => {
       const existing = prev.get(screenId)
-      if (existing && linkRectsEqual(existing, rects)) return prev
+      if (existing && graphLinkRectsEqual(existing, rects)) return prev
       const next = new Map(prev)
       next.set(screenId, rects)
       return next
