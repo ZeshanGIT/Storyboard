@@ -32,6 +32,23 @@
   z-index: 2;
 }
 
+.react-flow__edges {
+  z-index: 3;
+}
+
+.react-flow__edge-interaction {
+  pointer-events: stroke;
+}
+
+/* Screen node bodies pass through to edges; links stay interactive */
+.react-flow__node.wireframe-graph-screen-node {
+  pointer-events: none;
+}
+
+.react-flow__node.wireframe-graph-screen-node [data-graph-link-id] {
+  pointer-events: auto;
+}
+
 .react-flow__edge {
   z-index: 3;
 }

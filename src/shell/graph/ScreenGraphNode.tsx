@@ -30,6 +30,7 @@ export type ScreenGraphNodeData = {
   nodePosition: { x: number; y: number }
   screenRectsById: Map<string, NodeRect>
   onGraphLinkHover?: (linkId: string | null) => void
+  onGraphLinkFocus?: (linkId: string, targetScreenId: string) => void
   onLinkRects?: (screenId: string, rects: Map<string, NodeRect>) => void
 }
 
@@ -116,6 +117,7 @@ export function ScreenGraphNode({ data }: NodeProps<ScreenGraphNodeType>) {
           validScreenIds={data.validScreenIds}
           modalIdsByScreen={data.modalIdsByScreen}
           onGraphLinkHover={data.onGraphLinkHover}
+          onGraphLinkFocus={data.onGraphLinkFocus}
         >
           <Screen />
         </WireframeViewProvider>

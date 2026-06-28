@@ -28,6 +28,7 @@ export type BuildReactFlowGraphInput = {
   positions: Map<string, { x: number; y: number }>
   screenNodeSizes?: ScreenNodeSizeMap
   onGraphLinkHover?: (linkId: string | null) => void
+  onGraphLinkFocus?: (linkId: string, targetScreenId: string) => void
   onLinkRects?: (screenId: string, rects: Map<string, NodeRect>) => void
   linkRectsByScreen?: Map<string, Map<string, NodeRect>>
 }
@@ -168,6 +169,7 @@ function buildScreenGraph({
   positions,
   screenNodeSizes,
   onGraphLinkHover,
+  onGraphLinkFocus,
   onLinkRects,
   linkRectsByScreen = new Map(),
 }: Omit<BuildReactFlowGraphInput, 'mode'> & {
@@ -223,7 +225,7 @@ function buildScreenGraph({
         id: node.id,
         type: 'screen' as const,
         position: positions.get(node.id) ?? { x: 0, y: 0 },
-        className: 'wireframe-graph-node',
+        className: 'wireframe-graph-node wireframe-graph-screen-node',
         style: { width: measured.width, height: measured.height, zIndex: GRAPH_NODE_Z_INDEX },
         zIndex: GRAPH_NODE_Z_INDEX,
         data: {
@@ -239,6 +241,7 @@ function buildScreenGraph({
           nodePosition: positions.get(node.id) ?? { x: 0, y: 0 },
           screenRectsById,
           onGraphLinkHover,
+          onGraphLinkFocus,
           onLinkRects,
         },
       },

@@ -49,12 +49,17 @@ const graphNodeTypes: NodeTypes = {
 }
 
 const FIT_VIEW_PADDING = 0.04
+const FOCUS_SCREEN_PADDING = 0.15
+const FOCUS_SCREEN_DURATION_MS = 450
+const GRAPH_EDGE_INTERACTION_WIDTH = 40
 
 type GraphFlowCanvasProps = {
   nodes: Node[]
   edges: Edge[]
   highlightedLinkId: string | null
   onHighlightLink: (linkId: string | null) => void
+  focusTargetScreenId: string | null
+  onFocusTargetHandled: () => void
   layoutSignature: string
   onSelectNode: (id: string) => void
   onClearSelection: () => void
@@ -84,6 +89,8 @@ function GraphFlowCanvas({
   edges,
   highlightedLinkId,
   onHighlightLink,
+  focusTargetScreenId,
+  onFocusTargetHandled,
   layoutSignature,
   onSelectNode,
   onClearSelection,
@@ -115,6 +122,15 @@ function GraphFlowCanvas({
     runFitView()
   }, [layoutSignature, runFitView])
 
+  useEffect(() => {
+    if (!focusTargetScreenId) return
+    void fitView({
+      nodes: [{ id: focusTargetScreenId }],
+      padding: FOCUS_SCREEN_PADDING,
+      duration: FOCUS_SCREEN_DURATION_MS,
+    }).finally(onFocusTargetHandled)
+  }, [focusTargetScreenId, fitView, onFocusTargetHandled])
+
   const onNodeClick = useCallback(
     (_event: React.MouseEvent, node: Node) => {
       onSelectNode(node.id)
@@ -138,6 +154,9 @@ function GraphFlowCanvas({
     onHighlightLink(null)
   }, [onHighlightLink])
 
+  // React Flow marks edges inactive (no pointer events) unless selectable or onEdgeClick is set.
+  const onEdgeClick = useCallback(() => {}, [])
+
   return (
     <ReactFlow
       className="h-full"
@@ -151,9 +170,11 @@ function GraphFlowCanvas({
       onPaneClick={onClearSelection}
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseLeave={onEdgeMouseLeave}
+      onEdgeClick={onEdgeClick}
       nodesDraggable={false}
       nodesConnectable={false}
       elementsSelectable={false}
+      zIndexMode="manual"
       onlyRenderVisibleElements
       panOnScroll
       zoomOnScroll
@@ -161,7 +182,7 @@ function GraphFlowCanvas({
       defaultEdgeOptions={{
         type: 'default',
         zIndex: GRAPH_EDGE_Z_INDEX,
-        interactionWidth: 20,
+        interactionWidth: GRAPH_EDGE_INTERACTION_WIDTH,
       }}
     >
       <Background />
@@ -182,6 +203,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
   const [layoutResetKey, setLayoutResetKey] = useState(0)
   const [screenNodeSizes, setScreenNodeSizes] = useState<ScreenNodeSizeMap | null>(null)
   const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null)
+  const [focusTargetScreenId, setFocusTargetScreenId] = useState<string | null>(null)
   const [linkRectsByScreen, setLinkRectsByScreen] = useState<Map<string, Map<string, NodeRect>>>(
     () => new Map(),
   )
@@ -242,6 +264,16 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     setHighlightedLinkId(linkId)
   }, [])
 
+  const onGraphLinkFocus = useCallback((linkId: string, targetScreenId: string) => {
+    setHighlightedLinkId(linkId)
+    setSelectedId(targetScreenId)
+    setFocusTargetScreenId(targetScreenId)
+  }, [])
+
+  const onFocusTargetHandled = useCallback(() => {
+    setFocusTargetScreenId(null)
+  }, [])
+
   const onLinkRects = useCallback((screenId: string, rects: Map<string, NodeRect>) => {
     setLinkRectsByScreen((prev) => {
       const existing = prev.get(screenId)
@@ -261,6 +293,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       positions,
       screenNodeSizes: mode === 'screen' ? (screenNodeSizes ?? undefined) : undefined,
       onGraphLinkHover,
+      onGraphLinkFocus,
       onLinkRects: mode === 'screen' ? onLinkRects : undefined,
     }),
     [
@@ -271,6 +304,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       positions,
       screenNodeSizes,
       onGraphLinkHover,
+      onGraphLinkFocus,
       onLinkRects,
     ],
   )
@@ -354,6 +388,8 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
                   edges={baseFlowEdges}
                   highlightedLinkId={highlightedLinkId}
                   onHighlightLink={onGraphLinkHover}
+                  focusTargetScreenId={focusTargetScreenId}
+                  onFocusTargetHandled={onFocusTargetHandled}
                   layoutSignature={layoutSignature}
                   onSelectNode={onSelectNode}
                   onClearSelection={onClearSelection}

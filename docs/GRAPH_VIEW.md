@@ -104,6 +104,8 @@ Edges originate from the **navigable link or button** that triggers the transiti
 
 Edges render above screen cards so paths stay visible. **Hover a link or edge** to highlight that connection; other edges dim.
 
+In Screen View, **click a screen-to-screen link** to animate the viewport to the destination screen and highlight that edge. Modal, back, and close links do not pan the canvas.
+
 Parallel links from the same screen remain separate edges. Routes stay stable while panning and zooming.
 
 Modal-opening links do not draw edges to other screens. They may show a local affordance on the triggering control within the node.
@@ -170,7 +172,7 @@ Clicking empty canvas **deselects** the current node.
 
 ### Clicking an edge
 
-No required behavior in v1. Edges are not interactive by default.
+Hovering an edge highlights that connection (same as hovering its source link). Clicking an edge has no other behavior in v1.
 
 ### Relationship to other views
 

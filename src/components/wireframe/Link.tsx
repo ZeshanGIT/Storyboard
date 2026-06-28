@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { useEffect, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -88,6 +88,7 @@ export function Link({
     modalIdsByScreen,
     reportError,
     onGraphLinkHover,
+    onGraphLinkFocus,
   } = useWireframeView()
   const { showLinkIndicators } = useWireframeDisplayPreferences()
   const linkClass = showLinkIndicators ? linkAffordanceClass : 'inline-flex w-fit self-start'
@@ -109,8 +110,18 @@ export function Link({
     reportError(formatRuntimeGotoError(screenId, label, goto, knownTargets))
   }, [goto, valid, view, reportError, screenId, label, knownTargets])
 
-  const handleClick = () => {
-    if (disabled || !goto || view === 'graph') return
+  const handleClick = (event: MouseEvent) => {
+    if (disabled || !goto) return
+
+    if (view === 'graph') {
+      event.stopPropagation()
+      if (!graphLinkId || RESERVED_GOTO.has(goto) || screenModalIds.has(goto)) return
+      if (validScreenIds.has(goto)) {
+        onGraphLinkFocus(graphLinkId, goto)
+      }
+      return
+    }
+
     if (goto === '_close') {
       closeModal()
       return
@@ -158,7 +169,11 @@ export function Link({
           onMouseLeave: () => onGraphLinkHover(null),
           onFocus: () => onGraphLinkHover(graphLinkId),
           onBlur: () => onGraphLinkHover(null),
-          className: cn('cursor-default'),
+          className: cn(
+            validScreenIds.has(goto ?? '') && !screenModalIds.has(goto ?? '')
+              ? 'cursor-pointer'
+              : 'cursor-default',
+          ),
         }
       : undefined
 
