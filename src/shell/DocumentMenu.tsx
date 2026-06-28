@@ -33,7 +33,7 @@ export function DocumentMenu({ documents, activeSlug, onSelect }: DocumentMenuPr
         >
           <Menu />
         </Button>
-        <h1 className="truncate text-lg font-semibold tracking-tight">{activeTitle}</h1>
+        <p className="truncate text-sm text-muted-foreground">{activeTitle}</p>
       </div>
 
       {open ? (

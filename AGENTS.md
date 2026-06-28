@@ -1,4 +1,4 @@
-# AGENTS.md — WireframeX
+# AGENTS.md — Storyboard
 
 Agent tooling rules. **Complements** [`docs/CONTEXT.md`](docs/CONTEXT.md) — read both at session start. CONTEXT = what/where; AGENTS = how/rules. State conflict → trust CONTEXT.
 
@@ -104,3 +104,6 @@ Only `.agents/skills/` auto-discovered. Manual → `.agents/skill-archive/` (`@.
 - [ ] `npm run test` (plugin/codegen)
 - [ ] `npm run build` + `npm run check`
 - [ ] Scope matches build phase
+
+
+Git: This directory is not a git repository. The actual git repository is at /Users/seshan-12821/Data/Repos/WireframeX. You cannot cd there directly due to workspace restrictions, but you CAN run git commands using git -C /Users/seshan-12821/Data/Repos/WireframeX <command>. Changes made here sync automatically.

@@ -1,4 +1,4 @@
-# WireframeX — Session Context
+# Storyboard — Session Context
 
 **What exists + how repo works.** Complements [`AGENTS.md`](../AGENTS.md) — read both at session start. State conflict → trust this file.
 
@@ -29,7 +29,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 | MDX AST extract, validation (dup ids, bad goto, Text flags) | Done |
 | Per-doc screens/routes + contentDocuments registry | Done |
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
-| wireframe.mdx, components.mdx | Done |
+| storyboard.mdx, wireframe.mdx, components.mdx | Done |
 | Graph View (shell tab, Screen + Compact modes) | Done |
 | Unreachable validation, doc export | Not started |
 | Card, List, Section, BottomNav, Tabs | Not started |
@@ -49,7 +49,7 @@ title: Wireframe App
 ---
 ```
 
-Examples: `wireframe.mdx` (app), `components.mdx` (catalog).
+Examples: `storyboard.mdx` (intro), `wireframe.mdx` (Workforge demo), `components.mdx` (catalog).
 
 ## E2E flow
 
@@ -83,7 +83,7 @@ src/App.tsx
 
 ### Content documents
 
-Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger switches files (persists across all shell views). `wireframe.mdx` sorts first.
+Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger switches files (persists across all shell views). `storyboard.mdx` sorts first.
 
 - **Preview:** all `<Screen>` blocks, `gap-8`
 - **Prototype:** generated routes only (`key={slug}` resets router)
@@ -133,7 +133,7 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 - `contentDocuments` feeds shell
 - `Link` not `Button`; minimal History API router (no React Router)
 - Generated gitignored; codegen before tsc in build/check
-- `wireframe.mdx` = canonical example
+- `storyboard.mdx` = intro showcase; `wireframe.mdx` = canonical demo example
 - Graph View: Dagre LR layout; Screen View edges anchor at link controls
 
 ## Next

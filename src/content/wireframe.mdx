@@ -1,30 +1,38 @@
 ---
-title: Wireframe App
+title: Workforge Demo
 ---
 
-<Screen id="home" title="Home" note="Hello">
+# Workforge
+
+<Screen id="home" title="Home" note="Entry screen for this document's prototype and graph.">
   <Text h1>Welcome back</Text>
-  <Link goto="login">Login</Link>
-  <Link goto="signup">Create account</Link>
+  <Text>Sign in to continue to your workspace, or create a new account.</Text>
+  <Container row distribute="space-between">
+    <Link goto="login" primary-btn>Login</Link>
+    <Link goto="signup" secondary-btn>Create account</Link>
+  </Container>
+  <Divider label="demo note" />
+  <Text note="This is a sample app flow. Switch to Prototype View to click through; Graph View shows screen connections.">
+    Sample auth flow for Storyboard — three screens with cross-links.
+  </Text>
 </Screen>
 
 <Screen id="login" title="Login">
-  <TopBar title="MyApp" showBack />
+  <TopBar title="Workforge" showBack />
   <Container>
     <Text h1>Sign in</Text>
     <Input label="Email" placeholder="you@example.com" required />
-    <Input label="Password" type="password" required />
-    <Link goto="home" primary-btn>
-      Sign in
-    </Link>
+    <Input label="Password" type="password" required hint="Forgot password flow not in this demo" />
+    <Link goto="dashboard" primary-btn>Sign in</Link>
+    <Link goto="signup">Create account instead</Link>
   </Container>
 </Screen>
 
 <Screen id="signup" title="Sign up">
-  <TopBar title="MyApp" showBack />
+  <TopBar title="Workforge" showBack />
   <Container>
     <Text h1>Create your account</Text>
-    <Container>
+    <Container border>
       <Text h2>Your details</Text>
       <Input label="Email" placeholder="you@example.com" required />
       <Input label="Password" type="password" hint="At least 8 characters" required />
@@ -33,12 +41,26 @@ title: Wireframe App
     <Container border>
       <Text>By signing up you agree to our terms of service.</Text>
     </Container>
-    <Container>
-      <Text>Password must be at least 8 characters</Text>
-      <Text>Email must be valid</Text>
-    </Container>
-    <Link goto="home" primary-btn>
-      Create account
+    <Link goto="dashboard" primary-btn>Create account</Link>
+    <Link goto="login">Already have an account? Sign in</Link>
+  </Container>
+</Screen>
+
+<Screen id="dashboard" title="Dashboard" note="New screen — adds a branch in Graph View from login and signup.">
+  <TopBar title="Workforge">
+    <Icon name="bell" />
+    <Icon name="settings" />
+  </TopBar>
+  <Text h1>Dashboard</Text>
+  <Text>You are signed in. This screen is reachable from both login and signup.</Text>
+  <Container border>
+    <Text h3>Recent projects</Text>
+    <Link goto="home">
+      <Container border>
+        <Text h4>Project Alpha</Text>
+        <Text>Last updated yesterday</Text>
+      </Container>
     </Link>
   </Container>
+  <Link goto="home" secondary-btn>Sign out</Link>
 </Screen>

@@ -18,8 +18,9 @@ export type ShellProps = {
 type ActiveView = 'preview' | 'prototype' | 'graph'
 
 function defaultDocumentSlug(documents: readonly ContentDocumentEntry[]): string {
+  const storyboard = documents.find((doc) => doc.slug === 'storyboard')
   const wireframe = documents.find((doc) => doc.slug === 'wireframe')
-  return wireframe?.slug ?? documents[0]?.slug ?? ''
+  return storyboard?.slug ?? wireframe?.slug ?? documents[0]?.slug ?? ''
 }
 
 export function Shell({ contentDocuments }: ShellProps) {
@@ -58,15 +59,18 @@ export function Shell({ contentDocuments }: ShellProps) {
         <div className="min-h-screen bg-background text-foreground">
           <header className="border-b px-6 py-4">
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
-              {contentDocuments.length > 0 ? (
-                <DocumentMenu
-                  documents={contentDocuments}
-                  activeSlug={activeDocumentSlug}
-                  onSelect={setActiveDocumentSlug}
-                />
-              ) : (
-                <h1 className="text-lg font-semibold tracking-tight">Documents</h1>
-              )}
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="shrink-0 text-lg font-semibold tracking-tight">Storyboard</span>
+                {contentDocuments.length > 0 ? (
+                  <DocumentMenu
+                    documents={contentDocuments}
+                    activeSlug={activeDocumentSlug}
+                    onSelect={setActiveDocumentSlug}
+                  />
+                ) : (
+                  <span className="text-sm text-muted-foreground">No documents</span>
+                )}
+              </div>
               <div className="flex flex-wrap items-center gap-4">
                 <IndicatorToggles />
                 <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>

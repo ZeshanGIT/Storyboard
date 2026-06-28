@@ -127,9 +127,11 @@ export async function generateAggregateRoutes(
   documentScreens: DocumentScreensMap,
   outDir: string,
 ): Promise<void> {
-  const primarySlug = documentScreens.has('wireframe')
-    ? 'wireframe'
-    : [...documentScreens.keys()][0]
+  const primarySlug = documentScreens.has('storyboard')
+    ? 'storyboard'
+    : documentScreens.has('wireframe')
+      ? 'wireframe'
+      : [...documentScreens.keys()][0]
 
   const screenIds = new Set<string>()
   const modalIds = new Set<string>()

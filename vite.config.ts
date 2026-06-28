@@ -6,8 +6,12 @@ import remarkFrontmatter from 'remark-frontmatter'
 import { defineConfig } from 'vite'
 import { wireframePlugin } from './src/plugin/wireframe-plugin'
 
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1]
+const pagesBase = process.env.GITHUB_PAGES === 'true' && repoName ? `/${repoName}/` : '/'
+
 // https://vite.dev/config/
 export default defineConfig({
+  base: pagesBase,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

@@ -9,11 +9,19 @@ export type ScannedMdxDocument = {
   importPath: string
 }
 
+const PRIMARY_MDX = 'storyboard.mdx'
+const DEMO_MDX = 'wireframe.mdx'
+
+function mdxSortRank(filename: string): number {
+  if (filename === PRIMARY_MDX) return 0
+  if (filename === DEMO_MDX) return 1
+  return 2
+}
+
 function sortMdxFilenames(filenames: string[]): string[] {
   return [...filenames].sort((a, b) => {
-    if (a === 'wireframe.mdx') return -1
-    if (b === 'wireframe.mdx') return 1
-    return a.localeCompare(b)
+    const rank = mdxSortRank(a) - mdxSortRank(b)
+    return rank !== 0 ? rank : a.localeCompare(b)
   })
 }
 

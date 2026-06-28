@@ -1,4 +1,5 @@
 import { type ComponentType, useCallback, useEffect, useMemo, useState } from 'react'
+import { toAppPath, toBrowserPath } from '@/lib/app-base-path'
 
 export type RouteEntry = {
   id: string
@@ -13,25 +14,21 @@ export function modalIdsByScreenFromRoutes(
   return new Map(routes.map((route) => [route.id, route.modalIds ?? []]))
 }
 
-function normalizePath(pathname: string): string {
-  if (!pathname || pathname === '/') return '/'
-  return pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
-}
-
 export function usePrototypeRouter(routes: readonly RouteEntry[]) {
   const defaultPath = routes[0]?.path ?? '/'
-  const [pathname, setPathname] = useState(() => normalizePath(window.location.pathname))
+  const [pathname, setPathname] = useState(() => toAppPath(window.location.pathname))
 
   useEffect(() => {
-    const onPopState = () => setPathname(normalizePath(window.location.pathname))
+    const onPopState = () => setPathname(toAppPath(window.location.pathname))
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
   const navigate = useCallback((path: string) => {
-    const next = path.startsWith('/') ? path : `/${path}`
-    window.history.pushState({}, '', next)
-    setPathname(normalizePath(next))
+    const appPath = path.startsWith('/') ? path : `/${path}`
+    const browserPath = toBrowserPath(appPath)
+    window.history.pushState({}, '', browserPath)
+    setPathname(appPath)
   }, [])
 
   const activePath = useMemo(() => {

@@ -1,0 +1,75 @@
+---
+title: About Storyboard
+---
+
+<Screen id="welcome" title="Welcome" note="Default entry screen — switch documents from the menu.">
+  <Text h1>Storyboard</Text>
+  <Text>Text-first UX specification for developers, designers, and AI agents.</Text>
+  <Text>Describe screens, actions, and navigation in MDX — not mockups. One source drives preview, prototype, and graph views.</Text>
+  <Container border>
+    <Text h3>What you specify</Text>
+    <Text>What is visible on each screen</Text>
+    <Text>What actions are available</Text>
+    <Text>Where actions navigate</Text>
+    <Text>How screens connect</Text>
+  </Container>
+  <Link goto="how-it-works" primary-btn>How it works</Link>
+  <Link goto="views">Explore the three views</Link>
+</Screen>
+
+<Screen id="how-it-works" title="How it works">
+  <TopBar title="How it works" showBack />
+  <Text h1>MDX is the language</Text>
+  <Text note="No imports in MDX — components are registered globally.">
+    Author specs in src/content/*.mdx with YAML frontmatter title. Save a file and codegen extracts screens, validates links, and regenerates routes.
+  </Text>
+  <Container border>
+    <Text h3>Example</Text>
+    <Text>Screen id="home" with Link goto="login"</Text>
+    <Text>First Screen in a document = prototype entry route</Text>
+    <Text>Link for navigation — not Button</Text>
+  </Container>
+  <Divider label="more examples" />
+  <Text h3>Sample documents in this demo</Text>
+  <Text>Workforge Demo — small auth flow (login, signup)</Text>
+  <Text>Component Catalog — every primitive and variant</Text>
+  <Text note="Use the menu (☰) to switch MDX documents. Prototype and graph views are per document.">
+    Open the document menu to switch between MDX files.
+  </Text>
+  <Link goto="views" primary-btn>See the three views</Link>
+  <Link goto="welcome">Back to welcome</Link>
+</Screen>
+
+<Screen id="views" title="Three views">
+  <TopBar title="Three views" showBack />
+  <Text h1>One MDX source, three outputs</Text>
+  <Container border>
+    <Text h3>MDX Preview</Text>
+    <Text>All screens stacked. Links scroll to screen anchors.</Text>
+  </Container>
+  <Container border>
+    <Text h3>Prototype View</Text>
+    <Text>Clickable flow with History API routing. Modals, back, and close work here.</Text>
+  </Container>
+  <Container border>
+    <Text h3>Graph View</Text>
+    <Text>Auto-generated navigation graph. Screen mode shows wireframe nodes; Compact mode shows cards.</Text>
+  </Container>
+  <Divider label="try it" />
+  <Text>Switch tabs in the header, then open Workforge Demo from the document menu and try Prototype View.</Text>
+  <Link goto="philosophy">Philosophy</Link>
+  <Link goto="welcome">Back to welcome</Link>
+</Screen>
+
+<Screen id="philosophy" title="Philosophy">
+  <TopBar title="Philosophy" showBack />
+  <Text h1>Intent over appearance</Text>
+  <Text>Storyboard is not Figma. Primitives render as structural wireframes — borders and semantic HTML, not brand design.</Text>
+  <Text h3>Storybook for UX flows</Text>
+  <Text>Designers decide how something looks. Storyboard specifies what exists and how users move through it.</Text>
+  <Container border danger>
+    <Text h4>Non-goals</Text>
+    <Text>Pixel-perfect mockups, rich styling, animations, or design tooling</Text>
+  </Container>
+  <Link goto="welcome" primary-btn>Back to welcome</Link>
+</Screen>
