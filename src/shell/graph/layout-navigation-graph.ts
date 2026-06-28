@@ -21,12 +21,11 @@ const LAYOUT_RANK_SEP = 120
 export function layoutNavigationGraph(
   nodes: readonly LayoutNodeInput[],
   edges: readonly LayoutEdgeInput[],
-  direction: 'TB' | 'LR' = 'TB',
 ): Map<string, { x: number; y: number }> {
   const graph = new dagre.graphlib.Graph()
   graph.setDefaultEdgeLabel(() => ({}))
   graph.setGraph({
-    rankdir: direction,
+    rankdir: 'LR',
     nodesep: LAYOUT_NODE_SEP,
     ranksep: LAYOUT_RANK_SEP,
     marginx: LAYOUT_MARGIN,

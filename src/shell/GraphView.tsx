@@ -22,6 +22,7 @@ import {
   buildReactFlowGraph,
   COMPACT_NODE_HEIGHT,
   COMPACT_NODE_WIDTH,
+  GRAPH_EDGE_STROKE,
   GRAPH_EDGE_Z_INDEX,
   GRAPH_HIGHLIGHTED_EDGE_Z_INDEX,
 } from './graph/build-react-flow-graph'
@@ -156,6 +157,7 @@ function GraphFlowCanvas({
   return (
     <ReactFlow
       className="h-full"
+      defaultMarkerColor={GRAPH_EDGE_STROKE}
       nodes={flowNodes}
       edges={flowEdges}
       onNodesChange={onNodesChange}

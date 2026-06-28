@@ -7,11 +7,18 @@ import type { GraphDisplayMode } from './layout-navigation-graph'
 import type { OutgoingGraphLink, ScreenGraphNodeType } from './ScreenGraphNode'
 import type { ScreenNodeSizeMap } from './screen-node-size'
 
+export const GRAPH_EDGE_STROKE = '#63b3ed'
+
 export const COMPACT_NODE_WIDTH = 180
 export const COMPACT_NODE_HEIGHT = 100
 export const GRAPH_NODE_Z_INDEX = 2
 export const GRAPH_EDGE_Z_INDEX = 3
 export const GRAPH_HIGHLIGHTED_EDGE_Z_INDEX = 4
+
+const graphMarkerEnd = {
+  type: MarkerType.ArrowClosed,
+  color: GRAPH_EDGE_STROKE,
+} as const
 
 export type BuildReactFlowGraphInput = {
   graph: NavigationGraph
@@ -64,7 +71,7 @@ function buildCompactGraphEdges(
       sourceHandle: ports.sourceHandle,
       targetHandle: ports.targetHandle,
       type: 'default',
-      markerEnd: { type: MarkerType.ArrowClosed },
+      markerEnd: graphMarkerEnd,
       data: { linkId: edge.linkId },
       zIndex: GRAPH_EDGE_Z_INDEX,
       interactionWidth: 20,
@@ -104,7 +111,7 @@ function buildScreenGraphEdges(
       sourceHandle: edge.linkId,
       targetHandle,
       type: 'default',
-      markerEnd: { type: MarkerType.ArrowClosed },
+      markerEnd: graphMarkerEnd,
       data: { linkId: edge.linkId },
       zIndex: GRAPH_EDGE_Z_INDEX,
       interactionWidth: 20,

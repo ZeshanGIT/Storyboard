@@ -1,6 +1,8 @@
 /* WireframeX graph view — sharp corners, edge layering */
 .react-flow {
   border-radius: 0;
+  --xy-edge-stroke: #63b3ed;
+  --xy-edge-stroke-line: rgb(99 179 237 / 0.7);
 }
 
 .react-flow__controls {
@@ -35,7 +37,13 @@
 }
 
 .react-flow__edge-path {
+  stroke: var(--xy-edge-stroke-line);
   stroke-width: 1.5;
+}
+
+.react-flow defs marker,
+.react-flow defs marker path {
+  opacity: 1;
 }
 
 .react-flow__handle.wireframe-graph-boundary-handle {
@@ -73,7 +81,7 @@
 }
 
 .react-flow__edge.wireframe-graph-edge-dimmed .react-flow__edge-path {
-  opacity: 0.25;
+  stroke: rgb(99 179 237 / 0.25);
 }
 
 .react-flow__edge.wireframe-graph-edge-highlighted {
@@ -82,5 +90,5 @@
 
 .react-flow__edge.wireframe-graph-edge-highlighted .react-flow__edge-path {
   stroke-width: 2.5;
-  opacity: 1;
+  stroke: var(--xy-edge-stroke);
 }

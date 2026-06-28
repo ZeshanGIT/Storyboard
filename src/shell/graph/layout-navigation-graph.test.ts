@@ -17,7 +17,7 @@ describe('layoutNavigationGraph', () => {
     expect(positions.get('login')).toEqual(
       expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }),
     )
-    expect(positions.get('home')?.y).toBeLessThan(positions.get('login')?.y ?? 0)
+    expect(positions.get('home')?.x).toBeLessThan(positions.get('login')?.x ?? 0)
   })
 
   it('spaces nodes using each node own width and height', () => {
@@ -33,6 +33,6 @@ describe('layoutNavigationGraph', () => {
     const login = positions.get('login')
     expect(home).toBeDefined()
     expect(login).toBeDefined()
-    expect(login?.y).toBeGreaterThan((home?.y ?? 0) + 80)
+    expect(login?.x).toBeGreaterThan((home?.x ?? 0) + 120)
   })
 })
