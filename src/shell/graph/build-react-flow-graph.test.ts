@@ -75,7 +75,7 @@ const linkedGraph: NavigationGraph = {
 }
 
 describe('buildReactFlowGraph screen mode edges', () => {
-  it('uses boundary edges with linkId data and no per-link sourceHandle', () => {
+  it('uses link-anchored sourceHandle with linkId data', () => {
     const Home = () => null
     const Login = () => null
     const screenNodeSizes = new Map([
@@ -104,12 +104,11 @@ describe('buildReactFlowGraph screen mode edges', () => {
         source: 'home',
         target: 'login',
         type: 'default',
-        sourceHandle: 'out-bottom',
+        sourceHandle: 'home:0',
         targetHandle: 'in-top',
         data: { linkId: 'home:0' },
         interactionWidth: 20,
       }),
     )
-    expect(edges[0]?.sourceHandle).not.toBeUndefined()
   })
 })

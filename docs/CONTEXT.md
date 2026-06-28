@@ -119,7 +119,7 @@ New `<Screen>` in MDX + save → codegen updates that doc's generated files. No 
 
 ### Graph View
 
-Third shell tab; active document picker applies. Codegen `navigationGraph` → Screen View (default, wireframe nodes + boundary edges with link-hover highlight) or Compact View (cards with note/counts). Pan/zoom/fit/minimap; node click selects only. Full UX spec: [`GRAPH_VIEW.md`](GRAPH_VIEW.md).
+Third shell tab; active document picker applies. Codegen `navigationGraph` → Screen View (default, wireframe nodes + link-anchored edges with boundary target ports and link-hover highlight) or Compact View (cards with note/counts, boundary edges only). Pan/zoom/fit/minimap; node click selects only. Full UX spec: [`GRAPH_VIEW.md`](GRAPH_VIEW.md).
 
 ## Tooling
 

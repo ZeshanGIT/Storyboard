@@ -2,9 +2,9 @@ import { type Edge, MarkerType, type Node } from '@xyflow/react'
 import type { NavigationGraph } from '../../plugin/types'
 import { modalIdsByScreenFromRoutes, type RouteEntry } from '../router'
 import type { CompactGraphNodeType } from './CompactGraphNode'
-import { computeEdgePorts, type NodeRect } from './compute-edge-ports'
+import { computeEdgePorts, computeTargetPort, type NodeRect } from './compute-edge-ports'
 import type { GraphDisplayMode } from './layout-navigation-graph'
-import type { ScreenGraphNodeType } from './ScreenGraphNode'
+import type { OutgoingGraphLink, ScreenGraphNodeType } from './ScreenGraphNode'
 import type { ScreenNodeSizeMap } from './screen-node-size'
 
 export const COMPACT_NODE_WIDTH = 180
@@ -21,6 +21,8 @@ export type BuildReactFlowGraphInput = {
   positions: Map<string, { x: number; y: number }>
   screenNodeSizes?: ScreenNodeSizeMap
   onGraphLinkHover?: (linkId: string | null) => void
+  onLinkRects?: (screenId: string, rects: Map<string, NodeRect>) => void
+  linkRectsByScreen?: Map<string, Map<string, NodeRect>>
 }
 
 function countConnections(graph: NavigationGraph): {
@@ -43,7 +45,7 @@ function countConnections(graph: NavigationGraph): {
   return { incoming, outgoing }
 }
 
-function buildGraphEdges(
+function buildCompactGraphEdges(
   graph: NavigationGraph,
   getNodeRect: (id: string) => NodeRect | undefined,
 ): Edge[] {
@@ -61,6 +63,46 @@ function buildGraphEdges(
       target: edge.toScreenId,
       sourceHandle: ports.sourceHandle,
       targetHandle: ports.targetHandle,
+      type: 'default',
+      markerEnd: { type: MarkerType.ArrowClosed },
+      data: { linkId: edge.linkId },
+      zIndex: GRAPH_EDGE_Z_INDEX,
+      interactionWidth: 20,
+    }
+  })
+}
+
+function buildScreenGraphEdges(
+  graph: NavigationGraph,
+  getScreenRect: (id: string) => NodeRect | undefined,
+  linkRectsByScreen: Map<string, Map<string, NodeRect>>,
+  screenPositions: Map<string, { x: number; y: number }>,
+): Edge[] {
+  return graph.edges.map((edge) => {
+    const targetRect = getScreenRect(edge.toScreenId)
+    const localLinkRect = linkRectsByScreen.get(edge.fromScreenId)?.get(edge.linkId)
+    const sourcePos = screenPositions.get(edge.fromScreenId)
+
+    let targetHandle = 'in-top'
+    if (targetRect && localLinkRect && sourcePos) {
+      const linkInFlow: NodeRect = {
+        x: sourcePos.x + localLinkRect.x,
+        y: sourcePos.y + localLinkRect.y,
+        width: localLinkRect.width,
+        height: localLinkRect.height,
+      }
+      targetHandle = computeTargetPort(linkInFlow, targetRect)
+    } else if (targetRect) {
+      const sourceRect = getScreenRect(edge.fromScreenId)
+      if (sourceRect) targetHandle = computeEdgePorts(sourceRect, targetRect).targetHandle
+    }
+
+    return {
+      id: edge.id,
+      source: edge.fromScreenId,
+      target: edge.toScreenId,
+      sourceHandle: edge.linkId,
+      targetHandle,
       type: 'default',
       markerEnd: { type: MarkerType.ArrowClosed },
       data: { linkId: edge.linkId },
@@ -109,7 +151,7 @@ function buildCompactGraph({
     },
   }))
 
-  return { nodes, edges: buildGraphEdges(graph, getNodeRect) }
+  return { nodes, edges: buildCompactGraphEdges(graph, getNodeRect) }
 }
 
 function buildScreenGraph({
@@ -119,6 +161,8 @@ function buildScreenGraph({
   positions,
   screenNodeSizes,
   onGraphLinkHover,
+  onLinkRects,
+  linkRectsByScreen = new Map(),
 }: Omit<BuildReactFlowGraphInput, 'mode'> & {
   screenNodeSizes: ScreenNodeSizeMap
 }): {
@@ -128,6 +172,27 @@ function buildScreenGraph({
   const routeById = new Map(routes.map((route) => [route.id, route]))
   const validScreenIds = routes.map((route) => route.id)
   const modalIdsByScreen = modalIdsByScreenFromRoutes(routes)
+
+  const outgoingByScreen = new Map<string, OutgoingGraphLink[]>()
+  for (const edge of graph.edges) {
+    const list = outgoingByScreen.get(edge.fromScreenId) ?? []
+    list.push({ linkId: edge.linkId, toScreenId: edge.toScreenId })
+    outgoingByScreen.set(edge.fromScreenId, list)
+  }
+
+  const screenRectsById = new Map<string, NodeRect>()
+  for (const node of graph.nodes) {
+    const position = positions.get(node.id)
+    const measured = screenNodeSizes.get(node.id)
+    if (position && measured) {
+      screenRectsById.set(node.id, {
+        x: position.x,
+        y: position.y,
+        width: measured.width,
+        height: measured.height,
+      })
+    }
+  }
 
   const getNodeRect = (id: string): NodeRect | undefined => {
     const position = positions.get(id)
@@ -163,13 +228,20 @@ function buildScreenGraph({
           validScreenIds,
           modalIdsByScreen,
           measuredSize: measured,
+          outgoingLinks: outgoingByScreen.get(node.id) ?? [],
+          nodePosition: positions.get(node.id) ?? { x: 0, y: 0 },
+          screenRectsById,
           onGraphLinkHover,
+          onLinkRects,
         },
       },
     ]
   })
 
-  return { nodes, edges: buildGraphEdges(graph, getNodeRect) }
+  return {
+    nodes,
+    edges: buildScreenGraphEdges(graph, getNodeRect, linkRectsByScreen, positions),
+  }
 }
 
 export function buildReactFlowGraph(input: BuildReactFlowGraphInput): {

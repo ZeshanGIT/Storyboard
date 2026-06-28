@@ -48,6 +48,30 @@
   pointer-events: none;
 }
 
+/* Handles behind wireframe content; edges (z-index 3) above screen node (z-index 2) */
+.react-flow__handle.wireframe-graph-link-handle {
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* React Flow side classes set inset:0/50%; override so custom left/top anchors win */
+/* biome-ignore lint/complexity/noImportantStyles: beat React Flow handle side defaults */
+.react-flow__handle.wireframe-graph-link-handle.react-flow__handle-top,
+.react-flow__handle.wireframe-graph-link-handle.react-flow__handle-bottom,
+.react-flow__handle.wireframe-graph-link-handle.react-flow__handle-left,
+.react-flow__handle.wireframe-graph-link-handle.react-flow__handle-right {
+  top: var(--wf-handle-y) !important;
+  left: var(--wf-handle-x) !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
 .react-flow__edge.wireframe-graph-edge-dimmed .react-flow__edge-path {
   opacity: 0.25;
 }

@@ -1,4 +1,4 @@
-import { type Node, type NodeProps } from '@xyflow/react'
+import type { Node, NodeProps } from '@xyflow/react'
 import { cn } from '@/lib/utils'
 import { BoundaryHandles } from './BoundaryHandles'
 import { COMPACT_NODE_HEIGHT, COMPACT_NODE_WIDTH } from './build-react-flow-graph'
