@@ -119,7 +119,7 @@ New `<Screen>` in MDX + save → codegen updates that doc's generated files. No 
 
 ### Graph View
 
-Third shell tab; active document picker applies. Codegen `navigationGraph` → Screen View (default, wireframe nodes + link-anchored edges with boundary target ports and link-hover highlight) or Compact View (cards with note/counts, boundary edges only). Pan/zoom/fit/minimap; node click selects only. Full UX spec: [`GRAPH_VIEW.md`](GRAPH_VIEW.md).
+Third shell tab; active document picker applies. Codegen `navigationGraph` → Dagre **left-to-right** layout. Screen View (default): wireframe nodes, link-anchored edges (control boundary → smart screen boundary ports), link/edge hover highlight, blue connector styling. Compact View: cards with note/counts, boundary edges only. Pan/zoom/fit/minimap; node click selects only. Full UX spec: [`GRAPH_VIEW.md`](GRAPH_VIEW.md).
 
 ## Tooling
 
@@ -134,6 +134,7 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 - `Link` not `Button`; minimal History API router (no React Router)
 - Generated gitignored; codegen before tsc in build/check
 - `wireframe.mdx` = canonical example
+- Graph View: Dagre LR layout; Screen View edges anchor at link controls
 
 ## Next
 

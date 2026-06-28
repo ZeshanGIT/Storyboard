@@ -54,7 +54,8 @@ Run `npm run build` + `npm run check` before claiming done.
 
 - Primitives: wireframe output (structural borders, semantic HTML, `disabled`/`danger` helpers) — shadcn internally OK
 - Shell: full shadcn/Tailwind OK
-- No brand colors, shadows, typography systems
+- Graph View chrome: fixed blue navigation connectors in `src/shell/graph/graph-view.css`; wireframe content inside graph nodes stays structural
+- No brand colors, shadows, typography systems elsewhere
 
 ### Naming
 
