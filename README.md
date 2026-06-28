@@ -6,6 +6,16 @@ Describe screens, actions, and navigation in code — not mockups. One MDX sourc
 
 **Live demo:** [zeshangit.github.io/Storyboard](https://zeshangit.github.io/Storyboard/)
 
+## Screenshots
+
+**Prototype View** — clickable flow from MDX (Workforge Demo):
+
+![Prototype View showing the Workforge home screen with Login and Create account actions](docs/screenshots/prototype-view.png)
+
+**Graph View** — auto-generated navigation graph from the same MDX:
+
+![Graph View showing Home, Login, Sign up, and Dashboard screens connected by navigation edges](docs/screenshots/graph-view.png)
+
 ## What it is
 
 Storyboard lets you specify:
@@ -128,11 +138,17 @@ npm run preview    # preview production build
 
 The repo deploys to GitHub Pages on push to `master` via [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
 
-To enable the live site:
+**Requirements:**
 
-1. In the GitHub repo, go to **Settings → Pages**
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**
-3. Push to `master` — the workflow builds with `base: /Storyboard/` and deploys
+- **Public repository** (GitHub Free) — or GitHub Pro/Team if the repo stays private
+- **Settings → Pages → Build and deployment → Source:** **GitHub Actions**
+
+If deploy fails with `404` / “Ensure GitHub Pages has been enabled”, Pages is not enabled yet or your plan does not support Pages on a private repo. For a showcase demo, making the repository **public** is the simplest fix.
+
+Setup:
+
+1. Enable Pages: **Settings → Pages → Source → GitHub Actions**
+2. Push to `master` — the workflow builds with `base: /Storyboard/` and deploys
 
 Local preview of the Pages build:
 
