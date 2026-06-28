@@ -134,7 +134,7 @@ Each node is a **compact card** showing:
 - Count of **incoming** connections
 - Count of **outgoing** connections
 
-No wireframe content is rendered inside the node.
+No wireframe content is rendered inside the node. **Hover a compact node** to show a scaled wireframe preview below the card; if the preview would clip the viewport, the canvas pans (or zooms out slightly) to keep it visible.
 
 ### Edges
 
@@ -216,7 +216,6 @@ The following are explicitly **not** required for the first version. They may ap
 - Export as image
 - Edge labels or edge hover highlighting
 - Animated navigation paths
-- Hover preview of screen content in Compact View
 - Click node → jump to screen in Preview or Prototype
 - Cross-document graph (all MDX files at once)
 
@@ -230,7 +229,7 @@ The first version is complete when a reviewer can confirm all of the following w
 2. Every screen in the active document appears as a node; the entry screen is visually distinct.
 3. Every screen-to-screen link (non-disabled) appears as a directed edge; modal/back/close links do not create screen-to-screen edges.
 4. Screen View shows scaled wireframe content per node; edges anchor at link controls with smart target ports; hovering a navigable link highlights its edge.
-5. Compact View shows title, connection counts, and node-anchored edges.
+5. Compact View shows title, connection counts, node-anchored edges, and a wireframe preview on node hover.
 6. User can pan, zoom, fit-to-screen, and use a minimap.
 7. Clicking a node selects it without leaving Graph View or switching to another tab.
 8. Switching modes recalculates layout but preserves selection and centers the selected node.

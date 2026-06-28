@@ -12,6 +12,7 @@ export const GRAPH_EDGE_STROKE = '#63b3ed'
 export const COMPACT_NODE_WIDTH = 180
 export const COMPACT_NODE_HEIGHT = 100
 export const GRAPH_NODE_Z_INDEX = 2
+export const COMPACT_PREVIEW_NODE_Z_INDEX = 100
 export const GRAPH_EDGE_Z_INDEX = 3
 export const GRAPH_HIGHLIGHTED_EDGE_Z_INDEX = 4
 
@@ -122,13 +123,18 @@ function buildScreenGraphEdges(
 
 function buildCompactGraph({
   graph,
+  routes,
   selectedId,
   positions,
-}: Omit<BuildReactFlowGraphInput, 'mode' | 'routes'>): {
+  screenNodeSizes,
+}: Omit<BuildReactFlowGraphInput, 'mode'>): {
   nodes: CompactGraphNodeType[]
   edges: Edge[]
 } {
   const { incoming, outgoing } = countConnections(graph)
+  const routeById = new Map(routes.map((route) => [route.id, route]))
+  const validScreenIds = routes.map((route) => route.id)
+  const modalIdsByScreen = modalIdsByScreenFromRoutes(routes)
 
   const getNodeRect = (id: string): NodeRect | undefined => {
     const position = positions.get(id)
@@ -141,23 +147,38 @@ function buildCompactGraph({
     }
   }
 
-  const nodes: CompactGraphNodeType[] = graph.nodes.map((node) => ({
-    id: node.id,
-    type: 'compact',
-    position: positions.get(node.id) ?? { x: 0, y: 0 },
-    className: 'wireframe-graph-node',
-    style: { width: COMPACT_NODE_WIDTH, height: COMPACT_NODE_HEIGHT, zIndex: GRAPH_NODE_Z_INDEX },
-    zIndex: GRAPH_NODE_Z_INDEX,
-    data: {
-      title: node.title,
-      screenId: node.id,
-      note: node.note,
-      incoming: incoming.get(node.id) ?? 0,
-      outgoing: outgoing.get(node.id) ?? 0,
-      isEntry: node.isEntry,
-      selected: node.id === selectedId,
-    },
-  }))
+  const nodes: CompactGraphNodeType[] = graph.nodes.flatMap((node) => {
+    const route = routeById.get(node.id)
+    if (!route) return []
+
+    return [
+      {
+        id: node.id,
+        type: 'compact' as const,
+        position: positions.get(node.id) ?? { x: 0, y: 0 },
+        className: 'wireframe-graph-node wireframe-graph-compact-node',
+        style: {
+          width: COMPACT_NODE_WIDTH,
+          height: COMPACT_NODE_HEIGHT,
+          zIndex: GRAPH_NODE_Z_INDEX,
+        },
+        zIndex: GRAPH_NODE_Z_INDEX,
+        data: {
+          title: node.title,
+          screenId: node.id,
+          note: node.note,
+          incoming: incoming.get(node.id) ?? 0,
+          outgoing: outgoing.get(node.id) ?? 0,
+          isEntry: node.isEntry,
+          selected: node.id === selectedId,
+          component: route.component,
+          measuredSize: screenNodeSizes?.get(node.id),
+          validScreenIds,
+          modalIdsByScreen,
+        },
+      },
+    ]
+  })
 
   return { nodes, edges: buildCompactGraphEdges(graph, getNodeRect) }
 }

@@ -222,14 +222,11 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     const prev = prevMeasureInputsRef.current
     prevMeasureInputsRef.current = { measureKey, mode }
 
-    if (!prev) {
-      if (mode !== 'screen') setScreenNodeSizes(null)
-      return
+    if (!prev) return
+
+    if (prev.measureKey !== measureKey) {
+      setScreenNodeSizes(null)
     }
-
-    if (prev.measureKey === measureKey && prev.mode === mode) return
-
-    setScreenNodeSizes(null)
   }, [measureKey, mode])
 
   const positions = useMemo(() => {
@@ -291,7 +288,7 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       mode,
       selectedId,
       positions,
-      screenNodeSizes: mode === 'screen' ? (screenNodeSizes ?? undefined) : undefined,
+      screenNodeSizes: screenNodeSizes ?? undefined,
       onGraphLinkHover,
       onGraphLinkFocus,
       onLinkRects: mode === 'screen' ? onLinkRects : undefined,
@@ -370,16 +367,14 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
       </div>
       <div className="min-h-0 flex-1 border-border bg-muted/20">
         <div className="relative h-full">
-          {mode === 'screen' && screenNodeSizes === null ? (
-            <>
-              <ScreenGraphMeasureLayer
-                graph={navigationGraph}
-                routes={routes}
-                onMeasured={setScreenNodeSizes}
-              />
-              <GraphLoadingState />
-            </>
+          {screenNodeSizes === null ? (
+            <ScreenGraphMeasureLayer
+              graph={navigationGraph}
+              routes={routes}
+              onMeasured={setScreenNodeSizes}
+            />
           ) : null}
+          {mode === 'screen' && screenNodeSizes === null ? <GraphLoadingState /> : null}
           {isScreenLayoutReady ? (
             <ReactFlowProvider>
               <div className="h-full">

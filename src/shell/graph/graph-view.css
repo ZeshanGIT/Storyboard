@@ -40,6 +40,10 @@
   pointer-events: stroke;
 }
 
+.react-flow__node.wireframe-graph-compact-node {
+  overflow: visible;
+}
+
 /* Screen node bodies pass through to edges; links stay interactive */
 .react-flow__node.wireframe-graph-screen-node {
   pointer-events: none;
