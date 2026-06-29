@@ -27,6 +27,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 |------|--------|
 | Primitives: Screen, Text, Link, Input, Container, Image, Icon, Modal, TopBar, Divider | Done |
 | MDX AST extract, validation (dup ids, bad goto, Text flags) | Done |
+| Single-parse codegen (`buildMdxDocument`, classified links, modalIds) | Done |
 | Per-doc screens/routes + contentDocuments registry | Done |
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | storyboard.mdx, wireframe.mdx, components.mdx | Done |
@@ -55,13 +56,18 @@ Examples: `storyboard.mdx` (intro), `wireframe.mdx` (Workforge demo), `component
 
 ```
 src/content/*.mdx
-  → remark extract-screens + validators + navigation graph
+  → buildMdxDocument (single AST parse per file)
+     screens with modalIds, classified links, linkIds
+  → extractNavigationGraph from classified screen-edge links
+  → inject graph-link-id into generated screen JSX
   → src/generated/documents/{slug}/screens.generated.tsx
                         routes.generated.tsx
                         navigation-graph.generated.ts
   → content-documents.generated.tsx, routes.generated.tsx
   → Preview: stacked screens | Prototype: routes (first = entry) | Graph: navigationGraph
 ```
+
+Each MDX file is parsed once via `buildMdxDocument`. Screens carry `modalIds` from AST modal collection (not regex). Links are classified (`screen-edge`, `modal`, `reserved`, invalid variants) with pre-assigned `linkId`s used by both the navigation graph and generated `graph-link-id` attributes.
 
 Vite plugin: `runFullCodegen` on `buildStart` + MDX save → full reload. CLI: `npm run codegen`.
 
