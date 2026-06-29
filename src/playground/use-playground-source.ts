@@ -28,7 +28,7 @@ export function usePlaygroundSource(): {
       appPath: toAppPath(window.location.pathname),
       search: window.location.search,
     })
-    if (!current || current.app !== 'playground') {
+    if (current?.app !== 'playground') {
       const { appPath, search } = buildAppUrl({
         app: 'playground',
         source: next,

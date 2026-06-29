@@ -1,6 +1,6 @@
 import { MDX_APP_PREFIX, PLAYGROUND_APP_PATH, screenRoutePath } from '@/lib/app-routes'
-import { extractNavigationGraphFromScreens } from '@/plugin/extract-navigation-graph'
 import type { MdxPlaygroundBuilt } from '@/playground/compile-playground-mdx'
+import { extractNavigationGraphFromScreens } from '@/plugin/extract-navigation-graph'
 import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import { buildMdxScreenComponent } from './build-mdx-screen-component'
 

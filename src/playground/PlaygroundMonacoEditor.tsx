@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
 import Editor from '@monaco-editor/react'
+import type { ReactNode } from 'react'
 import './monaco-setup'
 
 export type PlaygroundMonacoEditorProps = {

@@ -32,7 +32,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | storyboard.mdx, wireframe.mdx, components.mdx | Done |
 | Graph View (shell tab, Screen + Compact modes) | Done |
-| JSON playground (browser compile, Monaco split editor, no codegen) | Done |
+| JSON / MDX playground (browser compile, Monaco split editor) | Done |
 | URL-driven shell (view, doc, prototype screen, graph query in browser URL) | Done |
 | Unreachable validation, doc export | Not started |
 | Card, List, Section, BottomNav, Tabs | Not started |
@@ -74,7 +74,7 @@ Each MDX file is parsed once via `buildMdxDocument`. Screens carry `modalIds` fr
 
 Vite plugin: `runFullCodegen` on `buildStart` + MDX save → full reload. CLI: `npm run codegen`.
 
-## JSON flow (playground / SaaS path)
+## JSON / MDX playground flow
 
 ```
 JSON document (tuple nodes, colon-modifier tags — see JSON-COMPONENTS.md)
@@ -90,6 +90,8 @@ Entry: `App.tsx` picks MDX vs playground from parsed URL → `MdxApp` or `Playgr
 
 Playground UI: split pane — Monaco JSON editor (left, debounced compile) + Shell (right). Initial content from `sample-wireframe.json`. Compile errors surface via `WireframeErrorProvider`.
 
+MDX path: `compilePlaygroundMdx` → `mdxToWireframeDocumentBundle` with `routePrefix` `/playground/mdx/{slug}`. MDX editor loads `wireframe.mdx` sample via `?raw` import. Source toggle (JSON | MDX) syncs to URL `source` segment.
+
 No `src/generated/` involvement. MDX and JSON paths are separate; both produce `WireframeDocumentBundle` for the shell.
 
 ## Repo map
@@ -98,6 +100,7 @@ No `src/generated/` involvement. MDX and JSON paths are separate; both produce `
 src/content/*.mdx
 src/generated/              # gitignored AUTO-GENERATED (MDX only)
 src/json/                   # browser JSON compiler + renderer
+src/mdx-playground/         # browser MDX renderer + bundle adapter
 src/types/                  # navigation, goto, WireframeDocumentBundle
 src/lib/app-routes.ts       # path constants, screenRoutePath
 src/lib/app-url.ts          # parseAppUrl / buildAppUrl, legacy resolution

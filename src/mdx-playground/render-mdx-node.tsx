@@ -1,4 +1,4 @@
-import type { Root, Text as MdastText } from 'mdast'
+import type { Text as MdastText, Root } from 'mdast'
 import type { ComponentType, ReactNode } from 'react'
 import { Fragment } from 'react'
 import {
@@ -37,13 +37,15 @@ function isWireframeComponent(name: string | null | undefined): name is Wirefram
 }
 
 function renderMdxChildren(children: MdxJsxElement['children']): ReactNode {
-  return children.map((child, index) => {
+  let keySeq = 0
+  return children.map((child) => {
+    const key = `mdx-${keySeq++}`
     if (child.type === 'text') {
       const text = (child as MdastText).value
-      return text ? <Fragment key={`t-${index}`}>{text}</Fragment> : null
+      return text ? <Fragment key={key}>{text}</Fragment> : null
     }
     if (child.type === 'mdxJsxFlowElement' || child.type === 'mdxJsxTextElement') {
-      return <Fragment key={`n-${index}`}>{renderMdxJsxElement(child)}</Fragment>
+      return <Fragment key={key}>{renderMdxJsxElement(child)}</Fragment>
     }
     return null
   })
