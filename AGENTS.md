@@ -2,7 +2,7 @@
 
 Agent tooling rules. **Complements** [`docs/CONTEXT.md`](docs/CONTEXT.md) — read both at session start. CONTEXT = what/where; AGENTS = how/rules. State conflict → trust CONTEXT.
 
-Refs: [`VISION.md`](docs/VISION.md), [`MDX-COMPONENTS.md`](docs/MDX-COMPONENTS.md)
+Refs: [`VISION.md`](docs/VISION.md), [`MDX-COMPONENTS.md`](docs/MDX-COMPONENTS.md), [`JSON-COMPONENTS.md`](docs/JSON-COMPONENTS.md)
 
 ## Summary
 
@@ -19,7 +19,7 @@ Small vertical slices. ✓1 Foundation ✓2 Navigation ✓3 Primitives ✓4 Mult
 ## Commands
 
 ```bash
-npm run dev              # codegen on start + MDX save; JSON playground at /playground
+npm run dev              # codegen on start + MDX save; JSON playground at /playground/json/...
 npm run build            # codegen + tsc + vite
 npm run check    # codegen + tsc + Biome
 npm run fix      # Biome safe fixes + format
@@ -58,6 +58,20 @@ Run `npm run build` + `npm run check` before claiming done.
 - `extractScreens` is a thin wrapper; production path is `runFullCodegen` → `buildMdxDocument`
 - Plugin touches → add tests (`npm test`)
 
+### JSON compiler (`src/json/`)
+
+- Browser-only path — no `src/generated/`; parallels MDX semantics via shared `classifyGotoLink` and `WireframeDocumentBundle`
+- Canonical parse: `buildJsonDocument`; stamp `graphLinkId` at build time (not runtime)
+- API: [`JSON-COMPONENTS.md`](docs/JSON-COMPONENTS.md)
+- JSON touches → add tests (`npm test`)
+
+### App routing
+
+- Canonical paths: `/mdx/...` (codegen MDX) and `/playground/json/...` (JSON playground)
+- `src/lib/app-url.ts` — parse/build; `src/shell/use-app-url.ts` — History API hook
+- `App.tsx` — playground vs MDX split from parsed URL
+- Prototype screen paths: `/mdx/{docSlug}/{screenId}` or `/playground/json/{docSlug}/{screenId}`
+
 ### Styling
 
 - Primitives: wireframe output (structural borders, semantic HTML, `disabled`/`danger` helpers) — shadcn internally OK
@@ -95,8 +109,9 @@ Run `npm run build` + `npm run check` before claiming done.
 2. MDX = language (no separate DSL)
 3. Screens first-class — stable `id`, nav via `goto`
 4. Primitives ≠ shell chrome
-5. Static analysis at codegen
+5. Static analysis at codegen (MDX); browser compile for JSON
 6. `Link` for nav — `primary-btn`/`secondary-btn`, not `Button`
+7. MDX + JSON → `WireframeDocumentBundle` → shared `Shell`
 
 ## Skills
 
@@ -107,6 +122,7 @@ Only `.agents/skills/` auto-discovered. Manual → `.agents/skill-archive/` (`@.
 - [ ] `VISION.md` if product behavior
 - [ ] `GRAPH_VIEW.md` if graph tab behavior changes
 - [ ] `CONTEXT.md` if architecture/codegen
+- [ ] `JSON-COMPONENTS.md` if JSON tuple/tag API changes
 - [ ] Wireframe-styled primitives
 - [ ] New components → `mdx-components.ts`
 - [ ] New content → `title` frontmatter
@@ -116,3 +132,6 @@ Only `.agents/skills/` auto-discovered. Manual → `.agents/skill-archive/` (`@.
 
 
 Git: This directory is not a git repository. The actual git repository is at /Users/seshan-12821/Data/Repos/WireframeX. You cannot cd there directly due to workspace restrictions, but you CAN run git commands using git -C /Users/seshan-12821/Data/Repos/WireframeX <command>. Changes made here sync automatically.
+
+Always use composer-2.5 for subagents
+**DO NOT USE** composer-2.5-fast

@@ -16,7 +16,7 @@ Don't duplicate AGENTS conventions or VISION philosophy here.
 
 ## What this is
 
-Text-first UX spec: MDX + React components describe screens/nav — not mockups. One source → Preview + Prototype + Graph View. Storybook for UX flows.
+Text-first UX spec: MDX or JSON describes screens/nav — not mockups. Both paths → `WireframeDocumentBundle` → Preview + Prototype + Graph View. Storybook for UX flows.
 
 Primitives = structure/behavior (wireframe-styled). Shell = Tailwind/shadcn.
 
@@ -39,7 +39,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 ## Quick start
 
 ```bash
-npm install && npm run dev    # localhost:5173 — MDX + codegen; JSON playground at /playground
+npm install && npm run dev    # localhost:5173 — MDX at /mdx/...; JSON playground at /playground/json/...
 npm run check && npm run build && npm test
 ```
 
@@ -65,7 +65,8 @@ src/content/*.mdx
                         routes.generated.tsx
                         navigation-graph.generated.ts
   → content-documents.generated.tsx, routes.generated.tsx
-  → Preview: stacked screens | Prototype: routes (first = entry) | Graph: navigationGraph
+  → mdxContentDocumentsToBundles → WireframeDocumentBundle[]
+  → MdxApp → Shell: Preview | Prototype (routes, first = entry) | Graph (navigationGraph)
 ```
 
 Each MDX file is parsed once via `buildMdxDocument`. Screens carry `modalIds` from AST modal collection (not regex). Links are classified (`screen-edge`, `modal`, `reserved`, invalid variants) with pre-assigned `linkId`s used by both the navigation graph and generated `graph-link-id` attributes.
@@ -78,12 +79,13 @@ Vite plugin: `runFullCodegen` on `buildStart` + MDX save → full reload. CLI: `
 JSON document (tuple nodes, colon-modifier tags — see JSON-COMPONENTS.md)
   → buildJsonDocument (browser)
      parse tuples, validate, classify links (shared classifyGotoLink)
-  → jsonToWireframeDocumentBundle
+     stamp graphLinkId on Link nodes at build time
+  → jsonToWireframeDocumentBundle (optional routePrefix)
      runtime Screen components, routes, navigationGraph
-  → Shell (same Preview / Prototype / Graph views)
+  → PlaygroundApp → Shell (same Preview / Prototype / Graph views)
 ```
 
-Entry: `/playground` route in `src/App.tsx` → `src/playground/PlaygroundApp.tsx`. Sample: `src/json/sample-wireframe.json`.
+Entry: `App.tsx` picks MDX vs playground from parsed URL → `MdxApp` or `PlaygroundApp` → `Shell`. Sample: `src/json/sample-wireframe.json`. Canonical playground path: `/playground/json/playground/...`; legacy `/playground` and `/playground/{screenId}` redirect on load.
 
 No `src/generated/` involvement. MDX and JSON paths are separate; both produce `WireframeDocumentBundle` for the shell.
 
@@ -94,11 +96,16 @@ src/content/*.mdx
 src/generated/              # gitignored AUTO-GENERATED (MDX only)
 src/json/                   # browser JSON compiler + renderer
 src/types/                  # navigation, goto, WireframeDocumentBundle
+src/lib/app-routes.ts       # path constants, screenRoutePath
+src/lib/app-url.ts          # parseAppUrl / buildAppUrl, legacy resolution
 src/playground/             # PlaygroundApp (JSON route)
+src/MdxApp.tsx              # MDX documents → Shell
 src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
 src/runtime/                # WireframeViewContext (preview|prototype|graph), WireframeErrorProvider
 src/shell/                  # Shell, DocumentMenu, PreviewView, PrototypeView, GraphView, graph/, router
+  adapters/mdx-documents.ts # ContentDocumentEntry → WireframeDocumentBundle
+  use-app-url.ts            # History API hook (URL = shell state)
 src/plugin/                 # codegen: buildMdxDocument, classify-links, generate, wireframe-plugin
   build-mdx-document.ts     # single parse entry (screens, modalIds, classified links)
   classify-links.ts         # navigation link semantics seam
@@ -108,10 +115,20 @@ src/plugin/                 # codegen: buildMdxDocument, classify-links, generat
   inject-graph-link-ids.ts
   run-full-codegen.ts
 src/mdx-components.ts
-src/App.tsx                 # routes /playground → PlaygroundApp, else MdxApp
+src/App.tsx                 # MDX vs playground from parsed URL
 ```
 
 ## Key behaviors
+
+### URL state
+
+Browser URL is source of truth for shell navigation:
+
+- MDX app: `/mdx/{docSlug}/{view}[/{screenId}]`
+- Playground: `/playground/{source}/{docSlug}/{view}[/{screenId}]`
+- Graph query: `?graphMode=screen|compact&focus={screenId}`
+
+Legacy flat paths (`/login`, `/playground/home`) redirect on load. Codec: `src/lib/app-url.ts`; hook: `src/shell/use-app-url.ts`.
 
 ### Content documents
 
@@ -131,7 +148,7 @@ Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger swi
 |------|------|----------|
 | preview | screen id | `href="#id"` scroll |
 | preview | `_close`/`_back` | `#` noop |
-| prototype | screen id | `navigate('/id')` |
+| prototype | screen id | `navigate` to `{routePrefix}/{id}` (e.g. `/mdx/wireframe/login`) |
 | prototype | modal id | `openModal(id)` |
 | prototype | `_close` | `closeModal()` |
 | prototype | `_back` | `history.back()` |
@@ -168,9 +185,11 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 - `storyboard.mdx` = intro showcase; `wireframe.mdx` = canonical demo example
 - Graph View: Dagre LR layout; Screen View edges anchor at link controls
 - Single MDX parse per file via `buildMdxDocument`; `modalIds` from AST; `linkId` from classified `screen-edge` links
+- MDX codegen + JSON browser compile both produce `WireframeDocumentBundle` for `Shell`
+- URL-driven shell: `/mdx/...` (MDX), `/playground/json/...` (JSON playground); `routePrefix` scopes prototype `Link` paths per document
 
 ## Next
 
 [`FUTURE.md`](FUTURE.md): unreachable/orphan validation (phase 6 — now unblocked by classified links), doc export, vision extras.
 
-Architecture backlog (Plan 1 ✓): [`2026-06-29-architecture-deepening-overview.md`](superpowers/plans/2026-06-29-architecture-deepening-overview.md) — shared navigation types, document registry, graph view pipeline.
+Architecture deepening (Plan 1 ✓): shared navigation types, `WireframeDocumentBundle`, graph view pipeline — see [`2026-06-29-architecture-deepening-overview.md`](superpowers/plans/2026-06-29-architecture-deepening-overview.md). JSON playground pipeline — [`2026-06-29-json-playground-pipeline.md`](superpowers/plans/2026-06-29-json-playground-pipeline.md).
