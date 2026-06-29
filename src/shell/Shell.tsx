@@ -14,9 +14,12 @@ import { PrototypeView } from './PrototypeView'
 import { normalizePrototypeScreenId } from './router'
 import { useAppUrl } from './use-app-url'
 
+export type ShellLayout = 'standalone' | 'embedded'
+
 export type ShellProps = {
   documents: readonly WireframeDocumentBundle[]
   appDefaults: Pick<AppUrlState, 'app' | 'source'>
+  layout?: ShellLayout
 }
 
 function defaultDocumentSlug(documents: readonly WireframeDocumentBundle[]): string {
@@ -29,7 +32,8 @@ function documentFilename(entry: WireframeDocumentBundle): string {
   return `${entry.slug}.${entry.source === 'mdx' ? 'mdx' : 'json'}`
 }
 
-export function Shell({ documents, appDefaults }: ShellProps) {
+export function Shell({ documents, appDefaults, layout = 'standalone' }: ShellProps) {
+  const embedded = layout === 'embedded'
   const knownDocs = useMemo(
     () => documents.map((doc) => ({ slug: doc.slug, screenIds: doc.routes.map((r) => r.id) })),
     [documents],
@@ -107,9 +111,19 @@ export function Shell({ documents, appDefaults }: ShellProps) {
   return (
     <WireframeErrorProvider initialErrors={initialErrors}>
       <WireframeDisplayPreferencesProvider>
-        <div className="min-h-screen bg-background text-foreground">
-          <header className="border-b px-6 py-4">
-            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
+        <div
+          className={cn(
+            'bg-background text-foreground',
+            embedded ? 'flex h-full min-h-0 flex-col' : 'min-h-screen',
+          )}
+        >
+          <header className="border-b">
+            <div
+              className={cn(
+                'mx-auto flex flex-wrap items-center justify-between gap-4 px-6 py-4',
+                embedded ? 'max-w-none' : 'max-w-5xl',
+              )}
+            >
               <div className="flex min-w-0 items-center gap-3">
                 <span className="shrink-0 text-lg font-semibold tracking-tight">Storyboard</span>
                 {documents.length > 0 ? (
@@ -137,8 +151,14 @@ export function Shell({ documents, appDefaults }: ShellProps) {
 
           <main
             className={cn(
-              'mx-auto',
-              view === 'graph' ? 'h-[calc(100vh-73px)] max-w-none' : 'max-w-3xl px-6 py-8',
+              'mx-auto w-full',
+              embedded
+                ? view === 'graph'
+                  ? 'flex min-h-0 flex-1 flex-col'
+                  : 'min-h-0 flex-1 overflow-y-auto px-6 py-8'
+                : view === 'graph'
+                  ? 'h-[calc(100vh-73px)] max-w-none'
+                  : 'max-w-3xl px-6 py-8',
             )}
           >
             {view === 'preview' ? (
