@@ -1,9 +1,9 @@
 import type { Root } from 'mdast'
 import { visit } from 'unist-util-visit'
+import { classifyGotoLink } from '../json/classify-goto-link'
 import { getGotoTarget, getLinkLabel, getStringAttr, hasBooleanAttr, isNamedNode } from './mdx-ast'
 import { type ClassifiedLink, CodegenError } from './types'
 
-const RESERVED_GOTO = new Set(['_close', '_back'])
 const isScreenNode = isNamedNode('Screen')
 const isLinkNode = isNamedNode('Link')
 
@@ -29,19 +29,7 @@ export function classifyScreenLinks(
     const linkContext = label ? ` on link "${label}"` : ''
     const gotoTarget = getGotoTarget(node)
 
-    if (!gotoTarget) {
-      errors.push(
-        new CodegenError(
-          'INVALID_GOTO',
-          `Link${linkContext} in screen "${activeScreenId}" is missing a goto attribute`,
-          activeScreenId,
-        ),
-      )
-      pushLink(linksByScreen, activeScreenId, { classification: 'invalid-missing-goto', label })
-      return
-    }
-
-    if (gotoTarget.kind === 'unknown') {
+    if (gotoTarget?.kind === 'unknown') {
       errors.push(
         new CodegenError(
           'INVALID_GOTO',
@@ -53,45 +41,18 @@ export function classifyScreenLinks(
       return
     }
 
-    const goto = gotoTarget.value
-
-    if (hasBooleanAttr(node, 'disabled')) {
-      pushLink(linksByScreen, activeScreenId, { classification: 'disabled-skip', goto, label })
-      return
-    }
-
-    if (RESERVED_GOTO.has(goto)) {
-      pushLink(linksByScreen, activeScreenId, { classification: 'reserved', goto, label })
-      return
-    }
-
-    const screenModalIds = modalIdsByScreen.get(activeScreenId) ?? new Set<string>()
-    if (screenModalIds.has(goto)) {
-      pushLink(linksByScreen, activeScreenId, { classification: 'modal', goto, label })
-      return
-    }
-
-    if (!screenIds.has(goto)) {
-      errors.push(
-        new CodegenError(
-          'INVALID_GOTO',
-          `Invalid goto "${goto}"${linkContext} in screen "${activeScreenId ?? 'unknown'}" — no screen with id "${goto}", and no modal with id "${goto}" in this screen`,
-          activeScreenId,
-        ),
-      )
-      pushLink(linksByScreen, activeScreenId, { classification: 'invalid-target', goto, label })
-      return
-    }
-
-    const linkId = `${activeScreenId}:${linkIndex}`
-    linkIndex += 1
-    pushLink(linksByScreen, activeScreenId, {
-      classification: 'screen-edge',
-      goto,
+    const { link, error } = classifyGotoLink({
+      screenId: activeScreenId,
+      linkIndex,
+      goto: gotoTarget?.kind === 'screen-id' ? gotoTarget.value : undefined,
       label,
-      linkId,
-      toScreenId: goto,
+      disabled: hasBooleanAttr(node, 'disabled'),
+      screenIds,
+      modalIdsForScreen: modalIdsByScreen.get(activeScreenId) ?? new Set(),
     })
+    if (error) errors.push(error)
+    pushLink(linksByScreen, activeScreenId, link)
+    if (link.classification === 'screen-edge') linkIndex += 1
   })
 
   return { linksByScreen, errors }
