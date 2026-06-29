@@ -20,16 +20,31 @@ export function getStringAttr(node: MdxJsxElement, name: string): string | undef
   return undefined
 }
 
-export function getGotoValue(node: MdxJsxElement): string | undefined {
+export type GotoTarget = { kind: 'screen-id'; value: string } | { kind: 'unknown'; raw: string }
+
+export function getGotoTarget(node: MdxJsxElement): GotoTarget | undefined {
   const attr = node.attributes.find((a) => a.type === 'mdxJsxAttribute' && a.name === 'goto')
   if (!attr || attr.value === null || attr.value === undefined) return undefined
-  if (typeof attr.value === 'string') return attr.value
+
+  if (typeof attr.value === 'string') {
+    return { kind: 'screen-id', value: attr.value }
+  }
+
   if (attr.value.type === 'mdxJsxAttributeValueExpression') {
     const expr = attr.value.value.trim()
     const stringMatch = expr.match(/^(['"])(.*)\1$/)
-    if (stringMatch) return stringMatch[2]
+    if (stringMatch) {
+      return { kind: 'screen-id', value: stringMatch[2] }
+    }
+    return { kind: 'unknown', raw: expr }
   }
+
   return undefined
+}
+
+export function getGotoValue(node: MdxJsxElement): string | undefined {
+  const target = getGotoTarget(node)
+  return target?.kind === 'screen-id' ? target.value : undefined
 }
 
 export function hasBooleanAttr(node: MdxJsxElement, name: string): boolean {

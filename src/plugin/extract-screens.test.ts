@@ -24,6 +24,20 @@ describe('extractScreens', () => {
     expect(result.screens[0].jsx).toContain('<Text>Welcome back</Text>')
   })
 
+  it('populates modalIds from modals in the screen', () => {
+    const result = extractScreens(`
+<Screen id="home" title="Home">
+  <Link goto="confirm">Open</Link>
+  <Modal id="confirm">
+    <Link goto="_close">Close</Link>
+  </Modal>
+</Screen>
+`)
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.screens[0].modalIds).toEqual(['confirm'])
+  })
+
   it('rejects duplicate screen ids with location detail', () => {
     const dup = `
 <Screen id="home" title="A">...</Screen>

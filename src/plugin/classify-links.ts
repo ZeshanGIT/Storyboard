@@ -1,6 +1,6 @@
 import type { Root } from 'mdast'
 import { visit } from 'unist-util-visit'
-import { getGotoValue, getLinkLabel, getStringAttr, hasBooleanAttr, isNamedNode } from './mdx-ast'
+import { getGotoTarget, getLinkLabel, getStringAttr, hasBooleanAttr, isNamedNode } from './mdx-ast'
 import { type ClassifiedLink, CodegenError } from './types'
 
 const RESERVED_GOTO = new Set(['_close', '_back'])
@@ -27,9 +27,9 @@ export function classifyScreenLinks(
 
     const label = getLinkLabel(node)
     const linkContext = label ? ` on link "${label}"` : ''
-    const goto = getGotoValue(node)
+    const gotoTarget = getGotoTarget(node)
 
-    if (!goto) {
+    if (!gotoTarget) {
       errors.push(
         new CodegenError(
           'INVALID_GOTO',
@@ -40,6 +40,20 @@ export function classifyScreenLinks(
       pushLink(linksByScreen, activeScreenId, { classification: 'invalid-missing-goto', label })
       return
     }
+
+    if (gotoTarget.kind === 'unknown') {
+      errors.push(
+        new CodegenError(
+          'INVALID_GOTO',
+          `Link${linkContext} in screen "${activeScreenId ?? 'unknown'}" — goto must be a string literal (got expression: ${gotoTarget.raw})`,
+          activeScreenId,
+        ),
+      )
+      pushLink(linksByScreen, activeScreenId, { classification: 'invalid-expression-goto', label })
+      return
+    }
+
+    const goto = gotoTarget.value
 
     if (hasBooleanAttr(node, 'disabled')) {
       pushLink(linksByScreen, activeScreenId, { classification: 'disabled-skip', goto, label })
