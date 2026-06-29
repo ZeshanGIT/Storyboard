@@ -7,6 +7,7 @@ export type WireframeViewContextValue = {
   view: WireframeView
   navigate: (path: string) => void
   goBack: () => void
+  routePrefix: string
   validScreenIds: ReadonlySet<string>
   modalIdsByScreen: ReadonlyMap<string, readonly string[]>
   activeModalId: string | null
@@ -21,6 +22,7 @@ const defaultValue: WireframeViewContextValue = {
   view: 'preview',
   navigate: () => {},
   goBack: () => {},
+  routePrefix: '',
   validScreenIds: new Set(),
   modalIdsByScreen: new Map(),
   activeModalId: null,
@@ -36,6 +38,7 @@ const WireframeViewContext = createContext<WireframeViewContextValue>(defaultVal
 export type WireframeViewProviderProps = {
   view: WireframeView
   navigate: (path: string) => void
+  routePrefix?: string
   validScreenIds: readonly string[]
   modalIdsByScreen: ReadonlyMap<string, readonly string[]>
   onGraphLinkHover?: (linkId: string | null) => void
@@ -46,6 +49,7 @@ export type WireframeViewProviderProps = {
 export function WireframeViewProvider({
   view,
   navigate,
+  routePrefix = '',
   validScreenIds,
   modalIdsByScreen,
   onGraphLinkHover = () => {},
@@ -73,6 +77,7 @@ export function WireframeViewProvider({
       view,
       navigate,
       goBack,
+      routePrefix,
       validScreenIds: validIds,
       modalIdsByScreen,
       activeModalId,
@@ -86,6 +91,7 @@ export function WireframeViewProvider({
       view,
       navigate,
       goBack,
+      routePrefix,
       validIds,
       modalIdsByScreen,
       activeModalId,

@@ -16,4 +16,6 @@ export type WireframeDocumentBundle = {
   routes: readonly RouteEntry[]
   navigationGraph: NavigationGraph
   preview: WireframePreviewSource
+  /** Prototype screen paths live under this prefix (e.g. `/playground`). */
+  routePrefix?: string
 }

@@ -39,8 +39,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 ## Quick start
 
 ```bash
-npm install && npm run dev    # localhost:5173 — MDX + codegen
-npm run dev:playground        # JSON playground (no MDX/codegen)
+npm install && npm run dev    # localhost:5173 — MDX + codegen; JSON playground at /playground
 npm run check && npm run build && npm test
 ```
 
@@ -84,7 +83,7 @@ JSON document (tuple nodes, colon-modifier tags — see JSON-COMPONENTS.md)
   → Shell (same Preview / Prototype / Graph views)
 ```
 
-Entry: `playground.html` → `src/playground/PlaygroundApp.tsx`. Sample: `src/json/sample-wireframe.json`.
+Entry: `/playground` route in `src/App.tsx` → `src/playground/PlaygroundApp.tsx`. Sample: `src/json/sample-wireframe.json`.
 
 No `src/generated/` involvement. MDX and JSON paths are separate; both produce `WireframeDocumentBundle` for the shell.
 
@@ -95,7 +94,7 @@ src/content/*.mdx
 src/generated/              # gitignored AUTO-GENERATED (MDX only)
 src/json/                   # browser JSON compiler + renderer
 src/types/                  # navigation, goto, WireframeDocumentBundle
-src/playground/             # JSON-only app entry
+src/playground/             # PlaygroundApp (JSON route)
 src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
 src/runtime/                # WireframeViewContext (preview|prototype|graph), WireframeErrorProvider
@@ -109,8 +108,7 @@ src/plugin/                 # codegen: buildMdxDocument, classify-links, generat
   inject-graph-link-ids.ts
   run-full-codegen.ts
 src/mdx-components.ts
-src/App.tsx                 # MDX app (contentDocuments → bundles)
-playground.html             # JSON playground entry
+src/App.tsx                 # routes /playground → PlaygroundApp, else MdxApp
 ```
 
 ## Key behaviors

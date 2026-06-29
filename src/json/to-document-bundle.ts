@@ -1,3 +1,4 @@
+import { screenRoutePath } from '@/lib/app-routes'
 import { extractNavigationGraphFromScreens } from '@/plugin/extract-navigation-graph'
 import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import type { JsonDocumentBuilt } from './build-json-document'
@@ -6,6 +7,7 @@ import { buildScreenComponent } from './build-screen-component'
 export function jsonToWireframeDocumentBundle(
   built: JsonDocumentBuilt,
   slug = 'json-document',
+  routePrefix = '',
 ): WireframeDocumentBundle {
   const components = new Map(
     built.screens.map((screen) => [screen.id, buildScreenComponent(screen)] as const),
@@ -13,7 +15,7 @@ export function jsonToWireframeDocumentBundle(
 
   const routes = built.screens.map((screen) => ({
     id: screen.id,
-    path: `/${screen.id}`,
+    path: screenRoutePath(routePrefix, screen.id),
     component: components.get(screen.id)!,
     ...(screen.modalIds.length > 0 ? { modalIds: screen.modalIds } : {}),
   }))
@@ -36,6 +38,7 @@ export function jsonToWireframeDocumentBundle(
     source: 'json',
     routes,
     navigationGraph,
+    ...(routePrefix ? { routePrefix } : {}),
     preview: {
       kind: 'screens',
       screens: built.screens.map((s) => ({

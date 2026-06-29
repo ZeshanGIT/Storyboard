@@ -44,6 +44,8 @@ export function Shell({ documents }: ShellProps) {
     [activeEntry],
   )
 
+  const routePrefix = activeEntry?.routePrefix ?? ''
+
   useEffect(() => {
     if (documents.some((doc) => doc.slug === activeDocumentSlug)) return
     setActiveDocumentSlug(defaultDocumentSlug(documents))
@@ -98,6 +100,7 @@ export function Shell({ documents }: ShellProps) {
                   validScreenIds={validScreenIds}
                   routes={activeEntry.routes}
                   preview={activeEntry.preview}
+                  routePrefix={routePrefix}
                 />
               ) : (
                 <p className="text-muted-foreground">No documents loaded.</p>
@@ -114,6 +117,7 @@ export function Shell({ documents }: ShellProps) {
                 key={activeEntry.slug}
                 routes={activeEntry.routes}
                 documentFilename={documentFilename(activeEntry)}
+                routePrefix={routePrefix}
               />
             ) : (
               <p className="text-muted-foreground">No documents loaded.</p>

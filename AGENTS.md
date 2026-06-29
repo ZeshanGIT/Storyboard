@@ -19,8 +19,7 @@ Small vertical slices. ✓1 Foundation ✓2 Navigation ✓3 Primitives ✓4 Mult
 ## Commands
 
 ```bash
-npm run dev              # codegen on start + MDX save
-npm run dev:playground   # JSON playground (browser compile)
+npm run dev              # codegen on start + MDX save; JSON playground at /playground
 npm run build            # codegen + tsc + vite
 npm run check    # codegen + tsc + Biome
 npm run fix      # Biome safe fixes + format

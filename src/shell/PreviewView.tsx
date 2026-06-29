@@ -7,15 +7,22 @@ export type PreviewViewProps = {
   validScreenIds: readonly string[]
   routes: readonly RouteEntry[]
   preview: WireframePreviewSource
+  routePrefix?: string
 }
 
-export function PreviewView({ validScreenIds, routes, preview }: PreviewViewProps) {
+export function PreviewView({
+  validScreenIds,
+  routes,
+  preview,
+  routePrefix = '',
+}: PreviewViewProps) {
   const modalIdsByScreen = useMemo(() => modalIdsByScreenFromRoutes(routes), [routes])
 
   return (
     <WireframeViewProvider
       view="preview"
       navigate={() => {}}
+      routePrefix={routePrefix}
       validScreenIds={validScreenIds}
       modalIdsByScreen={modalIdsByScreen}
     >

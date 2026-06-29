@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useScreenId } from '@/components/wireframe/ScreenContext'
+import { screenRoutePath } from '@/lib/app-routes'
 import { cn } from '@/lib/utils'
 import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 import { RESERVED_GOTO, useWireframeView } from '@/runtime/WireframeViewContext'
@@ -82,6 +83,7 @@ export function Link({
     view,
     navigate,
     goBack,
+    routePrefix,
     openModal,
     closeModal,
     validScreenIds,
@@ -134,7 +136,7 @@ export function Link({
       openModal(goto)
       return
     }
-    navigate(`/${goto}`)
+    navigate(screenRoutePath(routePrefix, goto))
   }
 
   if (!valid) {

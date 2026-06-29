@@ -5,9 +5,10 @@ import { modalIdsByScreenFromRoutes, type RouteEntry, usePrototypeRouter } from 
 export type PrototypeViewProps = {
   routes: readonly RouteEntry[]
   documentFilename: string
+  routePrefix?: string
 }
 
-export function PrototypeView({ routes, documentFilename }: PrototypeViewProps) {
+export function PrototypeView({ routes, documentFilename, routePrefix = '' }: PrototypeViewProps) {
   const codegenError = getCodegenError()
   const { navigate, activeRoute } = usePrototypeRouter(routes)
   const Active = activeRoute?.component
@@ -30,6 +31,7 @@ export function PrototypeView({ routes, documentFilename }: PrototypeViewProps) 
     <WireframeViewProvider
       view="prototype"
       navigate={navigate}
+      routePrefix={routePrefix}
       validScreenIds={validScreenIds}
       modalIdsByScreen={modalIdsByScreen}
     >

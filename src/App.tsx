@@ -1,14 +1,15 @@
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { contentDocuments } from './generated/content-documents.generated'
-import { mdxContentDocumentsToBundles } from './shell/adapters/mdx-documents'
-import { Shell } from './shell/Shell'
-
-const documents = mdxContentDocumentsToBundles(contentDocuments)
+import { isPlaygroundAppPath } from '@/lib/app-routes'
+import { MdxApp } from './MdxApp'
+import { PlaygroundApp } from './playground/PlaygroundApp'
+import { useAppRouter } from './shell/use-app-router'
 
 function App() {
+  const { appPath } = useAppRouter()
+
   return (
     <TooltipProvider delay={0}>
-      <Shell documents={documents} />
+      {isPlaygroundAppPath(appPath) ? <PlaygroundApp /> : <MdxApp />}
     </TooltipProvider>
   )
 }
