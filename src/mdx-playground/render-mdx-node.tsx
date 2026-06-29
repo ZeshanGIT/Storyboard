@@ -36,19 +36,53 @@ function isWireframeComponent(name: string | null | undefined): name is Wirefram
   return name !== null && name !== undefined && name in WIREFRAME_COMPONENTS
 }
 
+type MdastChild = MdxJsxElement['children'][number]
+
+function renderMdastChild(child: MdastChild, key: string): ReactNode {
+  if (child.type === 'text') {
+    const text = (child as MdastText).value
+    return text ? <Fragment key={key}>{text}</Fragment> : null
+  }
+  if (child.type === 'mdxJsxFlowElement' || child.type === 'mdxJsxTextElement') {
+    return <Fragment key={key}>{renderMdxJsxElement(child)}</Fragment>
+  }
+  if (child.type === 'paragraph' && 'children' in child) {
+    return (
+      <Fragment key={key}>
+        {renderMdxChildren(child.children as MdxJsxElement['children'])}
+      </Fragment>
+    )
+  }
+  return null
+}
+
 function renderMdxChildren(children: MdxJsxElement['children']): ReactNode {
   let keySeq = 0
-  return children.map((child) => {
-    const key = `mdx-${keySeq++}`
-    if (child.type === 'text') {
-      const text = (child as MdastText).value
-      return text ? <Fragment key={key}>{text}</Fragment> : null
+  return children.map((child) => renderMdastChild(child, `mdx-${keySeq++}`))
+}
+
+function asMdxJsxElement(node: { type?: string; name?: string | null }): MdxJsxElement | null {
+  if (node.type === 'mdxJsxFlowElement' || node.type === 'mdxJsxTextElement') {
+    return node as MdxJsxElement
+  }
+  return null
+}
+
+function findScreenRoot(tree: Root): MdxJsxElement | null {
+  for (const child of tree.children) {
+    const jsx = asMdxJsxElement(child)
+    if (jsx?.name === 'Screen') return jsx
+
+    if (child.type === 'paragraph') {
+      for (const nested of child.children) {
+        const nestedJsx = asMdxJsxElement(nested)
+        if (nestedJsx?.name === 'Screen') return nestedJsx
+      }
     }
-    if (child.type === 'mdxJsxFlowElement' || child.type === 'mdxJsxTextElement') {
-      return <Fragment key={key}>{renderMdxJsxElement(child)}</Fragment>
-    }
-    return null
-  })
+  }
+
+  const first = asMdxJsxElement(tree.children[0] ?? {})
+  return first
 }
 
 export function renderMdxJsxElement(node: MdxJsxElement): ReactNode {
@@ -65,9 +99,7 @@ export function renderMdxJsxElement(node: MdxJsxElement): ReactNode {
 
 export function renderMdxScreenJsx(jsx: string): ReactNode {
   const tree = mdxProcessor.parse(jsx) as Root
-  const root = tree.children[0]
-  if (!root || (root.type !== 'mdxJsxFlowElement' && root.type !== 'mdxJsxTextElement')) {
-    return null
-  }
+  const root = findScreenRoot(tree)
+  if (!root) return null
   return renderMdxJsxElement(root)
 }
