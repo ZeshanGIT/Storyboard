@@ -16,6 +16,16 @@ describe('parseAppUrl / buildAppUrl', () => {
     })
   })
 
+  it('round-trips playground MDX preview URL', () => {
+    const state = parseAppUrl({ appPath: '/playground/mdx/playground/preview' })
+    expect(state).toEqual({
+      app: 'playground',
+      source: 'mdx',
+      docSlug: 'playground',
+      view: 'preview',
+    })
+  })
+
   it('round-trips playground JSON graph URL with query', () => {
     const state = parseAppUrl({
       appPath: '/playground/json/playground/graph',
@@ -73,6 +83,12 @@ describe('screenPathForDoc', () => {
   it('builds playground JSON screen path', () => {
     expect(screenPathForDoc('playground', 'json', 'playground', 'home')).toBe(
       '/playground/json/playground/home',
+    )
+  })
+
+  it('builds playground MDX screen path', () => {
+    expect(screenPathForDoc('playground', 'mdx', 'playground', 'home')).toBe(
+      '/playground/mdx/playground/home',
     )
   })
 })
