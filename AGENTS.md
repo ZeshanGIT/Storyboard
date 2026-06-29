@@ -49,6 +49,14 @@ Run `npm run build` + `npm run check` before claiming done.
 - `type` for props; export alongside components
 - `import type` for type-only (`verbatimModuleSyntax`)
 - No unused locals/parameters
+- IDE: **TypeScript: Select TypeScript Version → Use Workspace Version** (`~6.0.x` from `node_modules`) so editor matches `npm run check`
+
+### Codegen plugin
+
+- Canonical MDX parse: `buildMdxDocument` — do not add parallel AST walks for screens/links/modals
+- Link semantics: `classifyScreenLinks` / `ClassifiedLink`; graph edges and `graph-link-id` injection consume classified `linkId`s
+- `extractScreens` is a thin wrapper; production path is `runFullCodegen` → `buildMdxDocument`
+- Plugin touches → add tests (`npm test`)
 
 ### Styling
 

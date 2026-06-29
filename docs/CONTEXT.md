@@ -26,8 +26,7 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 | Area | Status |
 |------|--------|
 | Primitives: Screen, Text, Link, Input, Container, Image, Icon, Modal, TopBar, Divider | Done |
-| MDX AST extract, validation (dup ids, bad goto, Text flags) | Done |
-| Single-parse codegen (`buildMdxDocument`, classified links, modalIds) | Done |
+| MDX parse + validation via `buildMdxDocument` (dup ids, goto, Text flags, classified links, modalIds) | Done |
 | Per-doc screens/routes + contentDocuments registry | Done |
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | storyboard.mdx, wireframe.mdx, components.mdx | Done |
@@ -80,7 +79,14 @@ src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
 src/runtime/                # WireframeViewContext (preview|prototype|graph), WireframeErrorProvider
 src/shell/                  # Shell, DocumentMenu, PreviewView, PrototypeView, GraphView, graph/, router
-src/plugin/                 # extract, validate, generate, navigation graph
+src/plugin/                 # codegen: buildMdxDocument, classify-links, generate, wireframe-plugin
+  build-mdx-document.ts     # single parse entry (screens, modalIds, classified links)
+  classify-links.ts         # navigation link semantics seam
+  mdx-ast.ts                # shared remark/AST helpers
+  extract-screens.ts        # thin wrapper → buildMdxDocument
+  extract-navigation-graph.ts
+  inject-graph-link-ids.ts
+  run-full-codegen.ts
 src/mdx-components.ts
 src/App.tsx
 ```
@@ -141,7 +147,10 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 - Generated gitignored; codegen before tsc in build/check
 - `storyboard.mdx` = intro showcase; `wireframe.mdx` = canonical demo example
 - Graph View: Dagre LR layout; Screen View edges anchor at link controls
+- Single MDX parse per file via `buildMdxDocument`; `modalIds` from AST; `linkId` from classified `screen-edge` links
 
 ## Next
 
-[`FUTURE.md`](FUTURE.md): unreachable/orphan validation, doc export, vision extras, type consolidation. Plans: `docs/superpowers/plans/`.
+[`FUTURE.md`](FUTURE.md): unreachable/orphan validation (phase 6 — now unblocked by classified links), doc export, vision extras.
+
+Architecture backlog (Plan 1 ✓): [`2026-06-29-architecture-deepening-overview.md`](superpowers/plans/2026-06-29-architecture-deepening-overview.md) — shared navigation types, document registry, graph view pipeline.
