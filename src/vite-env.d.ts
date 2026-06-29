@@ -1,6 +1,11 @@
 /// <reference types="vite/client" />
 /// <reference types="mdx" />
 
+declare module '*.mdx?raw' {
+  const content: string
+  export default content
+}
+
 declare module 'virtual:wireframe-codegen-state' {
   export type CodegenErrorInfo = {
     code: string
