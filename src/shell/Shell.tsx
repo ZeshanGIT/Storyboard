@@ -149,6 +149,19 @@ export function Shell({ documents, appDefaults }: ShellProps) {
                 navigationGraph={activeEntry.navigationGraph}
                 routes={activeEntry.routes}
                 documentFilename={documentFilename(activeEntry)}
+                graphMode={urlState.graphMode}
+                graphFocus={urlState.graphFocus}
+                onGraphUrlChange={(patch) =>
+                  navigate({
+                    view: 'graph',
+                    ...(patch.graphMode ? { graphMode: patch.graphMode } : {}),
+                    ...(patch.graphFocus === null
+                      ? { graphFocus: undefined }
+                      : patch.graphFocus
+                        ? { graphFocus: patch.graphFocus }
+                        : {}),
+                  })
+                }
               />
             ) : activeEntry ? (
               <PrototypeView

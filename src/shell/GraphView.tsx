@@ -15,6 +15,7 @@ import {
 import { RotateCcw } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { GraphMode } from '@/lib/app-routes'
 import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 import type { NavigationGraph } from '@/types/navigation'
 import { getCodegenErrors } from '../runtime/codegen-error'
@@ -41,6 +42,9 @@ export type GraphViewProps = {
   navigationGraph: NavigationGraph
   routes: readonly RouteEntry[]
   documentFilename: string
+  graphMode?: GraphMode
+  graphFocus?: string
+  onGraphUrlChange: (patch: { graphMode?: GraphMode; graphFocus?: string | null }) => void
 }
 
 const graphNodeTypes: NodeTypes = {
@@ -196,10 +200,17 @@ function GraphFlowCanvas({
   )
 }
 
-export function GraphView({ navigationGraph, routes, documentFilename }: GraphViewProps) {
+export function GraphView({
+  navigationGraph,
+  routes,
+  documentFilename,
+  graphMode = 'screen',
+  graphFocus,
+  onGraphUrlChange,
+}: GraphViewProps) {
   const codegenErrors = getCodegenErrors()
-  const [mode, setMode] = useState<GraphDisplayMode>('screen')
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const mode = graphMode as GraphDisplayMode
+  const selectedId = graphFocus ?? null
   const [layoutResetKey, setLayoutResetKey] = useState(0)
   const [screenNodeSizes, setScreenNodeSizes] = useState<ScreenNodeSizeMap | null>(null)
   const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null)
@@ -261,11 +272,14 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     setHighlightedLinkId(linkId)
   }, [])
 
-  const onGraphLinkFocus = useCallback((linkId: string, targetScreenId: string) => {
-    setHighlightedLinkId(linkId)
-    setSelectedId(targetScreenId)
-    setFocusTargetScreenId(targetScreenId)
-  }, [])
+  const onGraphLinkFocus = useCallback(
+    (linkId: string, targetScreenId: string) => {
+      setHighlightedLinkId(linkId)
+      onGraphUrlChange({ graphFocus: targetScreenId })
+      setFocusTargetScreenId(targetScreenId)
+    },
+    [onGraphUrlChange],
+  )
 
   const onFocusTargetHandled = useCallback(() => {
     setFocusTargetScreenId(null)
@@ -327,14 +341,20 @@ export function GraphView({ navigationGraph, routes, documentFilename }: GraphVi
     return `${measureKey}|${mode}|${layoutResetKey}|${positionPart}`
   }, [measureKey, mode, layoutResetKey, positions])
 
-  const onSelectNode = useCallback((id: string) => {
-    setSelectedId(id)
-  }, [])
+  const onSelectNode = useCallback(
+    (id: string) => onGraphUrlChange({ graphFocus: id }),
+    [onGraphUrlChange],
+  )
 
   const onClearSelection = useCallback(() => {
-    setSelectedId(null)
+    onGraphUrlChange({ graphFocus: null })
     setHighlightedLinkId(null)
-  }, [])
+  }, [onGraphUrlChange])
+
+  const setMode = useCallback(
+    (value: GraphDisplayMode) => onGraphUrlChange({ graphMode: value }),
+    [onGraphUrlChange],
+  )
 
   const onRequestLayoutReset = useCallback(() => {
     setLayoutResetKey((key) => key + 1)
