@@ -67,10 +67,12 @@ Run `npm run build` + `npm run check` before claiming done.
 
 ### App routing
 
-- Canonical paths: `/mdx/...` (codegen MDX) and `/playground/json/...` (JSON playground)
-- `src/lib/app-url.ts` — parse/build; `src/shell/use-app-url.ts` — History API hook
-- `App.tsx` — playground vs MDX split from parsed URL
-- Prototype screen paths: `/mdx/{docSlug}/{screenId}` or `/playground/json/{docSlug}/{screenId}`
+- Canonical shell URLs: `/mdx/{docSlug}/{view}[/{screenId}]` and `/playground/json/{docSlug}/{view}[/{screenId}]` — `view` is `preview` | `prototype` | `graph`
+- Graph sub-state in query only when `view=graph`: `?graphMode=screen|compact&focus={screenId}`
+- Legacy flat paths redirect on load; `useAppUrl` normalizes invalid doc/screen segments
+- `src/lib/app-url.ts` — parse/build/legacy; `src/shell/use-app-url.ts` — History API hook (no React Router)
+- `App.tsx` — MDX vs playground from `parseAppUrl` + legacy `isPlaygroundAppPath` fallback
+- Codegen + bundles: prototype `RouteEntry.path` and `routePrefix` are `/mdx/{docSlug}/{screenId}` (MDX) or `/playground/json/{docSlug}/{screenId}` (JSON playground via `{ playground: true }`)
 
 ### Styling
 
@@ -121,12 +123,12 @@ Only `.agents/skills/` auto-discovered. Manual → `.agents/skill-archive/` (`@.
 
 - [ ] `VISION.md` if product behavior
 - [ ] `GRAPH_VIEW.md` if graph tab behavior changes
-- [ ] `CONTEXT.md` if architecture/codegen
+- [ ] `CONTEXT.md` if architecture/codegen/URL routing
 - [ ] `JSON-COMPONENTS.md` if JSON tuple/tag API changes
 - [ ] Wireframe-styled primitives
 - [ ] New components → `mdx-components.ts`
 - [ ] New content → `title` frontmatter
-- [ ] `npm run test` (plugin/codegen)
+- [ ] `npm run test` (plugin/codegen; `src/lib/app-url.test.ts` if URL routing touched)
 - [ ] `npm run build` + `npm run check`
 - [ ] Scope matches build phase
 
