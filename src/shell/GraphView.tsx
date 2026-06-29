@@ -16,7 +16,7 @@ import { RotateCcw } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
-import type { NavigationGraph } from '../plugin/types'
+import type { NavigationGraph } from '@/types/navigation'
 import { getCodegenErrors } from '../runtime/codegen-error'
 import {
   buildReactFlowGraph,

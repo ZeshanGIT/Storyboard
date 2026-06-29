@@ -41,26 +41,7 @@ export type ExtractedScreen = {
   links: readonly ClassifiedLink[]
 }
 
-export type NavigationEdge = {
-  id: string
-  fromScreenId: string
-  toScreenId: string
-  linkId: string
-  label?: string
-}
-
-export type NavigationGraphNode = {
-  id: string
-  title: string
-  note?: string
-  order: number
-  isEntry: boolean
-}
-
-export type NavigationGraph = {
-  nodes: readonly NavigationGraphNode[]
-  edges: readonly NavigationEdge[]
-}
+export type { NavigationEdge, NavigationGraph, NavigationGraphNode } from '../types/navigation'
 
 export type CodegenErrorCode =
   | 'DUPLICATE_SCREEN_ID'

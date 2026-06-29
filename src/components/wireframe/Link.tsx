@@ -3,10 +3,10 @@ import { useEffect, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useScreenId } from '@/components/wireframe/ScreenContext'
-import type { GotoTarget } from '@/generated/routes.generated'
 import { cn } from '@/lib/utils'
 import { useWireframeDisplayPreferences } from '@/runtime/WireframeDisplayPreferences'
 import { RESERVED_GOTO, useWireframeView } from '@/runtime/WireframeViewContext'
+import type { GotoTarget } from '@/types/goto'
 import { type NoteProps, WireframeNote } from './note'
 
 export type LinkProps = NoteProps & {
