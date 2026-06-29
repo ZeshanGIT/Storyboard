@@ -32,7 +32,8 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | storyboard.mdx, wireframe.mdx, components.mdx | Done |
 | Graph View (shell tab, Screen + Compact modes) | Done |
-| JSON playground (browser compile, no codegen) | Done |
+| JSON playground (browser compile, Monaco split editor, no codegen) | Done |
+| URL-driven shell (view, doc, prototype screen, graph query in browser URL) | Done |
 | Unreachable validation, doc export | Not started |
 | Card, List, Section, BottomNav, Tabs | Not started |
 
@@ -62,7 +63,7 @@ src/content/*.mdx
   → extractNavigationGraph from classified screen-edge links
   → inject graph-link-id into generated screen JSX
   → src/generated/documents/{slug}/screens.generated.tsx
-                        routes.generated.tsx
+                        routes.generated.tsx   # paths /mdx/{slug}/{screenId}
                         navigation-graph.generated.ts
   → content-documents.generated.tsx, routes.generated.tsx
   → mdxContentDocumentsToBundles → WireframeDocumentBundle[]
@@ -80,12 +81,14 @@ JSON document (tuple nodes, colon-modifier tags — see JSON-COMPONENTS.md)
   → buildJsonDocument (browser)
      parse tuples, validate, classify links (shared classifyGotoLink)
      stamp graphLinkId on Link nodes at build time
-  → jsonToWireframeDocumentBundle (optional routePrefix)
-     runtime Screen components, routes, navigationGraph
+  → jsonToWireframeDocumentBundle (slug, { playground?: boolean })
+     routePrefix /mdx/{slug} or /playground/json/{slug}; runtime Screen components, routes, navigationGraph
   → PlaygroundApp → Shell (same Preview / Prototype / Graph views)
 ```
 
 Entry: `App.tsx` picks MDX vs playground from parsed URL → `MdxApp` or `PlaygroundApp` → `Shell`. Sample: `src/json/sample-wireframe.json`. Canonical playground path: `/playground/json/playground/...`; legacy `/playground` and `/playground/{screenId}` redirect on load.
+
+Playground UI: split pane — Monaco JSON editor (left, debounced compile) + Shell (right). Initial content from `sample-wireframe.json`. Compile errors surface via `WireframeErrorProvider`.
 
 No `src/generated/` involvement. MDX and JSON paths are separate; both produce `WireframeDocumentBundle` for the shell.
 
@@ -98,7 +101,7 @@ src/json/                   # browser JSON compiler + renderer
 src/types/                  # navigation, goto, WireframeDocumentBundle
 src/lib/app-routes.ts       # path constants, screenRoutePath
 src/lib/app-url.ts          # parseAppUrl / buildAppUrl, legacy resolution
-src/playground/             # PlaygroundApp (JSON route)
+src/playground/             # PlaygroundApp, Monaco JSON editor, split layout
 src/MdxApp.tsx              # MDX documents → Shell
 src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
@@ -128,14 +131,14 @@ Browser URL is source of truth for shell navigation:
 - Playground: `/playground/{source}/{docSlug}/{view}[/{screenId}]`
 - Graph query: `?graphMode=screen|compact&focus={screenId}`
 
-Legacy flat paths (`/login`, `/playground/home`) redirect on load. Codec: `src/lib/app-url.ts`; hook: `src/shell/use-app-url.ts`.
+Legacy flat paths (`/`, `/login`, `/playground`, `/playground/{screenId}`) redirect on load. Invalid prototype `screenId` or graph query on non-graph views are normalized. Codec: `src/lib/app-url.ts`; hook: `src/shell/use-app-url.ts`.
 
 ### Content documents
 
 Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger switches files (persists across all shell views). `storyboard.mdx` sorts first.
 
 - **Preview:** all `<Screen>` blocks, `gap-8`
-- **Prototype:** generated routes only (`key={slug}` resets router)
+- **Prototype:** generated routes only; active screen from URL `screenId` (`key={slug}` remounts on doc switch)
 - **Graph:** per-doc `navigationGraph`; Screen or Compact sub-mode; full-width canvas
 
 ### Screen / Link / Modal
@@ -192,4 +195,4 @@ Vite 8 + React 19 + TS 6 | MDX 3 (`@mdx-js/rollup`, `remark-frontmatter`, `@mdx-
 
 [`FUTURE.md`](FUTURE.md): unreachable/orphan validation (phase 6 — now unblocked by classified links), doc export, vision extras.
 
-Architecture deepening (Plan 1 ✓): shared navigation types, `WireframeDocumentBundle`, graph view pipeline — see [`2026-06-29-architecture-deepening-overview.md`](superpowers/plans/2026-06-29-architecture-deepening-overview.md). JSON playground pipeline — [`2026-06-29-json-playground-pipeline.md`](superpowers/plans/2026-06-29-json-playground-pipeline.md).
+Architecture deepening (Plan 1 ✓): shared navigation types, `WireframeDocumentBundle`, graph view pipeline — see [`2026-06-29-architecture-deepening-overview.md`](superpowers/plans/2026-06-29-architecture-deepening-overview.md). JSON playground pipeline ✓ — [`2026-06-29-json-playground-pipeline.md`](superpowers/plans/2026-06-29-json-playground-pipeline.md). URL state ✓ — [`2026-06-29-app-url-state.md`](superpowers/plans/2026-06-29-app-url-state.md).

@@ -1,27 +1,41 @@
 import { useMemo, useState } from 'react'
-import { buildJsonDocument } from '@/json/build-json-document'
 import sample from '@/json/sample-wireframe.json'
 import { jsonToWireframeDocumentBundle } from '@/json/to-document-bundle'
 import { WireframeErrorProvider } from '@/runtime/WireframeErrorProvider'
 import { Shell } from '@/shell/Shell'
+import { compilePlaygroundJson } from './compile-playground-json'
+import { PlaygroundJsonEditor } from './PlaygroundJsonEditor'
+import { PlaygroundSplitLayout } from './PlaygroundSplitLayout'
+import { useDebouncedValue } from './use-debounced-value'
+
+const INITIAL_EDITOR_TEXT = JSON.stringify(sample, null, 2)
+const COMPILE_DEBOUNCE_MS = 300
 
 export function PlaygroundApp() {
-  const [raw] = useState(sample)
+  const [editorText, setEditorText] = useState(INITIAL_EDITOR_TEXT)
+  const debouncedText = useDebouncedValue(editorText, COMPILE_DEBOUNCE_MS)
+
+  const compiled = useMemo(() => compilePlaygroundJson(debouncedText), [debouncedText])
 
   const documents = useMemo(() => {
-    const built = buildJsonDocument(raw)
-    if (!built.ok) return []
-    return [jsonToWireframeDocumentBundle(built.document, 'playground', { playground: true })]
-  }, [raw])
+    if (!compiled.ok) return []
+    return [jsonToWireframeDocumentBundle(compiled.document, 'playground', { playground: true })]
+  }, [compiled])
 
-  const errors = useMemo(() => {
-    const built = buildJsonDocument(raw)
-    return built.ok ? [] : built.errors.map((error) => error.message)
-  }, [raw])
+  const errors = useMemo(() => (compiled.ok ? [] : [...compiled.errors]), [compiled])
 
   return (
-    <WireframeErrorProvider initialErrors={errors}>
-      <Shell documents={documents} appDefaults={{ app: 'playground', source: 'json' }} />
-    </WireframeErrorProvider>
+    <PlaygroundSplitLayout
+      editor={<PlaygroundJsonEditor value={editorText} onChange={setEditorText} />}
+      panel={
+        <WireframeErrorProvider initialErrors={errors}>
+          <Shell
+            documents={documents}
+            appDefaults={{ app: 'playground', source: 'json' }}
+            layout="embedded"
+          />
+        </WireframeErrorProvider>
+      }
+    />
   )
 }
