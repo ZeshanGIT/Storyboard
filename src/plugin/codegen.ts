@@ -18,6 +18,7 @@ export async function runCodegen(source: string, outDir: string): Promise<RunCod
     jsx: s.jsx,
     order: s.order,
     modalIds: s.modalIds,
+    links: s.links,
   }))
   const graph = extractNavigationGraph(built.document)
   await generateWireframeFiles(screens, outDir, graph)

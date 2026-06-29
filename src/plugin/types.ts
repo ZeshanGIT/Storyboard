@@ -38,6 +38,7 @@ export type ExtractedScreen = {
   jsx: string
   order: number
   modalIds: readonly string[]
+  links: readonly ClassifiedLink[]
 }
 
 export type NavigationEdge = {

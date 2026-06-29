@@ -24,7 +24,7 @@ const documents: ScannedMdxDocument[] = [
 const documentScreens = new Map<string, ExtractedScreen[]>([
   [
     'wireframe',
-    [{ id: 'home', title: 'Home', jsx: '<Screen id="home" />', order: 0, modalIds: [] }],
+    [{ id: 'home', title: 'Home', jsx: '<Screen id="home" />', order: 0, modalIds: [], links: [] }],
   ],
   [
     'components',
@@ -35,6 +35,7 @@ const documentScreens = new Map<string, ExtractedScreen[]>([
         jsx: '<Screen id="cmp-index" />',
         order: 0,
         modalIds: [],
+        links: [],
       },
     ],
   ],

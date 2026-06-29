@@ -10,6 +10,7 @@ export function extractScreens(source: string): CodegenResult {
     jsx: s.jsx,
     order: s.order,
     modalIds: s.modalIds,
+    links: s.links,
   }))
   return { ok: true, screens }
 }

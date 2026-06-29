@@ -12,6 +12,7 @@ const screens: ExtractedScreen[] = [
     jsx: '<Screen id="home" title="Home"><Text>Hi</Text></Screen>',
     order: 0,
     modalIds: [],
+    links: [],
   },
   {
     id: 'login',
@@ -19,6 +20,7 @@ const screens: ExtractedScreen[] = [
     jsx: '<Screen id="login" title="Login"><Text>In</Text></Screen>',
     order: 1,
     modalIds: [],
+    links: [],
   },
 ]
 
@@ -60,6 +62,7 @@ describe('generateWireframeFiles', () => {
         jsx: '<Screen id="home"><Link goto="confirm">Open</Link><Modal id="confirm" /></Screen>',
         order: 0,
         modalIds: ['confirm'],
+        links: [],
       },
     ]
     await generateWireframeFiles(withModal, dir)
