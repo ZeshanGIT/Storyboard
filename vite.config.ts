@@ -12,6 +12,9 @@ const pagesBase = process.env.GITHUB_PAGES === 'true' && repoName ? `/${repoName
 // https://vite.dev/config/
 export default defineConfig({
   base: pagesBase,
+  optimizeDeps: {
+    include: ['monaco-editor'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
