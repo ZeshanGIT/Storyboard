@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { AppUrlState } from '@/lib/app-url'
 import { cn } from '@/lib/utils'
 import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import { getCodegenErrors } from '../runtime/codegen-error'
@@ -10,12 +11,12 @@ import { GraphView } from './GraphView'
 import { IndicatorToggles } from './IndicatorToggles'
 import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
+import { useAppUrl } from './use-app-url'
 
 export type ShellProps = {
   documents: readonly WireframeDocumentBundle[]
+  appDefaults: Pick<AppUrlState, 'app' | 'source'>
 }
-
-type ActiveView = 'preview' | 'prototype' | 'graph'
 
 function defaultDocumentSlug(documents: readonly WireframeDocumentBundle[]): string {
   const storyboard = documents.find((doc) => doc.slug === 'storyboard')
@@ -27,9 +28,39 @@ function documentFilename(entry: WireframeDocumentBundle): string {
   return `${entry.slug}.${entry.source === 'mdx' ? 'mdx' : 'json'}`
 }
 
-export function Shell({ documents }: ShellProps) {
-  const [view, setView] = useState<ActiveView>('preview')
-  const [activeDocumentSlug, setActiveDocumentSlug] = useState(() => defaultDocumentSlug(documents))
+export function Shell({ documents, appDefaults }: ShellProps) {
+  const knownDocs = useMemo(
+    () => documents.map((doc) => ({ slug: doc.slug, screenIds: doc.routes.map((r) => r.id) })),
+    [documents],
+  )
+
+  const defaultSlug = defaultDocumentSlug(documents)
+  const defaultState = useMemo<AppUrlState>(
+    () => ({
+      app: appDefaults.app,
+      source: appDefaults.source,
+      docSlug: defaultSlug,
+      view: 'preview',
+    }),
+    [appDefaults.app, appDefaults.source, defaultSlug],
+  )
+
+  const { urlState, navigate } = useAppUrl({ knownDocs, defaultState })
+
+  const view = urlState.view
+  const activeDocumentSlug = urlState.docSlug
+
+  const setView = (next: AppUrlState['view']) => navigate({ view: next })
+  const setActiveDocumentSlug = (slug: string) => {
+    const doc = documents.find((entry) => entry.slug === slug)
+    const entryScreen = doc?.routes[0]?.id
+    navigate({
+      docSlug: slug,
+      screenId: view === 'prototype' ? entryScreen : undefined,
+      graphFocus: undefined,
+    })
+  }
+
   const codegenErrors = getCodegenErrors()
 
   const initialErrors = useMemo(() => codegenErrors.map((error) => error.message), [codegenErrors])
@@ -48,8 +79,8 @@ export function Shell({ documents }: ShellProps) {
 
   useEffect(() => {
     if (documents.some((doc) => doc.slug === activeDocumentSlug)) return
-    setActiveDocumentSlug(defaultDocumentSlug(documents))
-  }, [documents, activeDocumentSlug])
+    navigate({ docSlug: defaultDocumentSlug(documents) }, { replace: true })
+  }, [documents, activeDocumentSlug, navigate])
 
   useEffect(() => {
     for (const error of codegenErrors) {
@@ -77,7 +108,7 @@ export function Shell({ documents }: ShellProps) {
               </div>
               <div className="flex flex-wrap items-center gap-4">
                 <IndicatorToggles />
-                <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>
+                <Tabs value={view} onValueChange={(v) => setView(v as AppUrlState['view'])}>
                   <TabsList>
                     <TabsTrigger value="preview">Preview</TabsTrigger>
                     <TabsTrigger value="prototype">Prototype View</TabsTrigger>

@@ -5,5 +5,5 @@ import { Shell } from './shell/Shell'
 const documents = mdxContentDocumentsToBundles(contentDocuments)
 
 export function MdxApp() {
-  return <Shell documents={documents} />
+  return <Shell documents={documents} appDefaults={{ app: 'mdx' }} />
 }
