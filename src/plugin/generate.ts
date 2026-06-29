@@ -41,7 +41,7 @@ function buildScreensFile(screens: readonly MdxScreen[]): string {
   return `${HEADER}${wireframeImportLine(screens)}\n\n${componentExports}\n`
 }
 
-export function buildRoutesFile(screens: readonly MdxScreen[]): string {
+export function buildRoutesFile(screens: readonly MdxScreen[], slug: string): string {
   const componentNames = screens.map((s) => screenIdToComponentName(s.id))
   const routeImports = componentNames.join(', ')
   const routeEntries = screens
@@ -52,7 +52,7 @@ export function buildRoutesFile(screens: readonly MdxScreen[]): string {
         screenModalIds.length > 0
           ? `,\n    modalIds: [${screenModalIds.map((id) => `'${id}'`).join(', ')}] as const`
           : ''
-      return `  {\n    id: '${s.id}',\n    path: '/${s.id}',\n    component: ${name}${modalIdsField},\n  }`
+      return `  {\n    id: '${s.id}',\n    path: '/mdx/${slug}/${s.id}',\n    component: ${name}${modalIdsField},\n  }`
     })
     .join(',\n')
 
@@ -87,7 +87,7 @@ export async function generateDocumentFiles(
 
   const screens = document.screens
   await writeFile(join(docDir, 'screens.generated.tsx'), buildScreensFile(screens), 'utf8')
-  await writeFile(join(docDir, 'routes.generated.tsx'), buildRoutesFile(screens), 'utf8')
+  await writeFile(join(docDir, 'routes.generated.tsx'), buildRoutesFile(screens, slug), 'utf8')
   await writeFile(
     join(docDir, 'navigation-graph.generated.ts'),
     buildNavigationGraphFile(graph),

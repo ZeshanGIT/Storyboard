@@ -1,4 +1,4 @@
-import { screenRoutePath } from '@/lib/app-routes'
+import { MDX_APP_PREFIX, PLAYGROUND_APP_PATH, screenRoutePath } from '@/lib/app-routes'
 import { extractNavigationGraphFromScreens } from '@/plugin/extract-navigation-graph'
 import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import type { JsonDocumentBuilt } from './build-json-document'
@@ -7,8 +7,11 @@ import { buildScreenComponent } from './build-screen-component'
 export function jsonToWireframeDocumentBundle(
   built: JsonDocumentBuilt,
   slug = 'json-document',
-  routePrefix = '',
+  options: { playground?: boolean } = {},
 ): WireframeDocumentBundle {
+  const routePrefix = options.playground
+    ? `${PLAYGROUND_APP_PATH}/json/${slug}`
+    : `${MDX_APP_PREFIX}/${slug}`
   const components = new Map(
     built.screens.map((screen) => [screen.id, buildScreenComponent(screen)] as const),
   )
@@ -38,7 +41,7 @@ export function jsonToWireframeDocumentBundle(
     source: 'json',
     routes,
     navigationGraph,
-    ...(routePrefix ? { routePrefix } : {}),
+    routePrefix,
     preview: {
       kind: 'screens',
       screens: built.screens.map((s) => ({

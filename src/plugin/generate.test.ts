@@ -36,7 +36,7 @@ describe('buildRoutesFile', () => {
         links: [],
       },
     ]
-    const content = buildRoutesFile(withModal)
+    const content = buildRoutesFile(withModal, 'wireframe')
     expect(content).toContain("modalIds: ['m']")
   })
 })
@@ -58,7 +58,7 @@ describe('generateWireframeFiles', () => {
     )
 
     expect(docRoutes).toContain("id: 'home'")
-    expect(docRoutes).toContain("path: '/home'")
+    expect(docRoutes).toContain("path: '/mdx/wireframe/home'")
     expect(docRoutes).toContain('component: Home')
     expect(routes).toContain('export type ScreenRouteId')
     expect(routes).toContain('export type GotoTarget')
