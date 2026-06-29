@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:playground": "vite --open /playground.html",
     "build": "npm run codegen && tsc -b && vite build",
     "build:pages": "npm run build && cp dist/index.html dist/404.html",
     "check": "npm run codegen && tsc -b && biome check .",

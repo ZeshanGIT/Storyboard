@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import type { ContentDocumentEntry } from '../generated/content-documents.generated'
+import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import { getCodegenErrors } from '../runtime/codegen-error'
 import { WireframeDisplayPreferencesProvider } from '../runtime/WireframeDisplayPreferences'
 import { WireframeErrorProvider } from '../runtime/WireframeErrorProvider'
@@ -12,29 +12,31 @@ import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
 
 export type ShellProps = {
-  contentDocuments: readonly ContentDocumentEntry[]
+  documents: readonly WireframeDocumentBundle[]
 }
 
 type ActiveView = 'preview' | 'prototype' | 'graph'
 
-function defaultDocumentSlug(documents: readonly ContentDocumentEntry[]): string {
+function defaultDocumentSlug(documents: readonly WireframeDocumentBundle[]): string {
   const storyboard = documents.find((doc) => doc.slug === 'storyboard')
   const wireframe = documents.find((doc) => doc.slug === 'wireframe')
   return storyboard?.slug ?? wireframe?.slug ?? documents[0]?.slug ?? ''
 }
 
-export function Shell({ contentDocuments }: ShellProps) {
+function documentFilename(entry: WireframeDocumentBundle): string {
+  return `${entry.slug}.${entry.source === 'mdx' ? 'mdx' : 'json'}`
+}
+
+export function Shell({ documents }: ShellProps) {
   const [view, setView] = useState<ActiveView>('preview')
-  const [activeDocumentSlug, setActiveDocumentSlug] = useState(() =>
-    defaultDocumentSlug(contentDocuments),
-  )
+  const [activeDocumentSlug, setActiveDocumentSlug] = useState(() => defaultDocumentSlug(documents))
   const codegenErrors = getCodegenErrors()
 
   const initialErrors = useMemo(() => codegenErrors.map((error) => error.message), [codegenErrors])
 
   const activeEntry = useMemo(
-    () => contentDocuments.find((doc) => doc.slug === activeDocumentSlug) ?? contentDocuments[0],
-    [contentDocuments, activeDocumentSlug],
+    () => documents.find((doc) => doc.slug === activeDocumentSlug) ?? documents[0],
+    [documents, activeDocumentSlug],
   )
 
   const validScreenIds = useMemo(
@@ -43,9 +45,9 @@ export function Shell({ contentDocuments }: ShellProps) {
   )
 
   useEffect(() => {
-    if (contentDocuments.some((doc) => doc.slug === activeDocumentSlug)) return
-    setActiveDocumentSlug(defaultDocumentSlug(contentDocuments))
-  }, [contentDocuments, activeDocumentSlug])
+    if (documents.some((doc) => doc.slug === activeDocumentSlug)) return
+    setActiveDocumentSlug(defaultDocumentSlug(documents))
+  }, [documents, activeDocumentSlug])
 
   useEffect(() => {
     for (const error of codegenErrors) {
@@ -61,9 +63,9 @@ export function Shell({ contentDocuments }: ShellProps) {
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-3">
                 <span className="shrink-0 text-lg font-semibold tracking-tight">Storyboard</span>
-                {contentDocuments.length > 0 ? (
+                {documents.length > 0 ? (
                   <DocumentMenu
-                    documents={contentDocuments}
+                    documents={documents}
                     activeSlug={activeDocumentSlug}
                     onSelect={setActiveDocumentSlug}
                   />
@@ -75,7 +77,7 @@ export function Shell({ contentDocuments }: ShellProps) {
                 <IndicatorToggles />
                 <Tabs value={view} onValueChange={(v) => setView(v as ActiveView)}>
                   <TabsList>
-                    <TabsTrigger value="preview">MDX Preview</TabsTrigger>
+                    <TabsTrigger value="preview">Preview</TabsTrigger>
                     <TabsTrigger value="prototype">Prototype View</TabsTrigger>
                     <TabsTrigger value="graph">Graph View</TabsTrigger>
                   </TabsList>
@@ -95,26 +97,26 @@ export function Shell({ contentDocuments }: ShellProps) {
                 <PreviewView
                   validScreenIds={validScreenIds}
                   routes={activeEntry.routes}
-                  document={activeEntry.component}
+                  preview={activeEntry.preview}
                 />
               ) : (
-                <p className="text-muted-foreground">No MDX documents in src/content.</p>
+                <p className="text-muted-foreground">No documents loaded.</p>
               )
             ) : view === 'graph' && activeEntry ? (
               <GraphView
                 key={activeEntry.slug}
                 navigationGraph={activeEntry.navigationGraph}
                 routes={activeEntry.routes}
-                documentFilename={`${activeEntry.slug}.mdx`}
+                documentFilename={documentFilename(activeEntry)}
               />
             ) : activeEntry ? (
               <PrototypeView
                 key={activeEntry.slug}
                 routes={activeEntry.routes}
-                documentFilename={`${activeEntry.slug}.mdx`}
+                documentFilename={documentFilename(activeEntry)}
               />
             ) : (
-              <p className="text-muted-foreground">No MDX documents in src/content.</p>
+              <p className="text-muted-foreground">No documents loaded.</p>
             )}
           </main>
         </div>

@@ -1,15 +1,15 @@
-import type { ComponentType } from 'react'
 import { useMemo } from 'react'
+import type { WireframePreviewSource } from '@/types/wireframe-document'
 import { WireframeViewProvider } from '../runtime/WireframeViewContext'
 import { modalIdsByScreenFromRoutes, type RouteEntry } from './router'
 
 export type PreviewViewProps = {
   validScreenIds: readonly string[]
   routes: readonly RouteEntry[]
-  document: ComponentType
+  preview: WireframePreviewSource
 }
 
-export function PreviewView({ validScreenIds, routes, document: Document }: PreviewViewProps) {
+export function PreviewView({ validScreenIds, routes, preview }: PreviewViewProps) {
   const modalIdsByScreen = useMemo(() => modalIdsByScreenFromRoutes(routes), [routes])
 
   return (
@@ -20,7 +20,11 @@ export function PreviewView({ validScreenIds, routes, document: Document }: Prev
       modalIdsByScreen={modalIdsByScreen}
     >
       <div className="flex flex-col gap-8">
-        <Document />
+        {preview.kind === 'mdx' ? (
+          <preview.component />
+        ) : (
+          preview.screens.map((screen) => <screen.component key={screen.id} />)
+        )}
       </div>
     </WireframeViewProvider>
   )

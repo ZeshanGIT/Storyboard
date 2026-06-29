@@ -2,10 +2,12 @@ import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { ContentDocumentEntry } from '../generated/content-documents.generated'
+import type { WireframeDocumentBundle } from '@/types/wireframe-document'
+
+export type DocumentMenuEntry = Pick<WireframeDocumentBundle, 'slug' | 'title'>
 
 export type DocumentMenuProps = {
-  documents: readonly ContentDocumentEntry[]
+  documents: readonly DocumentMenuEntry[]
   activeSlug: string
   onSelect: (slug: string) => void
 }
