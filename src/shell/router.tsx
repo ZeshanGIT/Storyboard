@@ -1,5 +1,5 @@
-import { type ComponentType, useCallback, useEffect, useMemo, useState } from 'react'
-import { toAppPath, toBrowserPath } from '@/lib/app-base-path'
+import { type ComponentType, useMemo } from 'react'
+import type { NavigateAppUrl } from './use-app-url'
 
 export type RouteEntry = {
   id: string
@@ -14,35 +14,30 @@ export function modalIdsByScreenFromRoutes(
   return new Map(routes.map((route) => [route.id, route.modalIds ?? []]))
 }
 
-export function usePrototypeRouter(routes: readonly RouteEntry[]) {
-  const defaultPath = routes[0]?.path ?? '/'
-  const [pathname, setPathname] = useState(() => toAppPath(window.location.pathname))
+export type PrototypeRouterOptions = {
+  screenId?: string
+  navigate: NavigateAppUrl
+}
 
-  useEffect(() => {
-    const onPopState = () => setPathname(toAppPath(window.location.pathname))
-    window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
-  }, [])
-
-  const navigate = useCallback((path: string) => {
-    const appPath = path.startsWith('/') ? path : `/${path}`
-    const browserPath = toBrowserPath(appPath)
-    window.history.pushState({}, '', browserPath)
-    setPathname(appPath)
-  }, [])
-
-  const activePath = useMemo(() => {
-    if (pathname === '/' || pathname === '') return defaultPath
-    return routes.some((r) => r.path === pathname) ? pathname : defaultPath
-  }, [pathname, routes, defaultPath])
-
-  const activeRoute = routes.find((r) => r.path === activePath) ?? routes[0]
-
-  useEffect(() => {
-    if (pathname === '/' && defaultPath !== '/') {
-      navigate(defaultPath)
+export function usePrototypeRouter(routes: readonly RouteEntry[], options: PrototypeRouterOptions) {
+  const defaultRoute = routes[0]
+  const activeRoute = useMemo(() => {
+    if (options.screenId) {
+      const match = routes.find((route) => route.id === options.screenId)
+      if (match) return match
     }
-  }, [pathname, defaultPath, navigate])
+    return defaultRoute
+  }, [routes, options.screenId, defaultRoute])
 
-  return { navigate, activeRoute, activePath }
+  const navigateToScreen = (path: string) => {
+    const route = routes.find((entry) => entry.path === path)
+    if (!route) return
+    options.navigate({ view: 'prototype', screenId: route.id })
+  }
+
+  return {
+    navigate: navigateToScreen,
+    activeRoute,
+    activePath: activeRoute?.path ?? '/',
+  }
 }

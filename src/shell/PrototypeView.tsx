@@ -1,16 +1,28 @@
 import { getCodegenError } from '../runtime/codegen-error'
 import { WireframeViewProvider } from '../runtime/WireframeViewContext'
 import { modalIdsByScreenFromRoutes, type RouteEntry, usePrototypeRouter } from './router'
+import type { NavigateAppUrl } from './use-app-url'
 
 export type PrototypeViewProps = {
   routes: readonly RouteEntry[]
   documentFilename: string
   routePrefix?: string
+  screenId?: string
+  navigate: NavigateAppUrl
 }
 
-export function PrototypeView({ routes, documentFilename, routePrefix = '' }: PrototypeViewProps) {
+export function PrototypeView({
+  routes,
+  documentFilename,
+  routePrefix = '',
+  screenId,
+  navigate,
+}: PrototypeViewProps) {
   const codegenError = getCodegenError()
-  const { navigate, activeRoute } = usePrototypeRouter(routes)
+  const { navigate: navigateToScreen, activeRoute } = usePrototypeRouter(routes, {
+    screenId,
+    navigate,
+  })
   const Active = activeRoute?.component
   const validScreenIds = routes.map((route) => route.id)
   const modalIdsByScreen = modalIdsByScreenFromRoutes(routes)
@@ -30,7 +42,7 @@ export function PrototypeView({ routes, documentFilename, routePrefix = '' }: Pr
   return (
     <WireframeViewProvider
       view="prototype"
-      navigate={navigate}
+      navigate={navigateToScreen}
       routePrefix={routePrefix}
       validScreenIds={validScreenIds}
       modalIdsByScreen={modalIdsByScreen}

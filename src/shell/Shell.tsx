@@ -50,7 +50,14 @@ export function Shell({ documents, appDefaults }: ShellProps) {
   const view = urlState.view
   const activeDocumentSlug = urlState.docSlug
 
-  const setView = (next: AppUrlState['view']) => navigate({ view: next })
+  const setView = (next: AppUrlState['view']) => {
+    const doc = documents.find((entry) => entry.slug === activeDocumentSlug)
+    const entryScreen = doc?.routes[0]?.id
+    navigate({
+      view: next,
+      screenId: next === 'prototype' ? entryScreen : undefined,
+    })
+  }
   const setActiveDocumentSlug = (slug: string) => {
     const doc = documents.find((entry) => entry.slug === slug)
     const entryScreen = doc?.routes[0]?.id
@@ -149,6 +156,8 @@ export function Shell({ documents, appDefaults }: ShellProps) {
                 routes={activeEntry.routes}
                 documentFilename={documentFilename(activeEntry)}
                 routePrefix={routePrefix}
+                screenId={urlState.screenId}
+                navigate={navigate}
               />
             ) : (
               <p className="text-muted-foreground">No documents loaded.</p>
