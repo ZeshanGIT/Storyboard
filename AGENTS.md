@@ -19,8 +19,9 @@ Small vertical slices. ✓1 Foundation ✓2 Navigation ✓3 Primitives ✓4 Mult
 ## Commands
 
 ```bash
-npm run dev      # codegen on start + MDX save
-npm run build    # codegen + tsc + vite
+npm run dev              # codegen on start + MDX save
+npm run dev:playground   # JSON playground (browser compile)
+npm run build            # codegen + tsc + vite
 npm run check    # codegen + tsc + Biome
 npm run fix      # Biome safe fixes + format
 npm run codegen  # regen src/generated/ only
@@ -85,6 +86,7 @@ Run `npm run build` + `npm run check` before claiming done.
 | CONTEXT | architecture, status, flows |
 | AGENTS | conventions, scope, checklist |
 | MDX-COMPONENTS | minimal wireframe API |
+| JSON-COMPONENTS | browser/SaaS tuple spec |
 | GRAPH_VIEW | graph tab UX requirements |
 | VISION | product direction |
 

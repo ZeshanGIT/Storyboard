@@ -7,6 +7,7 @@
 | 1 | CONTEXT | built, codegen, shell, file map |
 | 2 | AGENTS | conventions, commands, checklist |
 | MDX authoring | MDX-COMPONENTS | minimal API |
+| JSON authoring | JSON-COMPONENTS | browser/SaaS tuple spec |
 | Graph tab UX | GRAPH_VIEW | graph view requirements |
 | Product | VISION | north star |
 | Backlog | FUTURE, POC | historical |
@@ -31,13 +32,15 @@ POC shipped + extended. `npm run dev` → codegen, tri-view shell (Preview / Pro
 | Multi-MDX + frontmatter titles, History API prototype router | Done |
 | storyboard.mdx, wireframe.mdx, components.mdx | Done |
 | Graph View (shell tab, Screen + Compact modes) | Done |
+| JSON playground (browser compile, no codegen) | Done |
 | Unreachable validation, doc export | Not started |
 | Card, List, Section, BottomNav, Tabs | Not started |
 
 ## Quick start
 
 ```bash
-npm install && npm run dev    # localhost:5173
+npm install && npm run dev    # localhost:5173 — MDX + codegen
+npm run dev:playground        # JSON playground (no MDX/codegen)
 npm run check && npm run build && npm test
 ```
 
@@ -70,11 +73,29 @@ Each MDX file is parsed once via `buildMdxDocument`. Screens carry `modalIds` fr
 
 Vite plugin: `runFullCodegen` on `buildStart` + MDX save → full reload. CLI: `npm run codegen`.
 
+## JSON flow (playground / SaaS path)
+
+```
+JSON document (tuple nodes, colon-modifier tags — see JSON-COMPONENTS.md)
+  → buildJsonDocument (browser)
+     parse tuples, validate, classify links (shared classifyGotoLink)
+  → jsonToWireframeDocumentBundle
+     runtime Screen components, routes, navigationGraph
+  → Shell (same Preview / Prototype / Graph views)
+```
+
+Entry: `playground.html` → `src/playground/PlaygroundApp.tsx`. Sample: `src/json/sample-wireframe.json`.
+
+No `src/generated/` involvement. MDX and JSON paths are separate; both produce `WireframeDocumentBundle` for the shell.
+
 ## Repo map
 
 ```
 src/content/*.mdx
-src/generated/              # gitignored AUTO-GENERATED
+src/generated/              # gitignored AUTO-GENERATED (MDX only)
+src/json/                   # browser JSON compiler + renderer
+src/types/                  # navigation, goto, WireframeDocumentBundle
+src/playground/             # JSON-only app entry
 src/components/wireframe/   # primitives
 src/components/ui/          # shadcn
 src/runtime/                # WireframeViewContext (preview|prototype|graph), WireframeErrorProvider
@@ -88,7 +109,8 @@ src/plugin/                 # codegen: buildMdxDocument, classify-links, generat
   inject-graph-link-ids.ts
   run-full-codegen.ts
 src/mdx-components.ts
-src/App.tsx
+src/App.tsx                 # MDX app (contentDocuments → bundles)
+playground.html             # JSON playground entry
 ```
 
 ## Key behaviors
@@ -117,7 +139,7 @@ Codegen scans MDX → `contentDocuments` with frontmatter `title`. Hamburger swi
 | prototype | `_back` | `history.back()` |
 | graph | any | non-interactive; edges from screen→screen links only |
 
-Plain string `goto`. `GotoTarget` union in `routes.generated.tsx`. Flags: `primary-btn`, `secondary-btn`, `disabled`, `danger`.
+Plain string `goto`. Runtime `GotoTarget` in `src/types/goto.ts`; MDX codegen still emits per-doc unions in `routes.generated.tsx`. Flags: `primary-btn`, `secondary-btn`, `disabled`, `danger`.
 
 `<Modal id>` in Screen — open via Link, dismiss backdrop/Escape/`_close`. Modal ids unique per screen, ≠ screen id.
 
