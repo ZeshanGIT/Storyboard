@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { buildMdxDocument } from './build-mdx-document'
 import { extractNavigationGraph } from './extract-navigation-graph'
-import { extractScreens } from './extract-screens'
 
 const TWO_SCREEN = `
 <Screen id="home" title="Home" note="Entry point">
@@ -13,12 +13,25 @@ const TWO_SCREEN = `
 `
 
 describe('extractNavigationGraph', () => {
-  it('builds nodes from screens with entry flag and note', () => {
-    const extracted = extractScreens(TWO_SCREEN)
-    expect(extracted.ok).toBe(true)
-    if (!extracted.ok) return
+  it('builds edges from classified screen-edge links', () => {
+    const built = buildMdxDocument(`
+<Screen id="home" title="Home">
+  <Link goto="detail">Detail</Link>
+</Screen>
+<Screen id="detail" title="Detail" />
+`)
+    if (!built.ok) throw new Error('fixture')
+    const graph = extractNavigationGraph(built.document)
+    expect(graph.edges).toHaveLength(1)
+    expect(graph.edges[0]?.linkId).toBe('home:0')
+  })
 
-    const graph = extractNavigationGraph(TWO_SCREEN, extracted.screens)
+  it('builds nodes from screens with entry flag and note', () => {
+    const built = buildMdxDocument(TWO_SCREEN)
+    expect(built.ok).toBe(true)
+    if (!built.ok) return
+
+    const graph = extractNavigationGraph(built.document)
     expect(graph.nodes).toEqual([
       {
         id: 'home',
@@ -50,11 +63,11 @@ describe('extractNavigationGraph', () => {
   <Link goto="home">Home</Link>
 </Screen>
 `
-    const extracted = extractScreens(source)
-    expect(extracted.ok).toBe(true)
-    if (!extracted.ok) return
+    const built = buildMdxDocument(source)
+    expect(built.ok).toBe(true)
+    if (!built.ok) return
 
-    const graph = extractNavigationGraph(source, extracted.screens)
+    const graph = extractNavigationGraph(built.document)
     expect(graph.edges).toEqual([
       {
         id: 'home:0->login',
@@ -81,11 +94,11 @@ describe('extractNavigationGraph', () => {
 </Screen>
 <Screen id="b" title="B"></Screen>
 `
-    const extracted = extractScreens(source)
-    expect(extracted.ok).toBe(true)
-    if (!extracted.ok) return
+    const built = buildMdxDocument(source)
+    expect(built.ok).toBe(true)
+    if (!built.ok) return
 
-    const graph = extractNavigationGraph(source, extracted.screens)
+    const graph = extractNavigationGraph(built.document)
     expect(graph.edges).toHaveLength(2)
     expect(graph.edges[0]?.toScreenId).toBe('b')
     expect(graph.edges[1]?.toScreenId).toBe('b')
