@@ -20,7 +20,7 @@ export async function runFullCodegen(root: string): Promise<CodegenResult> {
   for (const doc of documents) {
     const source = await readFile(join(contentDir, doc.filename), 'utf8')
     const built = buildMdxDocument(source)
-    if (!built.ok) {
+    if (built.ok === false) {
       for (const error of built.errors) {
         errors.push(
           new CodegenError(error.code, `${doc.filename}: ${error.message}`, error.screenId),
