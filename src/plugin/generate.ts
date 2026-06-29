@@ -29,27 +29,7 @@ function wireframeImportLine(screens: ExtractedScreen[]): string {
   return `import { ${used.join(', ')} } from '../../../components/wireframe'`
 }
 
-const MODAL_ID_PATTERN = /<Modal\s[^>]*\bid="([^"]+)"/g
-
-function extractModalIdsForScreen(jsx: string): string[] {
-  const ids: string[] = []
-  for (const match of jsx.matchAll(MODAL_ID_PATTERN)) {
-    ids.push(match[1])
-  }
-  return ids
-}
-
-function extractModalIds(screens: ExtractedScreen[]): string[] {
-  const ids = new Set<string>()
-  for (const screen of screens) {
-    for (const id of extractModalIdsForScreen(screen.jsx)) {
-      ids.add(id)
-    }
-  }
-  return [...ids].sort()
-}
-
-function buildScreensFile(screens: ExtractedScreen[]): string {
+function buildScreensFile(screens: readonly ExtractedScreen[]): string {
   const componentExports = screens
     .map((s) => {
       const name = screenIdToComponentName(s.id)
@@ -61,13 +41,13 @@ function buildScreensFile(screens: ExtractedScreen[]): string {
   return `${HEADER}${wireframeImportLine(screens)}\n\n${componentExports}\n`
 }
 
-function buildRoutesFile(screens: ExtractedScreen[]): string {
+export function buildRoutesFile(screens: readonly ExtractedScreen[]): string {
   const componentNames = screens.map((s) => screenIdToComponentName(s.id))
   const routeImports = componentNames.join(', ')
   const routeEntries = screens
     .map((s) => {
       const name = screenIdToComponentName(s.id)
-      const screenModalIds = extractModalIdsForScreen(s.jsx)
+      const screenModalIds = s.modalIds
       const modalIdsField =
         screenModalIds.length > 0
           ? `,\n    modalIds: [${screenModalIds.map((id) => `'${id}'`).join(', ')}] as const`
@@ -76,7 +56,7 @@ function buildRoutesFile(screens: ExtractedScreen[]): string {
     })
     .join(',\n')
 
-  const modalIds = extractModalIds(screens)
+  const modalIds = [...new Set(screens.flatMap((s) => s.modalIds))].sort()
   const modalIdEntries = modalIds.map((id) => `  '${id}',`).join('\n')
   const modalIdsBlock =
     modalIds.length > 0
@@ -131,9 +111,9 @@ export async function generateAggregateRoutes(
   for (const screens of documentScreens.values()) {
     for (const screen of screens) {
       screenIds.add(screen.id)
-    }
-    for (const id of extractModalIds([...screens])) {
-      modalIds.add(id)
+      for (const id of screen.modalIds) {
+        modalIds.add(id)
+      }
     }
   }
 
