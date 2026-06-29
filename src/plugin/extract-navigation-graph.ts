@@ -1,6 +1,4 @@
-import { buildMdxDocument } from './build-mdx-document'
 import type {
-  ExtractedScreen,
   MdxDocument,
   MdxScreen,
   NavigationEdge,
@@ -46,22 +44,6 @@ export function extractNavigationGraphFromScreens(screens: readonly MdxScreen[])
   }
 }
 
-export function extractNavigationGraph(document: MdxDocument): NavigationGraph
-export function extractNavigationGraph(
-  source: string,
-  screens: readonly ExtractedScreen[],
-): NavigationGraph
-export function extractNavigationGraph(
-  documentOrSource: MdxDocument | string,
-  _screens?: readonly ExtractedScreen[],
-): NavigationGraph {
-  if (typeof documentOrSource === 'string') {
-    const built = buildMdxDocument(documentOrSource)
-    if (!built.ok) {
-      return { nodes: [], edges: [] }
-    }
-    return extractNavigationGraph(built.document)
-  }
-
-  return extractNavigationGraphFromScreens(documentOrSource.screens)
+export function extractNavigationGraph(document: MdxDocument): NavigationGraph {
+  return extractNavigationGraphFromScreens(document.screens)
 }

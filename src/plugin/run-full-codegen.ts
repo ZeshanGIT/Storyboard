@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { buildMdxDocument } from './build-mdx-document'
 import { extractNavigationGraph } from './extract-navigation-graph'
-import { extractScreens } from './extract-screens'
 import { generateAggregateRoutes, generateDocumentFiles } from './generate'
 import { generateContentDocuments } from './generate-documents'
 import { resolveContentDir, resolveGeneratedDir } from './paths'
@@ -19,9 +19,9 @@ export async function runFullCodegen(root: string): Promise<CodegenResult> {
 
   for (const doc of documents) {
     const source = await readFile(join(contentDir, doc.filename), 'utf8')
-    const extracted = extractScreens(source)
-    if (!extracted.ok) {
-      for (const error of extracted.errors) {
+    const built = buildMdxDocument(source)
+    if (!built.ok) {
+      for (const error of built.errors) {
         errors.push(
           new CodegenError(error.code, `${doc.filename}: ${error.message}`, error.screenId),
         )
@@ -29,9 +29,17 @@ export async function runFullCodegen(root: string): Promise<CodegenResult> {
       continue
     }
 
-    documentScreens.set(doc.slug, extracted.screens)
-    const graph = extractNavigationGraph(source, extracted.screens)
-    await generateDocumentFiles(doc.slug, extracted.screens, graph, outDir)
+    const screens: ExtractedScreen[] = built.document.screens.map((s) => ({
+      id: s.id,
+      title: s.title,
+      jsx: s.jsx,
+      order: s.order,
+      modalIds: s.modalIds,
+      links: s.links,
+    }))
+    documentScreens.set(doc.slug, screens)
+    const graph = extractNavigationGraph(built.document)
+    await generateDocumentFiles(doc.slug, built.document, graph, outDir)
   }
 
   if (errors.length > 0) {

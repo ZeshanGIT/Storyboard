@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { injectGraphLinkIdsFromClassification } from './inject-graph-link-ids'
 import { screenIdToComponentName } from './naming'
-import type { ExtractedScreen, NavigationGraph } from './types'
+import type { ExtractedScreen, MdxDocument, MdxScreen, NavigationGraph } from './types'
 
 const WIREFRAME_COMPONENTS = [
   'Screen',
@@ -23,13 +23,13 @@ function wireframeComponentsUsed(jsx: string): string[] {
   return WIREFRAME_COMPONENTS.filter((name) => new RegExp(`<${name}[\\s/>]`).test(jsx))
 }
 
-function wireframeImportLine(screens: ExtractedScreen[]): string {
+function wireframeImportLine(screens: readonly { jsx: string }[]): string {
   const allJsx = screens.map((s) => s.jsx).join('\n')
   const used = wireframeComponentsUsed(allJsx)
   return `import { ${used.join(', ')} } from '../../../components/wireframe'`
 }
 
-function buildScreensFile(screens: readonly ExtractedScreen[]): string {
+function buildScreensFile(screens: readonly MdxScreen[]): string {
   const componentExports = screens
     .map((s) => {
       const name = screenIdToComponentName(s.id)
@@ -41,7 +41,7 @@ function buildScreensFile(screens: readonly ExtractedScreen[]): string {
   return `${HEADER}${wireframeImportLine(screens)}\n\n${componentExports}\n`
 }
 
-export function buildRoutesFile(screens: readonly ExtractedScreen[]): string {
+export function buildRoutesFile(screens: readonly MdxScreen[]): string {
   const componentNames = screens.map((s) => screenIdToComponentName(s.id))
   const routeImports = componentNames.join(', ')
   const routeEntries = screens
@@ -78,13 +78,14 @@ function buildNavigationGraphFile(graph: NavigationGraph): string {
 
 export async function generateDocumentFiles(
   slug: string,
-  screens: ExtractedScreen[],
+  document: MdxDocument,
   graph: NavigationGraph,
   outDir: string,
 ): Promise<void> {
   const docDir = join(outDir, 'documents', slug)
   await mkdir(docDir, { recursive: true })
 
+  const screens = document.screens
   await writeFile(join(docDir, 'screens.generated.tsx'), buildScreensFile(screens), 'utf8')
   await writeFile(join(docDir, 'routes.generated.tsx'), buildRoutesFile(screens), 'utf8')
   await writeFile(
@@ -158,6 +159,10 @@ export async function generateWireframeFiles(
   outDir: string,
   graph: NavigationGraph = { nodes: [], edges: [] },
 ): Promise<void> {
-  await generateDocumentFiles('wireframe', screens, graph, outDir)
+  const document: MdxDocument = {
+    tree: { type: 'root', children: [] },
+    screens,
+  }
+  await generateDocumentFiles('wireframe', document, graph, outDir)
   await generateAggregateRoutes(new Map([['wireframe', screens]]), outDir)
 }

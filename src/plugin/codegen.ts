@@ -1,6 +1,6 @@
 import { buildMdxDocument } from './build-mdx-document'
 import { extractNavigationGraph } from './extract-navigation-graph'
-import { generateWireframeFiles } from './generate'
+import { generateAggregateRoutes, generateDocumentFiles } from './generate'
 import type { CodegenError, ExtractedScreen } from './types'
 
 export type RunCodegenResult =
@@ -21,6 +21,7 @@ export async function runCodegen(source: string, outDir: string): Promise<RunCod
     links: s.links,
   }))
   const graph = extractNavigationGraph(built.document)
-  await generateWireframeFiles(screens, outDir, graph)
+  await generateDocumentFiles('wireframe', built.document, graph, outDir)
+  await generateAggregateRoutes(new Map([['wireframe', screens]]), outDir)
   return { ok: true, screens }
 }
