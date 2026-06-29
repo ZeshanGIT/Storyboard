@@ -7,10 +7,14 @@ export function jsonToWireframeDocumentBundle(
   built: JsonDocumentBuilt,
   slug = 'json-document',
 ): WireframeDocumentBundle {
+  const components = new Map(
+    built.screens.map((screen) => [screen.id, buildScreenComponent(screen)] as const),
+  )
+
   const routes = built.screens.map((screen) => ({
     id: screen.id,
     path: `/${screen.id}`,
-    component: buildScreenComponent(screen),
+    component: components.get(screen.id)!,
     ...(screen.modalIds.length > 0 ? { modalIds: screen.modalIds } : {}),
   }))
 
@@ -37,7 +41,7 @@ export function jsonToWireframeDocumentBundle(
       screens: built.screens.map((s) => ({
         id: s.id,
         title: s.title,
-        component: buildScreenComponent(s),
+        component: components.get(s.id)!,
       })),
     },
   }

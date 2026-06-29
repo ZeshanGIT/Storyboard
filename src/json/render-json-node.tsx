@@ -16,10 +16,7 @@ import type { InputType } from '@/components/wireframe/Input'
 import { jsonNodeKey } from './node-key'
 import type { JsonNode, JsonProps, ParsedTag } from './types'
 
-export type RenderJsonContext = {
-  linkRenderIndex: { current: number }
-  linkIdsByTraversal: readonly (string | undefined)[]
-}
+export type RenderJsonContext = Record<string, never>
 
 const INPUT_TYPES = new Set<InputType>([
   'text',
@@ -101,12 +98,6 @@ function renderChildren(
   ))
 }
 
-function nextGraphLinkId(ctx: RenderJsonContext): string | undefined {
-  const linkId = ctx.linkIdsByTraversal[ctx.linkRenderIndex.current]
-  ctx.linkRenderIndex.current += 1
-  return linkId
-}
-
 function JsonNodeElement({ node, ctx }: { node: JsonNode; ctx: RenderJsonContext }) {
   const mapped = propsFromTag(node.tag, node.props)
   const { component } = node.tag
@@ -119,7 +110,7 @@ function JsonNodeElement({ node, ctx }: { node: JsonNode; ctx: RenderJsonContext
         </Text>
       )
     case 'Link': {
-      const graphLinkId = nextGraphLinkId(ctx)
+      const graphLinkId = node.graphLinkId
       return (
         <Link
           {...(mapped as React.ComponentProps<typeof Link>)}
@@ -160,21 +151,8 @@ function JsonNodeElement({ node, ctx }: { node: JsonNode; ctx: RenderJsonContext
   }
 }
 
-export function renderJsonNode(node: JsonNode, ctx: RenderJsonContext): ReactNode {
+export function renderJsonNode(node: JsonNode, ctx: RenderJsonContext = {}): ReactNode {
   return <JsonNodeElement node={node} ctx={ctx} />
 }
 
-export function createRenderContext(
-  linkIdsByTraversal: readonly (string | undefined)[],
-): RenderJsonContext {
-  return {
-    linkRenderIndex: { current: 0 },
-    linkIdsByTraversal,
-  }
-}
-
-export function buildLinkIdsByTraversal(
-  links: readonly { classification: string; linkId?: string }[],
-): (string | undefined)[] {
-  return links.map((link) => (link.classification === 'screen-edge' ? link.linkId : undefined))
-}
+export const JSON_RENDER_CONTEXT: RenderJsonContext = {}

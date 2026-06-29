@@ -188,9 +188,37 @@ export function buildJsonDocument(
     return { ok: false, errors }
   }
 
+  for (const screen of screens) {
+    stampGraphLinkIds(screen.nodes, screen.links)
+  }
+
   if (typeof title !== 'string') {
     return { ok: false, errors }
   }
 
   return { ok: true, document: { title, screens } }
+}
+
+function stampGraphLinkIds(nodes: readonly JsonNode[], links: readonly ClassifiedLink[]): void {
+  let linkCursor = 0
+
+  function walk(node: JsonNode): void {
+    if (node.tag.component === 'Link') {
+      const classified = links[linkCursor]
+      linkCursor += 1
+      if (classified?.linkId) {
+        node.graphLinkId = classified.linkId
+      }
+      return
+    }
+
+    if (typeof node.children === 'string' || node.children === undefined) return
+    for (const child of node.children) {
+      walk(child)
+    }
+  }
+
+  for (const node of nodes) {
+    walk(node)
+  }
 }

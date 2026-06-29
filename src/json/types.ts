@@ -11,6 +11,7 @@ export type JsonNode = {
   tag: ParsedTag
   props: JsonProps
   children?: readonly JsonNode[] | string
+  graphLinkId?: string
 }
 
 export class JsonBuildError extends Error {
