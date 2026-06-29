@@ -11,6 +11,7 @@ import { GraphView } from './GraphView'
 import { IndicatorToggles } from './IndicatorToggles'
 import { PreviewView } from './PreviewView'
 import { PrototypeView } from './PrototypeView'
+import { normalizePrototypeScreenId } from './router'
 import { useAppUrl } from './use-app-url'
 
 export type ShellProps = {
@@ -88,6 +89,14 @@ export function Shell({ documents, appDefaults }: ShellProps) {
     if (documents.some((doc) => doc.slug === activeDocumentSlug)) return
     navigate({ docSlug: defaultDocumentSlug(documents) }, { replace: true })
   }, [documents, activeDocumentSlug, navigate])
+
+  useEffect(() => {
+    if (view !== 'prototype') return
+    const entryScreen = activeEntry?.routes[0]?.id
+    const normalized = normalizePrototypeScreenId(urlState.screenId, validScreenIds, entryScreen)
+    if (!normalized) return
+    navigate({ screenId: normalized }, { replace: true })
+  }, [view, urlState.screenId, validScreenIds, activeEntry, navigate])
 
   useEffect(() => {
     for (const error of codegenErrors) {

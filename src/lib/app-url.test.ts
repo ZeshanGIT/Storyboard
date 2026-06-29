@@ -38,6 +38,31 @@ describe('parseAppUrl / buildAppUrl', () => {
   it('returns null for unrecognized paths', () => {
     expect(parseAppUrl({ appPath: '/totally/unknown/path/here' })).toBeNull()
   })
+
+  it('ignores graph query params on non-graph views', () => {
+    expect(
+      parseAppUrl({ appPath: '/mdx/wireframe/preview', search: '?graphMode=compact' }),
+    ).toEqual({
+      app: 'mdx',
+      docSlug: 'wireframe',
+      view: 'preview',
+    })
+  })
+
+  it('merges graph query params on graph view', () => {
+    expect(
+      parseAppUrl({
+        appPath: '/mdx/wireframe/graph',
+        search: '?graphMode=compact&focus=welcome',
+      }),
+    ).toEqual({
+      app: 'mdx',
+      docSlug: 'wireframe',
+      view: 'graph',
+      graphMode: 'compact',
+      graphFocus: 'welcome',
+    })
+  })
 })
 
 describe('screenPathForDoc', () => {

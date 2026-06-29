@@ -51,7 +51,7 @@ function isPlaygroundSource(value: string): value is PlaygroundSource {
 
 export function parseAppUrl(input: ParseAppUrlInput): AppUrlState | null {
   const segments = input.appPath.split('/').filter(Boolean)
-  const query = parseGraphQuery(input.search)
+  const graphQuery = parseGraphQuery(input.search)
 
   if (segments[0] === 'mdx' && segments.length >= 3) {
     const docSlug = segments[1]
@@ -60,7 +60,13 @@ export function parseAppUrl(input: ParseAppUrlInput): AppUrlState | null {
     const screenId = viewRaw === 'prototype' ? segments[3] : undefined
     if (viewRaw === 'prototype' && segments.length > 4) return null
     if (viewRaw !== 'prototype' && segments.length > 3) return null
-    return { app: 'mdx', docSlug, view: viewRaw, ...(screenId ? { screenId } : {}), ...query }
+    return {
+      app: 'mdx',
+      docSlug,
+      view: viewRaw,
+      ...(screenId ? { screenId } : {}),
+      ...(viewRaw === 'graph' ? graphQuery : {}),
+    }
   }
 
   if (segments[0] === 'playground' && segments.length >= 4) {
@@ -77,7 +83,7 @@ export function parseAppUrl(input: ParseAppUrlInput): AppUrlState | null {
       docSlug,
       view: viewRaw,
       ...(screenId ? { screenId } : {}),
-      ...query,
+      ...(viewRaw === 'graph' ? graphQuery : {}),
     }
   }
 

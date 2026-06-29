@@ -19,6 +19,17 @@ export type PrototypeRouterOptions = {
   navigate: NavigateAppUrl
 }
 
+/** Entry screen when screenId is missing or not in the active document routes. */
+export function normalizePrototypeScreenId(
+  screenId: string | undefined,
+  validScreenIds: readonly string[],
+  entryScreen: string | undefined,
+): string | undefined {
+  if (!entryScreen || validScreenIds.length === 0) return undefined
+  if (screenId && validScreenIds.includes(screenId)) return undefined
+  return entryScreen
+}
+
 export function usePrototypeRouter(routes: readonly RouteEntry[], options: PrototypeRouterOptions) {
   const defaultRoute = routes[0]
   const activeRoute = useMemo(() => {
