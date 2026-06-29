@@ -20,7 +20,7 @@ const levelTag = {
   h2: 'h2',
   h3: 'h3',
   h4: 'h4',
-  body: 'p',
+  body: 'div',
 } as const
 
 const levelClass: Record<TextLevel, string> = {

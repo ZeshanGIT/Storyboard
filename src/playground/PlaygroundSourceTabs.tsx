@@ -1,22 +1,35 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
 import type { PlaygroundSource } from '@/lib/app-routes'
+import { cn } from '@/lib/utils'
 
 export type PlaygroundSourceTabsProps = {
   source: PlaygroundSource
   onSourceChange: (next: PlaygroundSource) => void
 }
 
+const SOURCES: readonly PlaygroundSource[] = ['json', 'mdx']
+
 export function PlaygroundSourceTabs({ source, onSourceChange }: PlaygroundSourceTabsProps) {
   return (
-    <Tabs value={source} onValueChange={(value) => onSourceChange(value as PlaygroundSource)}>
-      <TabsList className="h-7">
-        <TabsTrigger value="json" className="px-2 text-xs">
-          JSON
-        </TabsTrigger>
-        <TabsTrigger value="mdx" className="px-2 text-xs">
-          MDX
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+    <div className="inline-flex h-7 items-center gap-0.5 rounded-none bg-muted p-0.5">
+      {SOURCES.map((value) => (
+        <Button
+          key={value}
+          type="button"
+          variant="ghost"
+          size="xs"
+          className={cn(
+            'h-6 rounded-none px-2 uppercase',
+            source === value && 'bg-background text-foreground shadow-sm',
+          )}
+          aria-pressed={source === value}
+          onClick={() => {
+            if (value !== source) onSourceChange(value)
+          }}
+        >
+          {value}
+        </Button>
+      ))}
+    </div>
   )
 }

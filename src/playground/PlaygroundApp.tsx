@@ -7,6 +7,7 @@ import { WireframeErrorProvider } from '@/runtime/WireframeErrorProvider'
 import { Shell } from '@/shell/Shell'
 import { compilePlaygroundJson } from './compile-playground-json'
 import { compilePlaygroundMdx } from './compile-playground-mdx'
+import { asEditorText } from './editor-text'
 import { PlaygroundMonacoEditor } from './PlaygroundMonacoEditor'
 import { PlaygroundSourceTabs } from './PlaygroundSourceTabs'
 import { PlaygroundSplitLayout } from './PlaygroundSplitLayout'
@@ -19,29 +20,31 @@ const COMPILE_DEBOUNCE_MS = 300
 export function PlaygroundApp() {
   const { source, setSource } = usePlaygroundSource()
   const [jsonText, setJsonText] = useState(INITIAL_JSON_TEXT)
-  const [mdxText, setMdxText] = useState(sampleMdx)
+  const [mdxText, setMdxText] = useState(() => asEditorText(sampleMdx))
 
   const editorText = source === 'json' ? jsonText : mdxText
   const setEditorText = source === 'json' ? setJsonText : setMdxText
 
-  const debouncedText = useDebouncedValue(editorText, COMPILE_DEBOUNCE_MS)
+  const debouncedJsonText = useDebouncedValue(jsonText, COMPILE_DEBOUNCE_MS)
+  const debouncedMdxText = useDebouncedValue(mdxText, COMPILE_DEBOUNCE_MS)
+  const compileText = source === 'json' ? debouncedJsonText : debouncedMdxText
 
   const documents = useMemo(() => {
     if (source === 'json') {
-      const compiled = compilePlaygroundJson(debouncedText)
+      const compiled = compilePlaygroundJson(compileText)
       if (!compiled.ok) return []
       return [jsonToWireframeDocumentBundle(compiled.document, 'playground', { playground: true })]
     }
-    const compiled = compilePlaygroundMdx(debouncedText)
+    const compiled = compilePlaygroundMdx(compileText)
     if (!compiled.ok) return []
     return [mdxToWireframeDocumentBundle(compiled.built, 'playground', { playground: true })]
-  }, [source, debouncedText])
+  }, [source, compileText])
 
   const errors = useMemo(() => {
     const compiled =
-      source === 'json' ? compilePlaygroundJson(debouncedText) : compilePlaygroundMdx(debouncedText)
+      source === 'json' ? compilePlaygroundJson(compileText) : compilePlaygroundMdx(compileText)
     return compiled.ok ? [] : [...compiled.errors]
-  }, [source, debouncedText])
+  }, [source, compileText])
 
   return (
     <PlaygroundSplitLayout

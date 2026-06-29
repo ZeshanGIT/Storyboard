@@ -15,6 +15,9 @@ export function compilePlaygroundMdx(
   text: string,
   filename = 'playground.mdx',
 ): CompilePlaygroundMdxResult {
+  if (typeof text !== 'string') {
+    return { ok: false, errors: ['MDX parse error: editor source must be a string'] }
+  }
   const { title } = extractFrontmatter(text, filename)
   const built = buildMdxDocument(text)
   if (!built.ok) {

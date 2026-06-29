@@ -1,5 +1,6 @@
 import Editor from '@monaco-editor/react'
 import type { ReactNode } from 'react'
+import { asEditorText } from './editor-text'
 import './monaco-setup'
 
 export type PlaygroundMonacoEditorProps = {
@@ -30,8 +31,8 @@ export function PlaygroundMonacoEditor({
           height="100%"
           language={language}
           theme="vs"
-          value={value}
-          onChange={(next) => onChange(next ?? '')}
+          value={asEditorText(value)}
+          onChange={(next) => onChange(asEditorText(next))}
           options={{
             automaticLayout: true,
             fontFamily: "'JetBrains Mono Variable', ui-monospace, monospace",

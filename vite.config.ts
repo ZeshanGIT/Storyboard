@@ -1,9 +1,9 @@
 import path from 'node:path'
-import mdx from '@mdx-js/rollup'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import remarkFrontmatter from 'remark-frontmatter'
 import { defineConfig } from 'vite'
+import { mdxVitePlugin } from './src/plugin/mdx-vite-plugin'
 import { wireframePlugin } from './src/plugin/wireframe-plugin'
 
 const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1]
@@ -24,7 +24,7 @@ export default defineConfig({
     wireframePlugin(),
     {
       enforce: 'pre',
-      ...mdx({
+      ...mdxVitePlugin({
         // MDX files live in src/content/; resolves to src/mdx-components.ts
         providerImportSource: '../mdx-components.ts',
         remarkPlugins: [remarkFrontmatter],

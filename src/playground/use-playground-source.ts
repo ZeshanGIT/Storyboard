@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { toAppPath, toBrowserPath } from '@/lib/app-base-path'
+import { toAppPath } from '@/lib/app-base-path'
 import type { PlaygroundSource } from '@/lib/app-routes'
 import { buildAppUrl, parseAppUrl } from '@/lib/app-url'
+import { navigateToAppPath } from '@/lib/navigate-app'
 
 function readSource(): PlaygroundSource {
   const parsed = parseAppUrl({
@@ -28,20 +29,17 @@ export function usePlaygroundSource(): {
       appPath: toAppPath(window.location.pathname),
       search: window.location.search,
     })
-    if (current?.app !== 'playground') {
-      const { appPath, search } = buildAppUrl({
-        app: 'playground',
-        source: next,
-        docSlug: 'playground',
-        view: 'preview',
-      })
-      window.history.pushState({}, '', `${toBrowserPath(appPath)}${search}`)
-      setSourceState(next)
-      return
-    }
-
-    const { appPath, search } = buildAppUrl({ ...current, source: next })
-    window.history.pushState({}, '', `${toBrowserPath(appPath)}${search}`)
+    const { appPath, search } = buildAppUrl(
+      current?.app === 'playground'
+        ? { ...current, source: next }
+        : {
+            app: 'playground',
+            source: next,
+            docSlug: 'playground',
+            view: 'preview',
+          },
+    )
+    navigateToAppPath(appPath, search)
     setSourceState(next)
   }, [])
 

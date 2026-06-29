@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react'
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { AppUrlState } from '@/lib/app-url'
+import { openPlayground } from '@/lib/navigate-app'
 import { cn } from '@/lib/utils'
 import type { WireframeDocumentBundle } from '@/types/wireframe-document'
 import { getCodegenErrors } from '../runtime/codegen-error'
@@ -137,6 +139,16 @@ export function Shell({ documents, appDefaults, layout = 'standalone' }: ShellPr
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-4">
+                {!embedded && appDefaults.app === 'mdx' ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openPlayground()}
+                  >
+                    Playground
+                  </Button>
+                ) : null}
                 <IndicatorToggles />
                 <Tabs value={view} onValueChange={(v) => setView(v as AppUrlState['view'])}>
                   <TabsList>
