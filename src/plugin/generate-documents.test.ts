@@ -22,8 +22,22 @@ const documents: ScannedMdxDocument[] = [
 ]
 
 const documentScreens = new Map<string, ExtractedScreen[]>([
-  ['wireframe', [{ id: 'home', title: 'Home', jsx: '<Screen id="home" />', order: 0 }]],
-  ['components', [{ id: 'cmp-index', title: 'Index', jsx: '<Screen id="cmp-index" />', order: 0 }]],
+  [
+    'wireframe',
+    [{ id: 'home', title: 'Home', jsx: '<Screen id="home" />', order: 0, modalIds: [] }],
+  ],
+  [
+    'components',
+    [
+      {
+        id: 'cmp-index',
+        title: 'Index',
+        jsx: '<Screen id="cmp-index" />',
+        order: 0,
+        modalIds: [],
+      },
+    ],
+  ],
 ])
 
 describe('generateContentDocuments', () => {

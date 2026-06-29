@@ -1,8 +1,43 @@
+import type { Root } from 'mdast'
+
+export type LinkClassification =
+  | 'screen-edge'
+  | 'modal'
+  | 'reserved'
+  | 'disabled-skip'
+  | 'invalid-missing-goto'
+  | 'invalid-expression-goto'
+  | 'invalid-target'
+
+export type ClassifiedLink = {
+  classification: LinkClassification
+  goto?: string
+  label?: string
+  linkId?: string
+  toScreenId?: string
+}
+
+export type MdxScreen = {
+  id: string
+  title: string
+  order: number
+  jsx: string
+  modalIds: readonly string[]
+  links: readonly ClassifiedLink[]
+  note?: string
+}
+
+export type MdxDocument = {
+  tree: Root
+  screens: readonly MdxScreen[]
+}
+
 export type ExtractedScreen = {
   id: string
   title: string
   jsx: string
   order: number
+  modalIds: readonly string[]
 }
 
 export type NavigationEdge = {

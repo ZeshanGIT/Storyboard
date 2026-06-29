@@ -93,6 +93,7 @@ export function extractScreens(source: string): CodegenResult {
         title,
         jsx: stringifyScreenNode(node),
         order: screens.length,
+        modalIds: [],
       })
     })
 
