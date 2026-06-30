@@ -80,19 +80,19 @@ Locked conventions → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Out of scope: npm, 
 
 | Package | Role | Status |
 |---------|------|--------|
-| `@storyboard/spec` | Types, load, validate, req indexing | ✓ extracted |
-| `@storyboard/shell` | Preview / Prototype / Graph dev server | ✓ extracted; root app dogfoods |
-| `@storyboard/cli` | CLI bin (`storyboard`) | ✓ init, dev, validate, req, impact, trace |
+| `@onespec-dev/spec` | Types, load, validate, req indexing | ✓ extracted |
+| `@onespec-dev/shell` | Preview / Prototype / Graph dev server | ✓ extracted; root app dogfoods |
+| `@onespec-dev/cli` | CLI bin (`storyboard`) | ✓ init, dev, validate, req, impact, trace |
 
 ```bash
-npx @storyboard/cli init              # scaffold storyboard/
-npx @storyboard/cli init --template cloud   # TanStack stub (P2 only)
-npx @storyboard/cli dev | validate | req show | impact | trace
+npx @onespec-dev/cli init              # scaffold storyboard/
+npx @onespec-dev/cli init --template cloud   # TanStack stub (P2 only)
+npx @onespec-dev/cli dev | validate | req show | impact | trace
 ```
 
 Init modes: **embedded** (`my-app/storyboard/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `storyboard/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-**Remaining:** human publish gate — dry-run passed; `npm publish -w …` for `@storyboard/spec`, `@storyboard/shell`, `@storyboard/cli` (`storyboard` bin). Unstable. No production codegen. npm name `storyboard` taken → ship as `@storyboard/cli`.
+**Remaining:** human publish gate — dry-run passed; `npm publish -w …` for `@onespec-dev/spec`, `@onespec-dev/shell`, `@onespec-dev/cli` (`storyboard` bin). Unstable. No production codegen. npm name `storyboard` taken → ship as `@onespec-dev/cli`.
 
 ### P3 · Toy repo traceability POC ○
 
@@ -152,7 +152,7 @@ flowchart LR
 
 **Here:** P2 — npm package publish-ready (Tasks 1–13 prep done; human `npm publish` pending).
 
-**Next action:** publish `0.1.0` (`@storyboard/spec` → `@storyboard/shell` → `@storyboard/cli`), then P3 toy repo POC.
+**Next action:** publish `0.1.0` (`@onespec-dev/spec` → `@onespec-dev/shell` → `@onespec-dev/cli`), then P3 toy repo POC.
 
 ---
 

@@ -1,13 +1,13 @@
-# @storyboard/cli
+# @onespec-dev/cli
 
 Storyboard wireframe + product spec CLI (`storyboard` bin).
 
 ## Install
 
 ```bash
-npm install -g @storyboard/cli
+npm install -g @onespec-dev/cli
 # or
-npx @storyboard/cli@0.1.0 <command>
+npx @onespec-dev/cli@0.1.0 <command>
 ```
 
 ## Commands
