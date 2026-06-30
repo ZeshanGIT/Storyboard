@@ -1,4 +1,4 @@
-import { injectGraphLinkIdsFromClassification, type MdxScreen } from '@storyboard/shell'
+import { injectGraphLinkIdsFromClassification, type MdxScreen } from '@onespec-dev/shell'
 import type { ComponentType } from 'react'
 import { renderMdxScreenJsx } from './render-mdx-node'
 

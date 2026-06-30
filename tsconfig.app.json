@@ -4,7 +4,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@shell/*": ["./packages/shell/src/*"],
-      "@storyboard/shell": ["./packages/shell/src/index.ts"]
+      "@onespec-dev/shell": ["./packages/shell/src/index.ts"]
     },
     "ignoreDeprecations": "6.0",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",

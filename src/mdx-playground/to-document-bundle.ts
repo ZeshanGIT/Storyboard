@@ -4,7 +4,7 @@ import {
   PLAYGROUND_APP_PATH,
   screenRoutePath,
   type WireframeDocumentBundle,
-} from '@storyboard/shell'
+} from '@onespec-dev/shell'
 import type { MdxPlaygroundBuilt } from '@/playground/compile-playground-mdx'
 import { buildMdxScreenComponent } from './build-mdx-screen-component'
 

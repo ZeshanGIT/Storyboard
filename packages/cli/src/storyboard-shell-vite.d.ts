@@ -1,4 +1,4 @@
-declare module '@storyboard/shell/vite' {
+declare module '@onespec-dev/shell/vite' {
   import type { ViteDevServer } from 'vite'
 
   export type StoryboardConfigOptions = {

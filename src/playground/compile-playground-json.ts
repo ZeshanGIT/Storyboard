@@ -1,4 +1,4 @@
-import { buildJsonDocument, type JsonDocumentBuilt } from '@storyboard/shell'
+import { buildJsonDocument, type JsonDocumentBuilt } from '@onespec-dev/shell'
 
 export type CompilePlaygroundJsonResult =
   | { ok: true; document: JsonDocumentBuilt }

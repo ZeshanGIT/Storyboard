@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { buildJsonDocument } from '@storyboard/shell/json/build-json-document'
+import { buildJsonDocument } from '@onespec-dev/shell/json/build-json-document'
 import { parseBindingsFile } from './parse-bindings.js'
 import { parseRequirementsFile } from './parse-requirements.js'
 import type { ProductSpec, WireframeSpec } from './types.js'

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { buildMdxDocument, mdxProcessor, Screen } from '@storyboard/shell'
+import { buildMdxDocument, mdxProcessor, Screen } from '@onespec-dev/shell'
 import { createElement, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'

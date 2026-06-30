@@ -1,4 +1,4 @@
-import { MDX_APP_PREFIX, type WireframeDocumentBundle } from '@storyboard/shell'
+import { MDX_APP_PREFIX, type WireframeDocumentBundle } from '@onespec-dev/shell'
 import type { ContentDocumentEntry } from '@/generated/content-documents.generated'
 
 export function mdxContentDocumentsToBundles(

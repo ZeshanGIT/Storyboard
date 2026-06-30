@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { resolveStoryboardDir } from '@storyboard/shell/detect-mode'
+import { resolveStoryboardDir } from '@onespec-dev/shell/detect-mode'
 
 export function resolveProjectPaths(cwd: string) {
   const storyboardDir = resolveStoryboardDir(cwd)

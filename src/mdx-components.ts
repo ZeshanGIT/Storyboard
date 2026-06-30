@@ -9,7 +9,7 @@ import {
   Screen,
   Text,
   TopBar,
-} from '@storyboard/shell'
+} from '@onespec-dev/shell'
 
 const components = {
   Screen,

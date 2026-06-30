@@ -1,4 +1,4 @@
-import { buildMdxDocument, extractFrontmatter, type MdxDocument } from '@storyboard/shell'
+import { buildMdxDocument, extractFrontmatter, type MdxDocument } from '@onespec-dev/shell'
 
 export type MdxPlaygroundBuilt = {
   title: string

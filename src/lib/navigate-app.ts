@@ -1,4 +1,4 @@
-import { buildAppUrl, toBrowserPath } from '@storyboard/shell'
+import { buildAppUrl, toBrowserPath } from '@onespec-dev/shell'
 import { defaultJsonDocumentSlug } from '@/playground/content-json'
 
 const MDX_PLAYGROUND_SLUG = 'playground'

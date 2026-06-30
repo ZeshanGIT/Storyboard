@@ -1,4 +1,4 @@
-import { isPlaygroundAppPath, parseAppUrl, toAppPath } from '@storyboard/shell'
+import { isPlaygroundAppPath, parseAppUrl, toAppPath } from '@onespec-dev/shell'
 import { useEffect, useState } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { MdxApp } from './MdxApp'

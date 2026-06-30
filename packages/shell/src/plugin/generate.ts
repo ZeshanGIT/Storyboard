@@ -26,7 +26,7 @@ function wireframeComponentsUsed(jsx: string): string[] {
 function wireframeImportLine(screens: readonly { jsx: string }[]): string {
   const allJsx = screens.map((s) => s.jsx).join('\n')
   const used = wireframeComponentsUsed(allJsx)
-  return `import { ${used.join(', ')} } from '@storyboard/shell'`
+  return `import { ${used.join(', ')} } from '@onespec-dev/shell'`
 }
 
 function buildScreensFile(screens: readonly MdxScreen[]): string {

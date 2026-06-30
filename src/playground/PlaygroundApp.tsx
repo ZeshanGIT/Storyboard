@@ -5,7 +5,7 @@ import {
   useAppUrl,
   type WireframeDocumentBundle,
   WireframeErrorProvider,
-} from '@storyboard/shell'
+} from '@onespec-dev/shell'
 import { useCallback, useMemo, useState } from 'react'
 import sampleMdx from '@/content/wireframe.mdx?raw'
 import { mdxToWireframeDocumentBundle } from '@/mdx-playground/to-document-bundle'

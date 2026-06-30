@@ -66,8 +66,8 @@ export function defineStoryboardConfig(options: StoryboardConfigOptions): UserCo
     resolve: {
       alias: [
         { find: '@storyboard-app', replacement: storyboardApp },
-        { find: '@storyboard/template', replacement: templateRoot },
-        { find: '@storyboard/shell', replacement: path.join(shellRoot, 'src/client.ts') },
+        { find: '@onespec-dev/template', replacement: templateRoot },
+        { find: '@onespec-dev/shell', replacement: path.join(shellRoot, 'src/client.ts') },
         { find: /^@shell\/(.*)/, replacement: `${path.join(shellRoot, 'src')}/$1` },
         { find: /^@\/(.*)/, replacement: `${path.join(workspaceRoot, 'src')}/$1` },
       ],

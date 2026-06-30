@@ -1,4 +1,4 @@
-import { loadProductSpec, showReq } from '@storyboard/spec'
+import { loadProductSpec, showReq } from '@onespec-dev/spec'
 import { resolveProjectPaths } from '../resolve-project.js'
 
 export async function runReqShow(opts: { cwd: string; id: string }): Promise<number> {

@@ -1,4 +1,4 @@
-import type { WireframeDocumentBundle } from '@storyboard/shell'
+import type { WireframeDocumentBundle } from '@onespec-dev/shell'
 import { contentJsonSources } from '@/content/content-json'
 import type { ContentDocumentEntry } from '@/generated/content-documents.generated'
 import { jsonContentSourcesToBundles } from './json-documents'

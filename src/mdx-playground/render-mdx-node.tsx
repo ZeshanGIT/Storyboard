@@ -11,7 +11,7 @@ import {
   Screen,
   Text,
   TopBar,
-} from '@storyboard/shell'
+} from '@onespec-dev/shell'
 import type { Text as MdastText, Root } from 'mdast'
 import type { ComponentType, ReactNode } from 'react'
 import { Fragment } from 'react'

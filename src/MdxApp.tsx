@@ -1,4 +1,4 @@
-import { Shell } from '@storyboard/shell'
+import { Shell } from '@onespec-dev/shell'
 import { openPlayground } from '@/lib/navigate-app'
 import { allContentDocumentsToBundles } from './adapters/content-documents'
 import { contentDocuments } from './generated/content-documents.generated'

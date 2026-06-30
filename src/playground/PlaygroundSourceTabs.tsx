@@ -1,4 +1,4 @@
-import type { PlaygroundSource } from '@storyboard/shell'
+import type { PlaygroundSource } from '@onespec-dev/shell'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 

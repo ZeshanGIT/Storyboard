@@ -1,4 +1,4 @@
-import { loadProductSpec, validateProductSpec } from '@storyboard/spec'
+import { loadProductSpec, validateProductSpec } from '@onespec-dev/spec'
 import { resolveProjectPaths } from '../resolve-project.js'
 
 export async function runValidate(opts: { cwd: string }): Promise<number> {

@@ -1,4 +1,4 @@
-import { impact, loadProductSpec } from '@storyboard/spec'
+import { impact, loadProductSpec } from '@onespec-dev/spec'
 import { resolveProjectPaths } from '../resolve-project.js'
 
 export async function runImpact(opts: { cwd: string; target: string }): Promise<number> {

@@ -1,4 +1,4 @@
-import { buildAppUrl, type PlaygroundSource, parseAppUrl, toAppPath } from '@storyboard/shell'
+import { buildAppUrl, type PlaygroundSource, parseAppUrl, toAppPath } from '@onespec-dev/shell'
 import { useCallback, useEffect, useState } from 'react'
 import { navigateToAppPath } from '@/lib/navigate-app'
 import { defaultJsonDocumentSlug, isContentJsonSlug } from './content-json'

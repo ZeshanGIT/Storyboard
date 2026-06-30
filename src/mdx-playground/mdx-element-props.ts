@@ -1,4 +1,4 @@
-import type { MdxJsxElement } from '@storyboard/shell'
+import type { MdxJsxElement } from '@onespec-dev/shell'
 
 export function mdxAttributesToProps(
   attributes: MdxJsxElement['attributes'],

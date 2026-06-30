@@ -2,7 +2,7 @@ import {
   buildJsonDocument,
   jsonToWireframeDocumentBundle,
   type WireframeDocumentBundle,
-} from '@storyboard/shell'
+} from '@onespec-dev/shell'
 import {
   type ContentJsonSource,
   contentJsonSources,

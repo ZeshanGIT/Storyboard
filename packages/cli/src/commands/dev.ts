@@ -2,7 +2,7 @@ import { resolveProjectPaths } from '../resolve-project.js'
 
 export async function runDev(opts: { cwd: string; port?: number }): Promise<number> {
   resolveProjectPaths(opts.cwd)
-  const shellVite = '@storyboard/shell/vite'
+  const shellVite = '@onespec-dev/shell/vite'
   const { createStoryboardDevServer } = await import(shellVite)
   const server = await createStoryboardDevServer({
     root: opts.cwd,
