@@ -11,14 +11,19 @@ describe('impact', () => {
     const spec = await loadProductSpec(FIXTURE)
     const result = impact(spec, 'BR-PASSWORD-VALIDATE')
     expect(result.bindings.length).toBeGreaterThan(0)
-    expect(result.screens).toContain('home')
-    expect(result.srs).toContain('SR-011')
+    expect(result.screens).toContain('edit-task')
+    expect(result.srs).toContain('SR-020')
   })
 
   it('lists all BRs bound to a screen', async () => {
     const spec = await loadProductSpec(FIXTURE)
     const result = impact(spec, 'home')
-    expect(result.bindings.length).toBe(2)
-    expect(result.bindings.map((b) => b.brId).sort()).toEqual(['BR-001', 'BR-PASSWORD-VALIDATE'])
+    expect(result.bindings.length).toBe(4)
+    expect(result.bindings.map((b) => b.brId).sort()).toEqual([
+      'BR-001',
+      'BR-002',
+      'BR-003',
+      'BR-004',
+    ])
   })
 })

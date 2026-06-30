@@ -4,7 +4,38 @@
     "home": {
       "sr": "SR-001",
       "title": "Home",
-      "nodes": [["Text:h1", "Tasks"], ["Input", "SR-011", { "placeholder": "New task" }]]
+      "nodes": [
+        ["Text:h1", "Tasks"],
+        [
+          "Container:row",
+          [
+            ["Input", "SR-011", { "placeholder": "New task" }],
+            ["Link:primary-btn", "SR-012", { "goto": "home" }, "Add"]
+          ]
+        ],
+        [
+          "Container:row",
+          [
+            ["Link", "SR-013", { "goto": "home" }, "All"],
+            ["Link", { "goto": "home" }, "Active"],
+            ["Link", { "goto": "home" }, "Done"]
+          ]
+        ],
+        ["Container", "SR-010", [["Text", "SR-014", "No tasks yet"]]]
+      ]
+    },
+    "edit-task": {
+      "title": "Edit task",
+      "nodes": [
+        [
+          "Modal",
+          { "id": "edit" },
+          [
+            ["Input:password", "SR-020", { "label": "Confirm" }],
+            ["Link:primary-btn", { "goto": "_close" }, "Save"]
+          ]
+        ]
+      ]
     }
   }
 }

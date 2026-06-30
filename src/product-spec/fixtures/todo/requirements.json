@@ -1,10 +1,18 @@
 {
   "structural": {
     "SR-001": { "description": "Home screen" },
-    "SR-011": { "description": "Add task input" }
+    "SR-010": { "description": "Task list container" },
+    "SR-011": { "description": "Add task input" },
+    "SR-012": { "description": "Add button" },
+    "SR-013": { "description": "Filter tabs" },
+    "SR-014": { "description": "Empty state text" },
+    "SR-020": { "description": "Edit modal password confirm" }
   },
   "behavioral": {
-    "BR-001": { "description": "Create task" },
+    "BR-001": { "description": "Create task when Add is pressed" },
+    "BR-002": { "description": "Complete task when checkbox is toggled" },
+    "BR-003": { "description": "Delete task when delete is pressed" },
+    "BR-004": { "description": "Filter tasks when tab is selected" },
     "BR-PASSWORD-VALIDATE": {
       "description": "Password must meet policy",
       "children": {
