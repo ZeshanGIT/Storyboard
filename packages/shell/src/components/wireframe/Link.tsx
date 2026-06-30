@@ -2,12 +2,12 @@ import { useScreenId } from '@shell/components/wireframe/ScreenContext'
 import { screenRoutePath } from '@shell/lib/app-routes'
 import { useWireframeDisplayPreferences } from '@shell/runtime/WireframeDisplayPreferences'
 import { RESERVED_GOTO, useWireframeView } from '@shell/runtime/WireframeViewContext'
+import type { GotoTarget } from '@shell/types/goto'
 import type { MouseEvent, ReactNode } from 'react'
 import { useEffect, useMemo } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { GotoTarget } from '@/types/goto'
 import { type NoteProps, WireframeNote } from './note'
 
 export type LinkProps = NoteProps & {

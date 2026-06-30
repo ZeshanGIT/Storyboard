@@ -4,15 +4,16 @@
     "outDir": "dist",
     "rootDir": "src",
     "jsx": "react-jsx",
-    "lib": ["ES2023"],
+    "lib": ["ES2023", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@shell/*": ["./src/*"]
+      "@shell/*": ["./src/*"],
+      "@/*": ["../../src/*"]
     }
   },
-  "include": ["src/json/**/*", "src/plugin/**/*", "src/types/**/*", "src/vite/**/*"],
+  "include": ["src/json/**/*", "src/plugin/**/*", "src/types/**/*"],
   "exclude": [
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
