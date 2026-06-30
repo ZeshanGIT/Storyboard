@@ -4,7 +4,7 @@
     "home": {
       "sr": "SR-001",
       "title": "Home",
-      "nodes": [["Text:h1", "Tasks"]]
+      "nodes": [["Text:h1", "Tasks"], ["Input", "SR-011", { "placeholder": "New task" }]]
     }
   }
 }

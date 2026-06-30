@@ -1,3 +1,4 @@
 {
-  "BR-001": [["home", "SR-001"]]
+  "BR-001": [["home", "SR-001"]],
+  "BR-PASSWORD-VALIDATE": [["home", "SR-011"]]
 }

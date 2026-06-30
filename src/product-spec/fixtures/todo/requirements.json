@@ -1,8 +1,16 @@
 {
   "structural": {
-    "SR-001": { "description": "Home screen" }
+    "SR-001": { "description": "Home screen" },
+    "SR-011": { "description": "Add task input" }
   },
   "behavioral": {
-    "BR-001": { "description": "Create task" }
+    "BR-001": { "description": "Create task" },
+    "BR-PASSWORD-VALIDATE": {
+      "description": "Password must meet policy",
+      "children": {
+        "MIN-LEN": { "description": "Minimum 8 characters" },
+        "SPECIAL": { "description": "At least one special character" }
+      }
+    }
   }
 }
