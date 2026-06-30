@@ -1,6 +1,6 @@
 # @onespec-dev/cli
 
-Storyboard wireframe + product spec CLI (`storyboard` bin).
+OneSpec wireframe + product spec CLI (`onespec` bin).
 
 ## Install
 
@@ -13,10 +13,10 @@ npx @onespec-dev/cli@0.1.0 <command>
 ## Commands
 
 ```bash
-storyboard init [--template embedded|cloud]
-storyboard dev [--port 5173]
-storyboard validate
-storyboard req show <id>
-storyboard impact <target>
-storyboard trace <target>
+npx @onespec-dev/cli@0.1.0 init [--template embedded|cloud]
+npx @onespec-dev/cli@0.1.0 dev [--port 5173]
+npx @onespec-dev/cli@0.1.0 validate
+npx @onespec-dev/cli@0.1.0 req show <id>
+npx @onespec-dev/cli@0.1.0 impact <target>
+npx @onespec-dev/cli@0.1.0 trace <target>
 ```

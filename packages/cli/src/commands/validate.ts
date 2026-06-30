@@ -12,7 +12,7 @@ export async function runValidate(opts: { cwd: string }): Promise<number> {
     console.warn(`warn: ${issue.message}`)
   }
   if (result.ok) {
-    console.log('storyboard validate: ok')
+    console.log('onespec validate: ok')
     return 0
   }
   return 1
