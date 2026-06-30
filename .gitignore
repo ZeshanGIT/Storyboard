@@ -28,3 +28,4 @@ src/generated/
 
 .worktrees/
 agent_space/
+.last-sync-checkpoint
