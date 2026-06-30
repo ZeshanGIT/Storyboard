@@ -1,7 +1,17 @@
 {
-  "name": "storyboard",
+  "name": "@storyboard/cli",
   "version": "0.1.0",
+  "description": "Storyboard wireframe + product spec CLI",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZeshanGIT/Storyboard.git",
+    "directory": "packages/cli"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "storyboard": "./dist/bin/storyboard.js"
   },
@@ -10,6 +20,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && cp -r src/templates dist/templates",
+    "prepublishOnly": "npm run build",
     "test": "vitest run"
   },
   "dependencies": {

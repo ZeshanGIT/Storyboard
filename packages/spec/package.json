@@ -1,7 +1,17 @@
 {
   "name": "@storyboard/spec",
   "version": "0.1.0",
+  "description": "Storyboard product spec types, loader, and validation",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZeshanGIT/Storyboard.git",
+    "directory": "packages/spec"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -15,6 +25,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build",
     "test": "vitest run"
   },
   "dependencies": {

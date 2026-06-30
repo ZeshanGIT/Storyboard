@@ -82,17 +82,17 @@ Locked conventions → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Out of scope: npm, 
 |---------|------|--------|
 | `@storyboard/spec` | Types, load, validate, req indexing | ✓ extracted |
 | `@storyboard/shell` | Preview / Prototype / Graph dev server | ✓ extracted; root app dogfoods |
-| `storyboard` | CLI bin | ✓ init, dev, validate, req, impact, trace |
+| `@storyboard/cli` | CLI bin (`storyboard`) | ✓ init, dev, validate, req, impact, trace |
 
 ```bash
-npx storyboard init              # scaffold storyboard/
-npx storyboard init --template cloud   # TanStack stub (P2 only)
-npx storyboard dev | validate | req show | impact | trace
+npx @storyboard/cli init              # scaffold storyboard/
+npx @storyboard/cli init --template cloud   # TanStack stub (P2 only)
+npx @storyboard/cli dev | validate | req show | impact | trace
 ```
 
 Init modes: **embedded** (`my-app/storyboard/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `storyboard/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-**Remaining:** publish `0.1.0` (Task 13). Unstable. No production codegen. Open: npm name `storyboard` vs `@storyboard/cli`.
+**Remaining:** human publish gate — dry-run passed; `npm publish -w …` for `@storyboard/spec`, `@storyboard/shell`, `@storyboard/cli` (`storyboard` bin). Unstable. No production codegen. npm name `storyboard` taken → ship as `@storyboard/cli`.
 
 ### P3 · Toy repo traceability POC ○
 
@@ -150,9 +150,9 @@ flowchart LR
 
 ## Current focus
 
-**Here:** P2 — npm package (Tasks 1–12 done; publish pending).
+**Here:** P2 — npm package publish-ready (Tasks 1–13 prep done; human `npm publish` pending).
 
-**Next action:** [`2026-06-30-p2-npm-package.md`](superpowers/plans/2026-06-30-p2-npm-package.md) Task 13 → publish `0.1.0`.
+**Next action:** publish `0.1.0` (`@storyboard/spec` → `@storyboard/shell` → `@storyboard/cli`), then P3 toy repo POC.
 
 ---
 
