@@ -13,6 +13,10 @@
       "types": "./src/vite/index.ts",
       "import": "./src/vite/index.ts"
     },
+    "./detect-mode": {
+      "types": "./src/vite/detect-mode.ts",
+      "import": "./src/vite/detect-mode.ts"
+    },
     "./json/build-json-document": {
       "types": "./dist/json/build-json-document.d.ts",
       "import": "./dist/json/build-json-document.js"

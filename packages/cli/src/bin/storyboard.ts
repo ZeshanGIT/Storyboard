@@ -1,3 +1,4 @@
 #!/usr/bin/env node
-console.error('storyboard CLI not implemented yet')
-process.exit(1)
+import { buildCli } from '../cli.js'
+
+buildCli().parse()

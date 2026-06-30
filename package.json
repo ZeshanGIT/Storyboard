@@ -18,7 +18,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "storyboard": "tsx packages/spec/src/cli/main.ts"
+    "storyboard": "tsx packages/cli/src/bin/storyboard.ts"
   },
   "dependencies": {
     "@storyboard/shell": "0.1.0",
