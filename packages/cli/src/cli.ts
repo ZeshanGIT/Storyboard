@@ -8,7 +8,7 @@ import { runValidate } from './commands/validate.js'
 
 export function buildCli(): Command {
   const program = new Command()
-    .name('storyboard')
+    .name('onespec')
     .description('Storyboard wireframe + product spec tooling')
     .version('0.1.0')
 

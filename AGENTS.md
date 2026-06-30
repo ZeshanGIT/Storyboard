@@ -14,7 +14,7 @@ npm run fix       # Biome safe fixes + format
 npm run codegen   # regen src/generated/ only
 npm test          # Vitest plugin tests
 npm run preview
-npm run storyboard  # validate | req show | impact | trace (P1 local CLI; trace needs `rg` on PATH)
+npm run onespec  # init | dev | validate | req show | impact | trace
 ```
 
 Run `npm run build` + `npm run check` before claiming done.

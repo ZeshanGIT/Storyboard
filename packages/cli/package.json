@@ -13,7 +13,7 @@
     "access": "public"
   },
   "bin": {
-    "storyboard": "./dist/bin/storyboard.js"
+    "onespec": "./dist/bin/onespec.js"
   },
   "files": [
     "dist"
