@@ -290,7 +290,7 @@ Behavioral requirements should ideally have corresponding automated tests.
 Example:
 
 ```
-BH-001
+BR-001
 
 ↓
 
