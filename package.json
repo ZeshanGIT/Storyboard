@@ -13,7 +13,8 @@
     "archive-skills": "bash scripts/archive-skills.sh",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "storyboard": "tsx src/product-spec/cli/main.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
