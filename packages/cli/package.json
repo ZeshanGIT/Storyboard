@@ -1,0 +1,23 @@
+{
+  "name": "storyboard",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "storyboard": "./dist/bin/storyboard.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@storyboard/spec": "0.1.0",
+    "@storyboard/shell": "0.1.0",
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "typescript": "~6.0.2",
+    "vitest": "^3.2.6"
+  }
+}

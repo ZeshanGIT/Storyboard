@@ -3,9 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "npm run codegen && tsc -b && vite build",
+    "build:packages": "npm run build -w @storyboard/spec -w @storyboard/shell -w storyboard",
+    "build": "npm run build:packages && npm run codegen && tsc -b && vite build",
     "build:pages": "npm run build && cp dist/index.html dist/404.html",
     "check": "npm run codegen && tsc -b && biome check .",
     "fix": "biome check --write .",
