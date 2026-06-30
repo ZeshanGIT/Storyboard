@@ -9,6 +9,7 @@ export type JsonProps = Readonly<Record<string, unknown>>
 
 export type JsonNode = {
   tag: ParsedTag
+  sr?: string
   props: JsonProps
   children?: readonly JsonNode[] | string
   graphLinkId?: string

@@ -1,8 +1,14 @@
 import { parseTag } from './parse-tag'
 import { JsonBuildError, type JsonNode, type JsonProps } from './types'
 
+const SR_PATTERN = /^SR-[A-Z0-9-]+$/
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isSrSlot(value: unknown): value is string {
+  return typeof value === 'string' && SR_PATTERN.test(value)
 }
 
 function normalizeProps(value: unknown): JsonProps {
@@ -17,7 +23,10 @@ export function parseJsonNode(raw: unknown): JsonNode {
     throw new JsonBuildError('INVALID_NODE', 'Node must be a tuple array')
   }
 
-  if (raw.length < 1 || raw.length > 3) {
+  const hasSrSlot = raw.length >= 2 && isSrSlot(raw[1])
+  const maxLength = hasSrSlot ? 4 : 3
+
+  if (raw.length < 1 || raw.length > maxLength) {
     throw new JsonBuildError('INVALID_NODE', 'Node tuple must have 1–3 elements')
   }
 
@@ -30,6 +39,20 @@ export function parseJsonNode(raw: unknown): JsonNode {
 
   if (raw.length === 1) {
     return { tag, props: {} }
+  }
+
+  if (hasSrSlot) {
+    const sr = raw[1]
+    const rest = raw.slice(2)
+    if (rest.length === 0) return { tag, sr, props: {} }
+    if (typeof rest[0] === 'string') return { tag, sr, props: {}, children: rest[0] }
+    if (isPlainObject(rest[0])) {
+      const props = normalizeProps(rest[0])
+      if (rest.length === 1) return { tag, sr, props }
+      return { tag, sr, props, children: parseChildren(rest[1]) }
+    }
+    if (Array.isArray(rest[0])) return { tag, sr, props: {}, children: parseChildren(rest[0]) }
+    throw new JsonBuildError('INVALID_NODE', 'Invalid tuple after SR id')
   }
 
   const second = raw[1]

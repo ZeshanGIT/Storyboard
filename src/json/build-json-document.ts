@@ -10,6 +10,7 @@ export type JsonScreenBuilt = {
   title: string
   order: number
   note?: string
+  sr?: string
   nodes: readonly JsonNode[]
   modalIds: readonly string[]
   links: readonly ClassifiedLink[]
@@ -20,7 +21,10 @@ export type JsonDocumentBuilt = {
   screens: readonly JsonScreenBuilt[]
 }
 
+const SR_PATTERN = /^SR-[A-Z0-9-]+$/
+
 type JsonScreenInput = {
+  sr?: unknown
   title?: unknown
   note?: unknown
   nodes?: unknown
@@ -89,6 +93,21 @@ export function buildJsonDocument(
 
     const screenTitle = typeof screenInput.title === 'string' ? screenInput.title : screenId
     const screenNote = typeof screenInput.note === 'string' ? screenInput.note : undefined
+
+    let screenSr: string | undefined
+    if (screenInput.sr !== undefined) {
+      if (typeof screenInput.sr !== 'string' || !SR_PATTERN.test(screenInput.sr)) {
+        errors.push(
+          new JsonBuildError(
+            'INVALID_NODE',
+            `Screen "${screenId}" sr must be a structural requirement id (SR-…)`,
+            screenId,
+          ),
+        )
+      } else {
+        screenSr = screenInput.sr
+      }
+    }
 
     if (!Array.isArray(screenInput.nodes)) {
       errors.push(
@@ -181,6 +200,7 @@ export function buildJsonDocument(
       modalIds,
       links: classifiedLinks,
       ...(screenNote !== undefined ? { note: screenNote } : {}),
+      ...(screenSr !== undefined ? { sr: screenSr } : {}),
     })
   }
 
