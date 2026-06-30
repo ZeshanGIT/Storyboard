@@ -4,7 +4,7 @@ Style guide for the Todo POC wireframes and future app implementation.
 
 ## Wireframe primitives
 
-Use Storyboard wireframe components only for spec previews: structural borders, semantic HTML, `disabled` and `danger` states. No brand colors, shadows, or custom typography systems in wireframes.
+Use OneSpec wireframe components only for spec previews: structural borders, semantic HTML, `disabled` and `danger` states. No brand colors, shadows, or custom typography systems in wireframes.
 
 ## App styling (P4)
 

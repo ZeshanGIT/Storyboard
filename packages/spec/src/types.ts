@@ -16,7 +16,7 @@ export type Binding = readonly [screenId: string, srId?: StructuralReqId]
 export type BindingsFile = Readonly<Record<string, readonly Binding[]>>
 
 export type ProductSpec = {
-  storyboardDir: string
+  onespecDir: string
   wireframe: WireframeSpec
   requirements: RequirementsFile
   bindings: BindingsFile

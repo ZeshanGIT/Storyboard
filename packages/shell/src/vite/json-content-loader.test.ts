@@ -15,9 +15,9 @@ const MIN_SPEC = {
 }
 
 describe('loadJsonDocumentBundle', () => {
-  it('builds bundle from storyboard/spec.json', () => {
+  it('builds bundle from onespec/spec.json', () => {
     const root = mkdtempSync(join(tmpdir(), 'sb-load-'))
-    const dir = join(root, 'storyboard')
+    const dir = join(root, 'onespec')
     mkdirSync(dir)
     writeFileSync(join(dir, 'spec.json'), JSON.stringify(MIN_SPEC))
     const bundle = loadJsonDocumentBundle(dir)

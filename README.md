@@ -1,6 +1,8 @@
-# Storyboard
+# OneSpec
 
 **Text-first UX specification via MDX + React components.**
+
+Site: [https://onespec.dev](https://onespec.dev)
 
 Describe screens, actions, and navigation in code — not mockups. One MDX source drives **Preview**, **Prototype**, and **Graph View**. Think Storybook for UX flows.
 
@@ -18,7 +20,7 @@ Describe screens, actions, and navigation in code — not mockups. One MDX sourc
 
 ## What it is
 
-Storyboard lets you specify:
+OneSpec lets you specify:
 
 - What is visible on each screen
 - What actions are available

@@ -1,11 +1,11 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { resolveStoryboardDir } from '@onespec-dev/shell/detect-mode'
+import { resolveOnespecDir } from '@onespec-dev/shell/detect-mode'
 
 export function resolveProjectPaths(cwd: string) {
-  const storyboardDir = resolveStoryboardDir(cwd)
-  if (!existsSync(join(storyboardDir, 'spec.json'))) {
-    throw new Error(`No storyboard/spec.json found under ${cwd}`)
+  const onespecDir = resolveOnespecDir(cwd)
+  if (!existsSync(join(onespecDir, 'spec.json'))) {
+    throw new Error(`No onespec/spec.json found under ${cwd}`)
   }
-  return { cwd, storyboardDir }
+  return { cwd, onespecDir }
 }

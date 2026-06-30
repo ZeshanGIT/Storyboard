@@ -10,10 +10,10 @@ async function readJson(path: string): Promise<unknown> {
   return JSON.parse(text) as unknown
 }
 
-export async function loadProductSpec(storyboardDir: string): Promise<ProductSpec> {
-  const specPath = join(storyboardDir, 'spec.json')
-  const requirementsPath = join(storyboardDir, 'requirements.json')
-  const bindingsPath = join(storyboardDir, 'bindings.json')
+export async function loadProductSpec(onespecDir: string): Promise<ProductSpec> {
+  const specPath = join(onespecDir, 'spec.json')
+  const requirementsPath = join(onespecDir, 'requirements.json')
+  const bindingsPath = join(onespecDir, 'bindings.json')
 
   const [specRaw, requirementsRaw, bindingsRaw] = await Promise.all([
     readJson(specPath),
@@ -54,7 +54,7 @@ export async function loadProductSpec(storyboardDir: string): Promise<ProductSpe
   }
 
   return {
-    storyboardDir,
+    onespecDir,
     wireframe,
     requirements: requirements.value,
     bindings: bindings.value,

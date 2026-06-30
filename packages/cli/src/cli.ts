@@ -14,7 +14,7 @@ export function buildCli(): Command {
 
   program
     .command('init')
-    .description('Scaffold storyboard/ and sample content')
+    .description('Scaffold onespec/ and sample content')
     .option('--template <mode>', 'embedded or cloud', 'embedded')
     .action(async (opts: { template: string }) => {
       const template: InitTemplate = opts.template === 'cloud' ? 'cloud' : 'embedded'
@@ -23,7 +23,7 @@ export function buildCli(): Command {
 
   program
     .command('validate')
-    .description('Validate storyboard/ JSON cross-references')
+    .description('Validate onespec/ JSON cross-references')
     .action(async () => {
       const code = await runValidate({ cwd: process.cwd() })
       process.exitCode = code

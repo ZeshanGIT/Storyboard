@@ -31,5 +31,9 @@ export type { ShellLayout, ShellProps, ShellUrlControl } from './shell/Shell.js'
 export { Shell } from './shell/Shell.js'
 export { useAppUrl } from './shell/use-app-url.js'
 export type { WireframeDocumentBundle } from './types/wireframe-document.js'
-export { detectStoryboardMode, resolveStoryboardDir } from './vite/detect-mode.js'
+export {
+  detectStoryboardMode,
+  resolveOnespecDir,
+  resolveStoryboardDir,
+} from './vite/detect-mode.js'
 export { loadJsonDocumentBundle } from './vite/json-content-loader.js'

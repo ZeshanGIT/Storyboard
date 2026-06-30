@@ -7,9 +7,9 @@ import { runReqShow } from './req.js'
 const FIXTURE = join(import.meta.dirname, '../../../spec/src/__tests__/fixtures/todo')
 
 function scaffoldTodoFixture(cwd: string): void {
-  mkdirSync(join(cwd, 'storyboard'), { recursive: true })
+  mkdirSync(join(cwd, 'onespec'), { recursive: true })
   for (const file of ['spec.json', 'requirements.json', 'bindings.json']) {
-    writeFileSync(join(cwd, 'storyboard', file), readFileSync(join(FIXTURE, file), 'utf8'))
+    writeFileSync(join(cwd, 'onespec', file), readFileSync(join(FIXTURE, file), 'utf8'))
   }
 }
 

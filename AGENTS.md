@@ -1,4 +1,4 @@
-# AGENTS.md — Storyboard
+# AGENTS.md — OneSpec
 
 Agent tooling rules. **AGENTS is a workspace rule.** Attach [`docs/CONTEXT.md`](docs/CONTEXT.md) for architecture/status. AGENTS = how/rules; CONTEXT = what/where. Conflict → trust CONTEXT.
 

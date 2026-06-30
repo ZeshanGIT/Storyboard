@@ -8,25 +8,25 @@ import { mdxVitePlugin } from '../plugin/mdx-vite-plugin'
 import { wireframePlugin } from '../plugin/wireframe-plugin'
 import { detectStoryboardMode } from './detect-mode'
 
-export type StoryboardConfigOptions = {
+export type OnespecConfigOptions = {
   root: string
   port?: number
-  storyboardDir?: string
+  onespecDir?: string
 }
 
-export function defineStoryboardConfig(options: StoryboardConfigOptions): UserConfig {
+export function defineOnespecConfig(options: OnespecConfigOptions): UserConfig {
   const mode = detectStoryboardMode(options.root)
   const templateRoot = path.resolve(import.meta.dirname, '../../template')
   const shellRoot = path.resolve(import.meta.dirname, '../..')
   const workspaceRoot = path.resolve(shellRoot, '../..')
-  const consumerApp = path.join(options.root, '.storyboard', 'StoryboardApp.tsx')
-  const storyboardApp = existsSync(consumerApp)
+  const consumerApp = path.join(options.root, '.onespec', 'OnespecApp.tsx')
+  const onespecApp = existsSync(consumerApp)
     ? consumerApp
-    : path.join(templateRoot, 'StoryboardApp.tsx')
+    : path.join(templateRoot, 'OnespecApp.tsx')
 
   const plugins = [
     {
-      name: 'storyboard-codegen-state',
+      name: 'onespec-codegen-state',
       resolveId(id: string) {
         if (id === 'virtual:wireframe-codegen-state') return '\0wireframe-codegen-state'
         return undefined
@@ -54,7 +54,7 @@ export function defineStoryboardConfig(options: StoryboardConfigOptions): UserCo
     root: templateRoot,
     envDir: options.root,
     define: {
-      'import.meta.env.STORYBOARD_ROOT': JSON.stringify(options.root),
+      'import.meta.env.ONESPEC_ROOT': JSON.stringify(options.root),
     },
     plugins,
     server: {
@@ -65,8 +65,8 @@ export function defineStoryboardConfig(options: StoryboardConfigOptions): UserCo
     },
     resolve: {
       alias: [
-        { find: '@storyboard-app', replacement: storyboardApp },
-        { find: '@onespec-dev/template', replacement: templateRoot },
+        { find: '@onespec-app', replacement: onespecApp },
+        { find: '@onespec/template', replacement: templateRoot },
         { find: '@onespec-dev/shell', replacement: path.join(shellRoot, 'src/client.ts') },
         { find: /^@shell\/(.*)/, replacement: `${path.join(shellRoot, 'src')}/$1` },
         { find: /^@\/(.*)/, replacement: `${path.join(workspaceRoot, 'src')}/$1` },

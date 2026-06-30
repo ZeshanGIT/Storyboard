@@ -141,7 +141,7 @@ export function Shell({
               )}
             >
               <div className="flex min-w-0 items-center gap-3">
-                <span className="shrink-0 text-lg font-semibold tracking-tight">Storyboard</span>
+                <span className="shrink-0 text-lg font-semibold tracking-tight">OneSpec</span>
                 {documents.length > 0 ? (
                   <DocumentMenu
                     documents={documents}

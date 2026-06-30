@@ -1,7 +1,7 @@
 {
   "name": "@onespec-dev/shell",
   "version": "0.1.0",
-  "description": "Storyboard wireframe preview, prototype, and graph dev server",
+  "description": "OneSpec wireframe preview, prototype, and graph dev server",
   "type": "module",
   "license": "MIT",
   "homepage": "https://onespec.dev",

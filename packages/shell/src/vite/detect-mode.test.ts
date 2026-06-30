@@ -2,13 +2,19 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { detectStoryboardMode } from './detect-mode.js'
+import { detectStoryboardMode, resolveOnespecDir } from './detect-mode.js'
+
+describe('resolveOnespecDir', () => {
+  it('resolveOnespecDir returns join(root, "onespec")', () => {
+    expect(resolveOnespecDir('/tmp/app')).toBe('/tmp/app/onespec')
+  })
+})
 
 describe('detectStoryboardMode', () => {
-  it('returns json when only storyboard/spec.json exists', () => {
+  it('returns json when only onespec/spec.json exists', () => {
     const root = mkdtempSync(join(tmpdir(), 'sb-json-'))
-    mkdirSync(join(root, 'storyboard'), { recursive: true })
-    writeFileSync(join(root, 'storyboard', 'spec.json'), '{}')
+    mkdirSync(join(root, 'onespec'), { recursive: true })
+    writeFileSync(join(root, 'onespec', 'spec.json'), '{}')
     expect(detectStoryboardMode(root)).toBe('json')
   })
 

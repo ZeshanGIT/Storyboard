@@ -1,7 +1,7 @@
 import { createServer } from 'vite'
-import { defineStoryboardConfig, type StoryboardConfigOptions } from './storyboard-config'
+import { defineOnespecConfig, type OnespecConfigOptions } from './onespec-config'
 
-export async function createStoryboardDevServer(options: StoryboardConfigOptions) {
-  const config = defineStoryboardConfig(options)
+export async function createOnespecDevServer(options: OnespecConfigOptions) {
+  const config = defineOnespecConfig(options)
   return createServer(config)
 }

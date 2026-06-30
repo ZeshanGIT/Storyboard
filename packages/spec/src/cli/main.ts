@@ -11,7 +11,7 @@ async function main(): Promise<number> {
   if (command === 'req' && sub === 'show') return runReqShow(cwd, rest[0] ?? '')
   if (command === 'impact') return runImpact(cwd, sub ?? '')
   if (command === 'trace') return runTrace(cwd, sub ?? '')
-  console.error(`Usage: storyboard validate | req show <id> | impact <target> | trace <target>`)
+  console.error(`Usage: onespec validate | req show <id> | impact <target> | trace <target>`)
   return 1
 }
 

@@ -2,8 +2,8 @@ import { loadProductSpec, validateProductSpec } from '@onespec-dev/spec'
 import { resolveProjectPaths } from '../resolve-project.js'
 
 export async function runValidate(opts: { cwd: string }): Promise<number> {
-  const { storyboardDir } = resolveProjectPaths(opts.cwd)
-  const spec = await loadProductSpec(storyboardDir)
+  const { onespecDir } = resolveProjectPaths(opts.cwd)
+  const spec = await loadProductSpec(onespecDir)
   const result = validateProductSpec(spec)
   for (const issue of result.errors) {
     console.error(`error: ${issue.message}`)

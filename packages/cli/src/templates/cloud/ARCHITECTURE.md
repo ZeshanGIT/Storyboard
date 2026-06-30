@@ -2,7 +2,7 @@
 
 ## P2 (this stub)
 
-JSON product spec only. Preview wireframes with `storyboard dev` from `todo-poc/`. No application runtime yet.
+JSON product spec only. Preview wireframes with `onespec dev` from `todo-poc/`. No application runtime yet.
 
 ## P4 (planned)
 

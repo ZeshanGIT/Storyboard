@@ -1,7 +1,7 @@
 {
   "name": "@onespec-dev/spec",
   "version": "0.1.0",
-  "description": "Storyboard product spec types, loader, and validation",
+  "description": "OneSpec product spec types, loader, and validation",
   "type": "module",
   "license": "MIT",
   "homepage": "https://onespec.dev",

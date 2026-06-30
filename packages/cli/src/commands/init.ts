@@ -11,13 +11,13 @@ export async function runInit(opts: { cwd: string; template: InitTemplate }): Pr
   const src = join(templatesRoot, opts.template)
 
   try {
-    await access(join(dest, 'storyboard', 'spec.json'))
-    throw new Error('storyboard/ already exists — aborting init')
+    await access(join(dest, 'onespec', 'spec.json'))
+    throw new Error('onespec/ already exists — aborting init')
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e
   }
 
   await mkdir(dest, { recursive: true })
   await cp(src, dest, { recursive: true })
-  console.log(`Initialized ${opts.template} storyboard at ${dest}`)
+  console.log(`Initialized ${opts.template} OneSpec project at ${dest}`)
 }

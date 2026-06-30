@@ -1,12 +1,14 @@
-# Storyboard — Session Context
+# OneSpec — Session Context
 
 **What exists + how repo works.** [`AGENTS.md`](../AGENTS.md) = workspace rules (how). Attach this file for architecture/status. Conflict → trust CONTEXT.
+
+Site: [https://onespec.dev](https://onespec.dev)
 
 On demand: [`MDX-COMPONENTS.md`](MDX-COMPONENTS.md), [`JSON-COMPONENTS.md`](JSON-COMPONENTS.md), [`GRAPH_VIEW.md`](GRAPH_VIEW.md), [`VISION.md`](VISION.md), [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), [`ROADMAP.md`](ROADMAP.md), [`FUTURE.md`](FUTURE.md)
 
 ## Status
 
-**Branch:** `p2-npm-package` (P2 work; not yet merged to `master`).
+**Branch:** `master` (P2 + rename Phases 1–6 merged).
 
 | Track | Status | Notes |
 |-------|--------|-------|
@@ -14,14 +16,14 @@ On demand: [`MDX-COMPONENTS.md`](MDX-COMPONENTS.md), [`JSON-COMPONENTS.md`](JSON
 | OSS A6 Analysis | ◐ | Unreachable/orphan validation → [`FUTURE.md`](FUTURE.md) §3–4 |
 | OSS A7 Polish | ○ | Doc export, backlog primitives |
 | P1 Product Spec engine | ✓ | Three-file model, validate, trace helpers |
-| P2 npm package | ◐ | Workspaces extracted; CLI wired; human `npm publish` pending |
-| Rename → `@onespec-dev` | ○ | Planned — [`2026-06-30-onespec-dev-rename-phases.md`](superpowers/plans/2026-06-30-onespec-dev-rename-phases.md) |
+| P2 npm package | ✓ | `@onespec-dev/{spec,shell,cli}` published `0.1.0`; `onespec` CLI |
+| Rename Phases 1–6 | ✓ | npm scope, CLI bin, publish hardening, `onespec/` dir, internal API, docs rebrand — [`2026-06-30-onespec-dev-rename-phases.md`](superpowers/plans/2026-06-30-onespec-dev-rename-phases.md) |
 
-**Current focus:** P2 publish-ready (`0.1.0`) or Phase 1–3 of OneSpec rename, then P3 toy-repo traceability POC.
+**Current focus:** P3 toy-repo traceability POC → [`ROADMAP.md`](ROADMAP.md).
 
-Shipped: wireframe primitives (Screen–Divider), `buildMdxDocument`, multi-MDX + doc picker, Graph View (Screen/Compact), JSON+MDX playground (Monaco), `WireframeDocumentBundle`, npm workspaces with `@onespec-dev/{spec,shell,cli}`.
+Shipped: wireframe primitives (Screen–Divider), `buildMdxDocument`, multi-MDX + doc picker, Graph View (Screen/Compact), JSON+MDX playground (Monaco), `WireframeDocumentBundle`, npm workspaces with `@onespec-dev/{spec,shell,cli}`, consumer `onespec/` directory convention.
 
-Not started: unreachable validation, doc export, npm publish, primitives Card, List, Section, BottomNav, Tabs.
+Not started: P3 POC, unreachable validation, doc export, primitives Card, List, Section, BottomNav, Tabs.
 
 ## Architecture
 
@@ -32,7 +34,7 @@ MDX or JSON → `WireframeDocumentBundle` → shared `Shell` (Preview | Prototyp
 ```
 packages/spec/     @onespec-dev/spec   — Product Spec load, validate, req show, impact, trace
 packages/shell/    @onespec-dev/shell  — buildMdxDocument, JSON compiler, Vite plugin, Shell, graph
-packages/cli/      @onespec-dev/cli    — storyboard bin: init | dev | validate | req | impact | trace
+packages/cli/      @onespec-dev/cli    — onespec bin: init | dev | validate | req | impact | trace
 src/               OSS app only       — content, playground, adapters, generated; dogfoods @onespec-dev/shell
 ```
 
@@ -61,23 +63,23 @@ MDX editor → compilePlaygroundMdx → mdxToWireframeDocumentBundle (routePrefi
 **Product Spec**
 
 ```
-storyboard/{spec,requirements,bindings}.json
+onespec/{spec,requirements,bindings}.json
   → loadProductSpec → validateProductSpec (@onespec-dev/spec)
-  → npm run storyboard — init | dev | validate | req show | impact | trace (@onespec-dev/cli)
+  → npm run onespec — init | dev | validate | req show | impact | trace (@onespec-dev/cli)
 ```
 
-Consumer convention: `storyboard/` directory at project root (rename to `onespec/` planned in rename Phase 4). JSON wireframes accept optional SR as tuple element [1] (`packages/shell/src/json/parse-node.ts`). Schema → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md).
+Consumer convention: `onespec/` directory at project root. JSON wireframes accept optional SR as tuple element [1] (`packages/shell/src/json/parse-node.ts`). Schema → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md).
 
 **Consumer CLI (P2)**
 
 ```bash
-npm run storyboard -- init                    # embedded: storyboard/ trio + sample MDX
-npm run storyboard -- init --template cloud   # todo-poc/ stub
-npm run storyboard -- dev [--port 5173]       # JSON mode via defineStoryboardConfig
-npm run storyboard -- validate | req show | impact | trace
+npm run onespec -- init                    # embedded: onespec/ trio + sample MDX
+npm run onespec -- init --template cloud   # todo-poc/ stub
+npm run onespec -- dev [--port 5173]       # JSON mode via defineOnespecConfig
+npm run onespec -- validate | req show | impact | trace
 ```
 
-Published install (when published): `npx @onespec-dev/cli@0.1.0` — npm name `storyboard` is taken. `trace` needs `rg` on PATH.
+Published install: `npx @onespec-dev/cli@0.1.0` (bin `onespec`). `trace` needs `rg` on PATH.
 
 ## Repo map
 
@@ -90,7 +92,7 @@ Published install (when published): `npx @onespec-dev/cli@0.1.0` — npm name `s
 | `packages/shell/src/runtime/` | WireframeViewContext, WireframeErrorProvider |
 | `packages/shell/src/components/wireframe/` | Primitives |
 | `packages/shell/src/lib/` | `app-url.ts`, `app-routes.ts`, `app-base-path.ts` |
-| `packages/shell/src/vite/` | `detectStoryboardMode`, `defineStoryboardConfig`, `createStoryboardDevServer`, JSON loader |
+| `packages/shell/src/vite/` | `detectStoryboardMode`, `defineOnespecConfig`, `createOnespecDevServer`, JSON loader |
 | `packages/shell/template/` | Consumer Vite scaffold (JSON dev default) |
 | `packages/cli/src/` | Commander CLI, init templates (`embedded/`, `cloud/`) |
 | `src/content/*.mdx` | OSS MDX authoring |
@@ -118,7 +120,7 @@ Removed from root (now in `packages/shell/`): `src/plugin/`, `src/shell/`, `src/
 
 ## Locked decisions
 
-Intent over appearance; MDX = language; screens first-class (`id`, `goto`); primitives ≠ shell; MDX static codegen / JSON browser compile; `Link` not `Button`; History API only; generated gitignored; single `buildMdxDocument` parse; both paths → `WireframeDocumentBundle`; URL-driven shell with per-doc `routePrefix`; Product Spec trio under `storyboard/`; P2 publish `0.1.0` unstable — no production codegen (P5).
+Intent over appearance; MDX = language; screens first-class (`id`, `goto`); primitives ≠ shell; MDX static codegen / JSON browser compile; `Link` not `Button`; History API only; generated gitignored; single `buildMdxDocument` parse; both paths → `WireframeDocumentBundle`; URL-driven shell with per-doc `routePrefix`; Product Spec trio under `onespec/`; P2 publish `0.1.0` unstable — no production codegen (P5).
 
 ## Tooling
 
@@ -131,7 +133,7 @@ npm run build:packages   # tsc @onespec-dev/{shell,spec,cli}
 npm run check            # codegen + tsc + biome
 npm test                 # root Vitest (OSS adapters/playground; ~19 tests)
 npm test -w @onespec-dev/spec -w @onespec-dev/shell -w @onespec-dev/cli  # package suites (~115 tests)
-npm run storyboard -- …  # CLI from packages/cli
+npm run onespec -- …     # CLI from packages/cli (monorepo dev)
 ```
 
-Phase detail + publish gate → [`ROADMAP.md`](ROADMAP.md). P2 implementation plan → [`superpowers/plans/2026-06-30-p2-npm-package.md`](superpowers/plans/2026-06-30-p2-npm-package.md).
+Phase detail → [`ROADMAP.md`](ROADMAP.md). P2 plan → [`superpowers/plans/2026-06-30-p2-npm-package.md`](superpowers/plans/2026-06-30-p2-npm-package.md). Rename plan → [`superpowers/plans/2026-06-30-onespec-dev-rename-phases.md`](superpowers/plans/2026-06-30-onespec-dev-rename-phases.md).

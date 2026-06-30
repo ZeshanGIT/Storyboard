@@ -3,7 +3,7 @@
 **Status:** Accepted (2026-06-30)  
 **Parent:** [`VISION.md`](VISION.md) · [`JSON-COMPONENTS.md`](JSON-COMPONENTS.md) · [`CONTEXT.md`](CONTEXT.md)
 
-This document defines the Product Specification schema, traceability conventions, and Phase 1 deliverables. It consolidates design decisions from the roadmap toward npm packaging, the cloud POC (TanStack Start + JSON), and traceability as Storyboard's core feature.
+This document defines the Product Specification schema, traceability conventions, and Phase 1 deliverables. It consolidates design decisions from the roadmap toward npm packaging, the cloud POC (TanStack Start + JSON), and traceability as OneSpec's core feature.
 
 ---
 
@@ -15,7 +15,7 @@ This document defines the Product Specification schema, traceability conventions
 | Structural requirements (`SR-xxx`) | Not in schema | Linked to wireframe nodes + generated UI |
 | Behavioral requirements (`BR-xxx`) | Not in schema | Linked via `// @sb-req:` + tests |
 | Implementation | Manual React in this repo | Generated / AI-maintained app (TanStack Start for cloud POC) |
-| Distribution | Private monolithic app | `npx storyboard` in any repo |
+| Distribution | Private monolithic app | `npx @onespec-dev/cli` in any repo |
 
 The current repo proves the **projection layer** (Preview / Prototype / Graph). Phase 1 adds **requirements**, **traceability**, and the schema foundation for everything that follows.
 
@@ -37,8 +37,8 @@ Recommended sequencing (do not publish npm before the schema is stable):
 
 **Phase 2 — Package extraction + CLI**
 
-- Split: `@storyboard/spec`, `@storyboard/shell`, `storyboard` CLI
-- `npx storyboard init` — embedded mode (power users) vs cloud template
+- Split: `@onespec/spec`, `@onespec/shell`, `storyboard` CLI
+- `npx @onespec-dev/cli init` — embedded mode (power users) vs cloud template
 - Publish 0.1.0 with: init, dev (shell), validate — no production codegen yet
 
 **Phase 3 — Toy repo + traceability proof**
@@ -108,7 +108,7 @@ SR placement does **not** need a bindings file. The spec tuple *is* the structur
 ## File layout
 
 ```
-storyboard/
+onespec/
   spec.json           # wireframes + SR ids only (minimal)
   requirements.json   # SR/BR definitions and sub-trees
   bindings.json       # BR → [screen, sr?] placements
@@ -509,14 +509,14 @@ BR-001  →  requirements.json (definition)
 ## CLI (Phase 1 stubs → Phase 2 full)
 
 ```bash
-storyboard req show BR-PASSWORD-VALIDATE    # definition tree from requirements.json
-storyboard req show SR-011                  # SR description + where in spec (derived)
-storyboard impact BR-PASSWORD-VALIDATE      # bindings + affected screens/SRs
-storyboard impact login                     # all BRs bound to this screen
-storyboard trace SR-011                     # files:lines with sb-req=
-storyboard trace BR-PASSWORD-VALIDATE       # all // @sb-req matches
-storyboard trace login__BR-001              # tests + impl for occurrence
-storyboard validate                         # cross-file refs, orphan ids, bad paths
+onespec req show BR-PASSWORD-VALIDATE    # definition tree from requirements.json
+onespec req show SR-011                  # SR description + where in spec (derived)
+onespec impact BR-PASSWORD-VALIDATE      # bindings + affected screens/SRs
+onespec impact login                     # all BRs bound to this screen
+onespec trace SR-011                     # files:lines with sb-req=
+onespec trace BR-PASSWORD-VALIDATE       # all // @sb-req matches
+onespec trace login__BR-001              # tests + impl for occurrence
+onespec validate                         # cross-file refs, orphan ids, bad paths
 ```
 
 Phase 1 implementation: ripgrep over `src/` for trace; JSON cross-ref for validate. No AST required.
@@ -561,7 +561,7 @@ Phase 1 implementation: ripgrep over `src/` for trace; JSON cross-ref for valida
 |------------|---------------|
 | Understand app flow | `spec.json` only |
 | Implement a BR | `requirements.json` + `bindings.json` + `spec.json` (target screen) |
-| Review BR impact | `bindings.json` + `storyboard impact` |
+| Review BR impact | `bindings.json` + `onespec impact` |
 | Edit wireframe layout | `spec.json` only |
 
 ---
@@ -573,7 +573,7 @@ Phase 1 implementation: ripgrep over `src/` for trace; JSON cross-ref for valida
 ```
 my-app/
   src/...
-  storyboard/
+  onespec/
     spec.json
     requirements.json
     bindings.json
@@ -585,7 +585,7 @@ my-app/
 ```
 todo-poc/
   app/                 # TanStack Start
-  storyboard/
+  onespec/
     spec.json
     requirements.json
     bindings.json
@@ -621,7 +621,7 @@ todo-poc/
 | SR granularity | **One SR per traceable primitive** (`Input`, `Link`, meaningful `Text`, etc.); layout wrappers (`Container:row`, `Divider`) skip SR |
 | Annotate parent or leaves? | **Both** — parent and leaf `sb-req` / `@sb-req` allowed; CLI `trace` returns all matches |
 | Binding without SR? | **Both forms** — `["login"]` screen-scoped and `["login", "SR-012"]` SR-anchored bindings are valid |
-| Package name on npm | **`storyboard`** bin; publish as `storyboard` or `@storyboard/cli` depending on npm availability at 0.1.0 |
+| Package name on npm | **`storyboard`** bin; publish as `storyboard` or `@onespec/cli` depending on npm availability at 0.1.0 |
 | VISION.md alignment | **Done (2026-06-30)** — `UI-xxx`/`BH-xxx` → `SR-xxx`/`BR-xxx` (Task 12) |
 | Ultra-minimal screen keys | **Defer** — keep `title`, `nodes`, etc. unless a token audit demands shortening |
 
@@ -664,7 +664,7 @@ Draft the full SR/BR matrix before implementing the validator.
 
 | Risk | Mitigation |
 |------|------------|
-| Three files drift out of sync | `storyboard validate` on every save / CI |
+| Three files drift out of sync | `onespec validate` on every save / CI |
 | Publish npm before schema stable | Phase 1 schema first; 0.x with explicit instability |
 | Tuple parser ambiguity | Strict `^SR-` detection on element [1]; tests for all forms |
 | Codegen before traceability | Manual AI workflow in toy repo first |

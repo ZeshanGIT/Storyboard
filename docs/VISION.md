@@ -1,10 +1,12 @@
-# Storyboard Vision
+# OneSpec Vision
 
-## What is Storyboard?
+## What is OneSpec?
 
-Storyboard is an AI-first product specification platform that treats the **Product Specification** as the source of truth for an application.
+OneSpec is an AI-first product specification platform that treats the **Product Specification** as the source of truth for an application.
 
-Instead of treating the UI as the primary artifact, Storyboard models the product itself—its screens, flows, behaviors, navigation, and requirements—and derives every other representation from that model.
+Site: [https://onespec.dev](https://onespec.dev)
+
+Instead of treating the UI as the primary artifact, OneSpec models the product itself—its screens, flows, behaviors, navigation, and requirements—and derives every other representation from that model.
 
 A wireframe is not the product.
 

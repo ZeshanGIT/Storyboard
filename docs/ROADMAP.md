@@ -1,4 +1,4 @@
-# Storyboard Roadmap
+# OneSpec Roadmap
 
 **North star:** [`VISION.md`](VISION.md) · **Product Spec:** [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md) · **Repo today:** [`CONTEXT.md`](CONTEXT.md)
 
@@ -54,9 +54,9 @@ Schema + conventions: [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Path: schema → npm
 **Status:** shipped in `src/product-spec/` ([`PRODUCT-SPEC.md`](PRODUCT-SPEC.md) 2026-06-30).
 
 ```
-storyboard/spec.json           # wireframes + SR ids
-storyboard/requirements.json   # SR/BR + sub-trees
-storyboard/bindings.json       # BR → [screen, sr?]
+onespec/spec.json           # wireframes + SR ids
+onespec/requirements.json   # SR/BR + sub-trees
+onespec/bindings.json       # BR → [screen, sr?]
 ```
 
 | # | Item | Status |
@@ -76,29 +76,29 @@ Locked conventions → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Out of scope: npm, 
 
 ### P2 · npm package ✓
 
-**Depends:** P1 complete. **Goal:** `npx storyboard` in any repo.
+**Depends:** P1 complete. **Goal:** `npx @onespec-dev/cli` in any repo.
 
 | Package | Role | Status |
 |---------|------|--------|
-| `@onespec-dev/spec` | Types, load, validate, req indexing | ✓ extracted |
-| `@onespec-dev/shell` | Preview / Prototype / Graph dev server | ✓ extracted; root app dogfoods |
-| `@onespec-dev/cli` | CLI bin (`storyboard`) | ✓ init, dev, validate, req, impact, trace |
+| `@onespec-dev/spec` | Types, load, validate, req indexing | ✓ published `0.1.0` |
+| `@onespec-dev/shell` | Preview / Prototype / Graph dev server | ✓ published `0.1.0` |
+| `@onespec-dev/cli` | CLI bin (`onespec`) | ✓ published `0.1.0` |
 
 ```bash
-npx @onespec-dev/cli init              # scaffold storyboard/
+npx @onespec-dev/cli init              # scaffold onespec/
 npx @onespec-dev/cli init --template cloud   # TanStack stub (P2 only)
 npx @onespec-dev/cli dev | validate | req show | impact | trace
 ```
 
-Init modes: **embedded** (`my-app/storyboard/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `storyboard/` JSON-only + DESIGN.md + ARCHITECTURE.md).
+Init modes: **embedded** (`my-app/onespec/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `onespec/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-**Remaining:** human `npm publish -w … --access public` for `@onespec-dev/spec`, `@onespec-dev/shell`, `@onespec-dev/cli` (`onespec` bin). Dry-run gate passed. Unstable. No production codegen. npm name `storyboard` taken → ship as `@onespec-dev/cli`.
+**Remaining:** `0.2.0` breaking change — consumer directory renamed `storyboard/` → `onespec/` (rename Phase 4). Unstable. No production codegen.
 
 ### P3 · Toy repo traceability POC ○
 
 **Depends:** P2 (or late P1 local CLI). Separate repo, todo app, local state + Vitest.
 
-**Pass when:** every SR → `sb-req=`; every bound BR → `// @sb-req:`; screen BRs → `{screenId}__{brPath}` tests; shared BR bound twice tested per occurrence; `storyboard trace` + `validate` pass.
+**Pass when:** every SR → `sb-req=`; every bound BR → `// @sb-req:`; screen BRs → `{screenId}__{brPath}` tests; shared BR bound twice tested per occurrence; `onespec trace` + `validate` pass.
 
 **Agent playbook:** spec → CLI load reqs → DESIGN.md + ARCHITECTURE.md → spec/requirements/bindings/impl/tests — never skip req IDs.
 

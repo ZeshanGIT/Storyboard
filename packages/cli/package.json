@@ -1,7 +1,7 @@
 {
   "name": "@onespec-dev/cli",
   "version": "0.1.0",
-  "description": "Storyboard wireframe + product spec CLI",
+  "description": "OneSpec wireframe + product spec CLI",
   "type": "module",
   "license": "MIT",
   "homepage": "https://onespec.dev",
