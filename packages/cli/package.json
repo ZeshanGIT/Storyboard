@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/cli",
+  "name": "@onespec-dev/cli",
   "version": "0.1.0",
   "description": "Storyboard wireframe + product spec CLI",
   "type": "module",
@@ -24,8 +24,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@storyboard/spec": "0.1.0",
-    "@storyboard/shell": "0.1.0",
+    "@onespec-dev/spec": "0.1.0",
+    "@onespec-dev/shell": "0.1.0",
     "commander": "^14.0.0",
     "vite": "^8.1.0"
   },

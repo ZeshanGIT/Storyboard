@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/spec",
+  "name": "@onespec-dev/spec",
   "version": "0.1.0",
   "description": "Storyboard product spec types, loader, and validation",
   "type": "module",
@@ -29,7 +29,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@storyboard/shell": "0.1.0"
+    "@onespec-dev/shell": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",

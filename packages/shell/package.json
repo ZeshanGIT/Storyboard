@@ -1,5 +1,5 @@
 {
-  "name": "@storyboard/shell",
+  "name": "@onespec-dev/shell",
   "version": "0.1.0",
   "description": "Storyboard wireframe preview, prototype, and graph dev server",
   "type": "module",

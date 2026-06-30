@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build:packages": "npm run build -w @storyboard/shell && npm run build -w @storyboard/spec -w @storyboard/cli",
+    "build:packages": "npm run build -w @onespec-dev/shell && npm run build -w @onespec-dev/spec -w @onespec-dev/cli",
     "build": "npm run build:packages && npm run codegen && tsc -b && vite build",
     "build:pages": "npm run build && cp dist/index.html dist/404.html",
     "check": "npm run codegen && tsc -b && biome check .",
@@ -21,7 +21,7 @@
     "storyboard": "tsx packages/cli/src/bin/storyboard.ts"
   },
   "dependencies": {
-    "@storyboard/shell": "workspace:*",
+    "@onespec-dev/shell": "workspace:*",
     "@base-ui/react": "^1.6.0",
     "@dagrejs/dagre": "^3.0.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
