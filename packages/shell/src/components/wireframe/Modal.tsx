@@ -42,7 +42,7 @@ export function Modal({ id, disabled, danger, note, children }: ModalProps) {
       ) : null}
       <Dialog
         open={open}
-        onOpenChange={(nextOpen) => {
+        onOpenChange={(nextOpen: boolean) => {
           if (!nextOpen) closeModal()
         }}
       >

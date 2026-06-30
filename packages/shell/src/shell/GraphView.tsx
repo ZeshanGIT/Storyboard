@@ -378,7 +378,7 @@ export function GraphView({
         <p className="text-sm text-muted-foreground">
           {navigationGraph.nodes.length} screens, {navigationGraph.edges.length} connections
         </p>
-        <Tabs value={mode} onValueChange={(value) => setMode(value as GraphDisplayMode)}>
+        <Tabs value={mode} onValueChange={(value: string) => setMode(value as GraphDisplayMode)}>
           <TabsList>
             <TabsTrigger value="screen">Screen</TabsTrigger>
             <TabsTrigger value="compact">Compact</TabsTrigger>

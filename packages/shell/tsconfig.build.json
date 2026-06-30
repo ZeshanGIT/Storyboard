@@ -8,17 +8,25 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "baseUrl": ".",
+    "types": ["vite/client"],
     "paths": {
-      "@shell/*": ["./src/*"],
-      "@/*": ["../../src/*"]
+      "@shell/*": ["./src/*"]
     }
   },
-  "include": ["src/json/**/*", "src/plugin/**/*", "src/types/**/*"],
-  "exclude": [
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "src/json/to-document-bundle.ts",
-    "src/json/build-screen-component.tsx",
-    "src/json/render-json-node.tsx"
-  ]
+  "include": [
+    "src/index.ts",
+    "src/client.ts",
+    "src/publish-ambient.d.ts",
+    "src/json/**/*",
+    "src/plugin/**/*",
+    "src/types/**/*",
+    "src/vite/**/*",
+    "src/shell/**/*",
+    "src/runtime/**/*",
+    "src/components/**/*",
+    "src/lib/app-url.ts",
+    "src/lib/app-routes.ts",
+    "src/lib/app-base-path.ts"
+  ],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

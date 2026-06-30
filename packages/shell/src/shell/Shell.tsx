@@ -164,7 +164,7 @@ export function Shell({
                   </Button>
                 ) : null}
                 <IndicatorToggles />
-                <Tabs value={view} onValueChange={(v) => setView(v as AppUrlState['view'])}>
+                <Tabs value={view} onValueChange={(v: string) => setView(v as AppUrlState['view'])}>
                   <TabsList>
                     <TabsTrigger value="preview">Preview</TabsTrigger>
                     <TabsTrigger value="prototype">Prototype View</TabsTrigger>

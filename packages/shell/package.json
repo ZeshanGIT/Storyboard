@@ -1,5 +1,5 @@
 {
-  "name": "@onespec-dev/shell",
+  "name": "@storyboard/shell",
   "version": "0.1.0",
   "description": "Storyboard wireframe preview, prototype, and graph dev server",
   "type": "module",
@@ -12,20 +12,20 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./vite": {
-      "types": "./src/vite/index.ts",
-      "import": "./src/vite/index.ts"
+      "types": "./dist/vite/index.d.ts",
+      "import": "./dist/vite/index.js"
     },
     "./detect-mode": {
-      "types": "./src/vite/detect-mode.ts",
-      "import": "./src/vite/detect-mode.ts"
+      "types": "./dist/vite/detect-mode.d.ts",
+      "import": "./dist/vite/detect-mode.js"
     },
     "./json/build-json-document": {
       "types": "./dist/json/build-json-document.d.ts",
