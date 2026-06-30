@@ -19,7 +19,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@shell': path.resolve(__dirname, './packages/shell/src'),
-      '@storyboard/shell': path.resolve(__dirname, './packages/shell/src/index.ts'),
+      '@storyboard/shell': path.resolve(__dirname, './packages/shell/src/client.ts'),
     },
   },
   plugins: [

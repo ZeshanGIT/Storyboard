@@ -10,8 +10,8 @@
       "import": "./src/index.ts"
     },
     "./vite": {
-      "types": "./src/vite/storyboard-config.ts",
-      "import": "./src/vite/storyboard-config.ts"
+      "types": "./src/vite/index.ts",
+      "import": "./src/vite/index.ts"
     },
     "./json/build-json-document": {
       "types": "./dist/json/build-json-document.d.ts",
@@ -32,6 +32,8 @@
     "vite": "^8.0.0"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "@vitejs/plugin-react": "^6.0.2",
     "@dagrejs/dagre": "^3.0.0",
     "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
@@ -39,6 +41,7 @@
     "remark": "^15.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx": "^3.1.1",
+    "tailwindcss": "^4.3.1",
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
