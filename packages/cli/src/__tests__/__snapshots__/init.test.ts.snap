@@ -1,0 +1,89 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`runInit embedded > scaffolds storyboard/ and sample mdx 1`] = `
+{
+  "src/content/storyboard.mdx": "---
+title: Storyboard
+---
+
+<Screen id="home" title="Home">
+  <Text>Hello from Storyboard</Text>
+</Screen>
+",
+  "storyboard/bindings.json": "{
+  "BR-001": [["home", "SR-012"]],
+  "BR-002": [["home", "SR-010"]],
+  "BR-003": [["home", "SR-010"]],
+  "BR-004": [["home", "SR-013"]],
+  "BR-PASSWORD-VALIDATE": [["edit-task", "SR-020"]]
+}
+",
+  "storyboard/requirements.json": "{
+  "structural": {
+    "SR-001": { "description": "Home screen" },
+    "SR-010": { "description": "Task list container" },
+    "SR-011": { "description": "Add task input" },
+    "SR-012": { "description": "Add button" },
+    "SR-013": { "description": "Filter tabs" },
+    "SR-014": { "description": "Empty state text" },
+    "SR-020": { "description": "Edit modal password confirm" }
+  },
+  "behavioral": {
+    "BR-001": { "description": "Create task when Add is pressed" },
+    "BR-002": { "description": "Complete task when checkbox is toggled" },
+    "BR-003": { "description": "Delete task when delete is pressed" },
+    "BR-004": { "description": "Filter tasks when tab is selected" },
+    "BR-PASSWORD-VALIDATE": {
+      "description": "Password must meet policy",
+      "children": {
+        "MIN-LEN": { "description": "Minimum 8 characters" },
+        "SPECIAL": { "description": "At least one special character" }
+      }
+    }
+  }
+}
+",
+  "storyboard/spec.json": "{
+  "title": "Todo App",
+  "screens": {
+    "home": {
+      "sr": "SR-001",
+      "title": "Home",
+      "nodes": [
+        ["Text:h1", "Tasks"],
+        [
+          "Container:row",
+          [
+            ["Input", "SR-011", { "placeholder": "New task" }],
+            ["Link:primary-btn", "SR-012", { "goto": "home" }, "Add"]
+          ]
+        ],
+        [
+          "Container:row",
+          [
+            ["Link", "SR-013", { "goto": "home" }, "All"],
+            ["Link", { "goto": "home" }, "Active"],
+            ["Link", { "goto": "home" }, "Done"]
+          ]
+        ],
+        ["Container", "SR-010", [["Text", "SR-014", "No tasks yet"]]]
+      ]
+    },
+    "edit-task": {
+      "title": "Edit task",
+      "nodes": [
+        [
+          "Modal",
+          { "id": "edit" },
+          [
+            ["Input:password", "SR-020", { "label": "Confirm" }],
+            ["Link:primary-btn", { "goto": "_close" }, "Save"]
+          ]
+        ]
+      ]
+    }
+  }
+}
+",
+}
+`;
