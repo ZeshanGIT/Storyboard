@@ -35,6 +35,14 @@ Props = data only (strings, ids, arrays). Flags and enum variants = tag modifier
 [tag, children]                container, no props
 ```
 
+### Structural requirements (SR)
+
+Optional 2nd tuple element when traceable — see [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md).
+
+[tag, sr] | [tag, sr, props] | [tag, sr, text] | [tag, sr, props, text] | [tag, sr, children] | [tag, sr, props, children]
+
+`sr` matches `^SR-`. Layout nodes (`Container:row`) typically omit SR.
+
 **Tag:** `Component` or `Component:modifier:modifier…`
 
 - **Component** — PascalCase primitive name.

@@ -1,173 +1,389 @@
-# MDX Wireframes
+# Storyboard Vision
 
-**A text-first UX specification format for developers, designers, and AI agents.**
+## What is Storyboard?
 
-## Problem
+Storyboard is an AI-first product specification platform that treats the **Product Specification** as the source of truth for an application.
 
-Early-stage product teams often have a clear understanding of the product's behavior but lack the time or expertise to produce polished UX designs.
+Instead of treating the UI as the primary artifact, Storyboard models the product itself—its screens, flows, behaviors, navigation, and requirements—and derives every other representation from that model.
 
-Developers resort to ASCII diagrams, Markdown lists, or screenshots. Designers must reconstruct the intended flows from conversations, tickets, and scattered documentation. AI agents also struggle to reason about images or ad-hoc sketches.
+A wireframe is not the product.
 
-There is currently no equivalent of Mermaid for UI wireframes.
+A sitemap is not the product.
+
+A UX flow is not the product.
+
+A React application is not the product.
+
+All of these are simply **different projections of the same Product Specification**.
+
+---
 
 ## Vision
 
-MDX Wireframes is a lightweight framework for describing application screens as code.
+The long-term vision is to allow anyone to build an application by progressively defining:
 
-Instead of drawing interfaces, developers write simple MDX using React components that represent the structure and behavior of a screen.
+1. Product Specification
+2. Design System / Design Guides
+3. Implementation
+
+The user should never have to manually keep wireframes, UX flows, sitemaps, prototypes, and implementation synchronized.
+
+They should all be generated from the same underlying model.
+
+Ultimately, the workflow becomes:
+
+```
+Idea
+
+↓
+
+Product Specification
+
+↓
+
+Design Guide
+
+↓
+
+Interactive Prototype
+
+↓
+
+Application
+```
+
+As the Product Specification evolves, every derived artifact evolves with it.
+
+---
+
+## Customer Perspective
+
+From a customer's point of view, Storyboard is extremely simple.
+
+The customer defines:
+
+* Product requirements
+* UX flows
+* Navigation
+* Design guides
+
+Storyboard AI then generates:
+
+* Interactive wireframes
+* Prototype
+* Graph views
+* Sitemap
+* Production-ready application
+
+The UI is no longer something the user manually designs.
+
+Instead, it is the product of:
+
+```
+Product Specification
+        +
+Design Guide
+        ↓
+Generated UI
+```
+
+---
+
+## Two Flavors of Storyboard
+
+Storyboard is intended to exist in two complementary products.
+
+### 1. Storyboard Cloud
+
+This is the primary product.
+
+The cloud version is highly opinionated.
+
+It owns the entire workflow.
+
+It provides:
+
+* Product Specification editor
+* AI editing
+* Built-in wireframe components
+* Prototype renderer
+* Graph view
+* Sitemap
+* Code generation
+* Opinionated project architecture
+* Opinionated Design System
+* Opinionated AI workflow
+
+Users generally do not edit generated code directly.
+
+Instead they modify the Product Specification and let AI regenerate the implementation.
+
+Because Storyboard owns the entire lifecycle, the Product Specification remains the authoritative source of truth.
+
+---
+
+### 2. Storyboard OSS / Power User Edition
+
+This version targets developers.
+
+Power users can:
+
+* Use completely custom React components
+* Customize the rendering pipeline
+* Choose their own architecture
+* Integrate Storyboard into existing projects
+* Extend the component library
+* Ignore the opinionated architecture if they choose
+
+The Product Specification still exists.
+
+However, Storyboard no longer guarantees that implementation remains synchronized because developers are free to modify the code directly.
+
+Instead Storyboard provides diagnostics and tooling that help detect drift.
+
+---
+
+## Product Specification
+
+The Product Specification is the canonical representation of the application.
+
+It describes the application in terms of product concepts rather than implementation.
+
+Examples include:
+
+* Features
+* Screens
+* Navigation
+* User flows
+* Structural requirements
+* Behavioral requirements
+
+The Product Specification intentionally does **not** describe implementation details.
+
+---
+
+## Structural Requirements
+
+Structural requirements describe what must exist.
+
+Examples:
+
+* Login screen
+* Email input
+* Password input
+* Login button
+* Forgot password link
+
+Each structural requirement has a stable identifier.
+
+For example:
+
+```
+SR-001
+SR-002
+SR-003
+```
+
+These identifiers are preserved throughout the development lifecycle.
+
+---
+
+## Behavioral Requirements
+
+Behavioral requirements describe how the application behaves.
+
+Examples:
+
+* Authenticate when Login is pressed
+* Show validation errors
+* Disable Login while authenticating
+* Show Billing only for Pro users
+* Navigate to Dashboard after successful login
+
+Behavioral requirements also receive stable identifiers.
+
+For example:
+
+```
+BR-001
+BR-002
+BR-003
+```
+
+Behavioral requirements describe observable product behavior.
+
+They intentionally do not prescribe implementation.
+
+---
+
+## Traceability
+
+One of Storyboard's core goals is maintaining traceability between:
+
+* Product Specification
+* UI
+* Implementation
+* Tests
+
+Every structural and behavioral requirement should be traceable throughout the development lifecycle.
+
+---
+
+### Structural Traceability
+
+Wireframe elements reference structural requirements.
 
 Example:
 
-```mdx
-<Screen id={Screens.Welcome} title="Home">
+```
+<Input />
 
-  <Text>Welcome back</Text>
-
-  <Button goto={Screens.Login}>
-    Login
-  </Button>
-
-  <Button goto={Screens.Signup}>
-    Create Account
-  </Button>
-
-</Screen>
+// represents SR-001
 ```
 
-The goal is not to design the interface.
+This allows Storyboard to determine:
 
-The goal is to describe:
+* which requirements are implemented
+* which requirements are missing
+* which UI elements correspond to each requirement
 
-* What is visible
-* What actions are available
-* Where actions navigate
-* How screens are connected
+---
 
-## Philosophy
+### Behavioral Traceability
 
-This is **not** a replacement for Figma.
+Behavior is intentionally treated differently.
 
-It is the product specification that exists before visual design.
+A behavioral requirement is not mapped to a specific function.
 
-Think of it as:
+Real implementations usually span multiple files and multiple functions.
 
-> Storybook for UX flows.
+Instead Storyboard uses lightweight implementation annotations.
 
-Designers decide *how* something should look.
+Example:
 
-This tool specifies *what* exists and *how users move through it*.
-
-## Outputs
-
-A single MDX document becomes the source of truth and can generate multiple views.
-
-### Documentation
-
-Readable product documentation.
-
-### Clickable Prototype
-
-A minimal, unstyled prototype where every interactive element can be clicked to navigate between screens.
-
-No colors.
-
-No typography.
-
-No animations.
-
-Just behavior.
-
-### Navigation Graph
-
-Automatically generated graph showing relationships between screens.
-
-```
-Home
-├── Login
-├── Signup
-└── About
-
-Login
-└── Dashboard
+```ts
+// @sb-req: BR-001
 ```
 
-### Validation
+These annotations act as implementation entry points.
 
-Static analysis can detect:
+They are not intended to prove correctness.
 
-* Broken navigation links
-* Duplicate screen IDs
-* Unreachable screens
-* Cyclic navigation (optional)
-* Missing destinations
+Instead they allow:
 
-### Reverse References
+* AI to immediately locate relevant implementation
+* Developers to navigate from specification to code
+* Tooling to index implementation locations
 
-Each screen can show:
+Because the annotation lives with the implementation, it naturally survives most refactoring.
+
+---
+
+## Tests as Verification
+
+Comments provide navigation.
+
+Tests provide verification.
+
+Behavioral requirements should ideally have corresponding automated tests.
+
+Example:
 
 ```
-Referenced by
+BH-001
 
-- Home
-- Password Reset
-- Email Verification
+↓
+
+Implementation
+
+↓
+
+Test
 ```
 
-## Why MDX?
+A passing test is considered evidence that the required behavior exists.
 
-MDX is already:
+This separates:
 
-* Human-readable
-* Git-friendly
-* AI-friendly
-* Extensible through React components
-* Easy to version and review
+* Navigation
+* Verification
 
-Instead of inventing another DSL, the component library becomes the language.
+rather than trying to combine them.
 
-## Example Components
+---
 
-* `<Screen>`
-* `<Button>`
-* `<Input>`
-* `<Text>`
-* `<Card>`
-* `<List>`
-* `<Modal>`
-* `<Dialog>`
-* `<BottomNav>`
-* `<Tabs>`
-* `<Section>`
+## Opinionated Architecture
 
-The components intentionally contain minimal styling.
+Storyboard Cloud intentionally generates applications using a consistent architecture.
 
-They express intent rather than appearance.
+This architecture exists primarily to make AI significantly more effective.
 
-## Future Ideas
+It defines:
 
-* Automatic Mermaid generation
-* Export to Excalidraw
-* Export to Figma
-* AI-generated screen summaries
-* Accessibility checks
-* User journey analysis
-* Dead-end detection
-* Permission-aware navigation
-* Generate React page skeletons
-* Storybook integration
+* Folder structure
+* Feature organization
+* Design conventions
+* Testing conventions
+* Traceability conventions
+* Component organization
 
-## Target Users
+Supporting documentation such as:
 
-* Developers designing features before implementation
-* Product managers documenting flows
-* Designers reviewing product behavior
-* AI agents generating or modifying product specifications
+* SKILL.md
+* DESIGN.md
+* ARCHITECTURE.md
 
-## Non-Goals
+provides AI with enough context to consistently evolve the application.
 
-* Pixel-perfect mockups
-* High-fidelity prototyping
-* Visual design tooling
-* Design system replacement
+---
 
-The framework intentionally stops before visual design begins.
+## AI-First Development
+
+Storyboard is designed around the assumption that AI will be the primary implementation tool.
+
+Rather than asking AI to search an entire codebase, Storyboard narrows the search space.
+
+The AI has access to:
+
+* Product Specification
+* Design Guide
+* Architecture
+* Implementation index
+* Tests
+
+This allows AI to make targeted, incremental changes while preserving consistency across the project.
+
+---
+
+## Multiple Projections
+
+The Product Specification can be rendered in multiple forms.
+
+Examples include:
+
+* Prototype View
+* Graph View
+* Compact Graph
+* Screen Graph
+* Sitemap
+* Documentation
+* Future implementation views
+
+These are all different representations of the same underlying model.
+
+Editing one representation updates the Product Specification, which updates every other projection.
+
+---
+
+## Guiding Principles
+
+* The Product Specification is the primary artifact.
+* The UI is generated from the Product Specification and Design Guides.
+* Every structural requirement should be traceable to the UI.
+* Every behavioral requirement should be traceable to implementation and tests.
+* AI should modify the Product Specification first, then implementation.
+* Storyboard should reduce search space for both humans and AI.
+* The cloud product favors consistency and opinionated workflows.
+* The power-user edition favors flexibility and extensibility.
+* Traceability should be lightweight enough that developers will actually maintain it.
+* Storyboard is not a wireframing tool. It is an AI-first application specification platform.
