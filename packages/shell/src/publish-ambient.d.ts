@@ -82,6 +82,7 @@ declare module '@/components/ui/textarea' {
 declare module '@/components/ui/tooltip' {
   export const Tooltip: ShadcnComponent
   export const TooltipContent: ShadcnComponent
+  export const TooltipProvider: ShadcnComponent
   export const TooltipTrigger: ShadcnComponent
 }
 

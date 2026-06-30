@@ -24,5 +24,7 @@ dist-ssr
 *.sw?
 
 src/generated/
+*.tsbuildinfo
 
 .worktrees/
+agent_space/

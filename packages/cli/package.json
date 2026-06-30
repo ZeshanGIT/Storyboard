@@ -4,6 +4,7 @@
   "description": "Storyboard wireframe + product spec CLI",
   "type": "module",
   "license": "MIT",
+  "homepage": "https://onespec.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/ZeshanGIT/Storyboard.git",

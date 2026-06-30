@@ -15,7 +15,7 @@ Two tracks:
 OSS SHELL (shipped)          PRODUCT SPEC (next)
 ─────────────────────        ───────────────────
 ✓ A1–A5+                     ✓ P1  Schema + loader + CLI stubs
-◐ A6 Analysis                ◐ P2  npm package + init
+◐ A6 Analysis                ✓ P2  npm package + init
 ○ A7 Polish                  ○ P3  Toy repo traceability POC
                              ○ P4  TanStack Start cloud template
                              ○ P5  Implementation codegen
@@ -74,7 +74,7 @@ Locked conventions → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Out of scope: npm, 
 
 **Build order:** `types.ts` → load/validate → sample JSON → Vitest → CLI (tsx) → SR tuple parser in JSON wireframe.
 
-### P2 · npm package ◐
+### P2 · npm package ✓
 
 **Depends:** P1 complete. **Goal:** `npx storyboard` in any repo.
 
@@ -92,7 +92,7 @@ npx @onespec-dev/cli dev | validate | req show | impact | trace
 
 Init modes: **embedded** (`my-app/storyboard/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `storyboard/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-**Remaining:** human publish gate — dry-run passed; `npm publish -w …` for `@onespec-dev/spec`, `@onespec-dev/shell`, `@onespec-dev/cli` (`storyboard` bin). Unstable. No production codegen. npm name `storyboard` taken → ship as `@onespec-dev/cli`.
+**Remaining:** human `npm publish -w … --access public` for `@onespec-dev/spec`, `@onespec-dev/shell`, `@onespec-dev/cli` (`onespec` bin). Dry-run gate passed. Unstable. No production codegen. npm name `storyboard` taken → ship as `@onespec-dev/cli`.
 
 ### P3 · Toy repo traceability POC ○
 
@@ -150,7 +150,7 @@ flowchart LR
 
 ## Current focus
 
-**Here:** P2 — npm package publish-ready (Tasks 1–13 prep done; human `npm publish` pending).
+**Here:** P2 complete — publish-ready (`0.1.0` dry-run passed; human `npm publish` pending).
 
 **Next action:** publish `0.1.0` (`@onespec-dev/spec` → `@onespec-dev/shell` → `@onespec-dev/cli`), then P3 toy repo POC.
 
