@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
-import { StoryboardApp } from './StoryboardApp'
+import '@/index.css'
+import { StoryboardApp } from '@storyboard-app'
 
 const rootElement = document.getElementById('root')
 if (rootElement === null) {

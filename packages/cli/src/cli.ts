@@ -1,4 +1,5 @@
 import { Command } from 'commander'
+import { runDev } from './commands/dev.js'
 import { type InitTemplate, runInit } from './commands/init.js'
 import { runValidate } from './commands/validate.js'
 
@@ -22,6 +23,15 @@ export function buildCli(): Command {
     .description('Validate storyboard/ JSON cross-references')
     .action(async () => {
       const code = await runValidate({ cwd: process.cwd() })
+      process.exitCode = code
+    })
+
+  program
+    .command('dev')
+    .description('Start Storyboard preview dev server')
+    .option('-p, --port <number>', 'dev server port', '5173')
+    .action(async (opts: { port: string }) => {
+      const code = await runDev({ cwd: process.cwd(), port: Number(opts.port) })
       process.exitCode = code
     })
 
