@@ -1,0 +1,10 @@
+{
+  "title": "Todo App",
+  "screens": {
+    "home": {
+      "sr": "SR-001",
+      "title": "Home",
+      "nodes": [["Text:h1", "Tasks"]]
+    }
+  }
+}

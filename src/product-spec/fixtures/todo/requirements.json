@@ -1,0 +1,8 @@
+{
+  "structural": {
+    "SR-001": { "description": "Home screen" }
+  },
+  "behavioral": {
+    "BR-001": { "description": "Create task" }
+  }
+}
