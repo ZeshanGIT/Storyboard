@@ -15,7 +15,7 @@ Two tracks:
 OSS SHELL (shipped)          PRODUCT SPEC (next)
 ─────────────────────        ───────────────────
 ✓ A1–A5+                     ✓ P1  Schema + loader + CLI stubs
-◐ A6 Analysis                ○ P2  npm package + init
+◐ A6 Analysis                ◐ P2  npm package + init
 ○ A7 Polish                  ○ P3  Toy repo traceability POC
                              ○ P4  TanStack Start cloud template
                              ○ P5  Implementation codegen
@@ -74,15 +74,15 @@ Locked conventions → [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md). Out of scope: npm, 
 
 **Build order:** `types.ts` → load/validate → sample JSON → Vitest → CLI (tsx) → SR tuple parser in JSON wireframe.
 
-### P2 · npm package ○
+### P2 · npm package ◐
 
 **Depends:** P1 complete. **Goal:** `npx storyboard` in any repo.
 
-| Package | Role |
-|---------|------|
-| `@storyboard/spec` | Types, load, validate, req indexing |
-| `@storyboard/shell` | Preview / Prototype / Graph dev server |
-| `storyboard` | CLI bin |
+| Package | Role | Status |
+|---------|------|--------|
+| `@storyboard/spec` | Types, load, validate, req indexing | ✓ extracted |
+| `@storyboard/shell` | Preview / Prototype / Graph dev server | ✓ extracted; root app dogfoods |
+| `storyboard` | CLI bin | ✓ init, dev, validate, req, impact, trace |
 
 ```bash
 npx storyboard init              # scaffold storyboard/
@@ -92,7 +92,7 @@ npx storyboard dev | validate | req show | impact | trace
 
 Init modes: **embedded** (`my-app/storyboard/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `storyboard/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-Publish `0.1.0` — init, dev, validate. Unstable. No production codegen. Open: npm name `storyboard` vs `@storyboard/cli`.
+**Remaining:** publish `0.1.0` (Task 13). Unstable. No production codegen. Open: npm name `storyboard` vs `@storyboard/cli`.
 
 ### P3 · Toy repo traceability POC ○
 
@@ -150,9 +150,9 @@ flowchart LR
 
 ## Current focus
 
-**Here:** P2 — npm package (`@storyboard/spec`, `storyboard` CLI bin).
+**Here:** P2 — npm package (Tasks 1–12 done; publish pending).
 
-**Next action:** [`2026-06-30-p2-npm-package.md`](superpowers/plans/2026-06-30-p2-npm-package.md) → migrate `src/product-spec/` to `@storyboard/spec`.
+**Next action:** [`2026-06-30-p2-npm-package.md`](superpowers/plans/2026-06-30-p2-npm-package.md) Task 13 → publish `0.1.0`.
 
 ---
 

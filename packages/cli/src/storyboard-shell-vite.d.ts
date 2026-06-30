@@ -11,5 +11,7 @@ declare module '@storyboard/shell/vite' {
     options: StoryboardConfigOptions,
   ): Promise<ViteDevServer>
 
-  export function defineStoryboardConfig(options: StoryboardConfigOptions): import('vite').UserConfig
+  export function defineStoryboardConfig(
+    options: StoryboardConfigOptions,
+  ): import('vite').UserConfig
 }

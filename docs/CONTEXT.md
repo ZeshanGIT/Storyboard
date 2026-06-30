@@ -80,3 +80,5 @@ Intent over appearance; MDX = language; screens first-class (`id`, `goto`); prim
 ## Tooling
 
 Vite 8, React 19, TS 6, MDX 3, Tailwind 4 + shadcn, `@xyflow/react` + `@dagrejs/dagre`, Biome (excludes `src/generated/`, `*.mdx`), Vitest (plugin)
+
+**Monorepo packages:** npm workspaces under `packages/` — `@storyboard/spec` (Product Spec engine), `@storyboard/shell` (Vite plugin, Shell, wireframe primitives, JSON compiler), `storyboard` CLI (`packages/cli`). The OSS root app dogfoods `@storyboard/shell` via `workspace:*`; playground stays in root `src/playground/` (not published in 0.1.0).

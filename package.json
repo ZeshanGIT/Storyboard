@@ -21,7 +21,7 @@
     "storyboard": "tsx packages/cli/src/bin/storyboard.ts"
   },
   "dependencies": {
-    "@storyboard/shell": "0.1.0",
+    "@storyboard/shell": "workspace:*",
     "@base-ui/react": "^1.6.0",
     "@dagrejs/dagre": "^3.0.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
