@@ -1,0 +1,46 @@
+{
+  "title": "Workforge Demo JSON",
+  "screens": {
+    "home": {
+      "title": "Home",
+      "nodes": [
+        ["Text:h1", "Welcome back"],
+        ["Text", "Sign in to continue."],
+        [
+          "Container:row",
+          { "distribute": "space-between" },
+          [
+            ["Link:primary-btn", { "goto": "login" }, "Login"],
+            ["Link:secondary-btn", { "goto": "signup" }, "Create account"]
+          ]
+        ]
+      ]
+    },
+    "login": {
+      "title": "Login",
+      "nodes": [
+        ["TopBar:showBack", { "title": "Workforge" }],
+        [
+          "Container",
+          [
+            ["Text:h1", "Sign in"],
+            ["Input:required", { "label": "Email", "placeholder": "you@example.com" }],
+            ["Input:password:required", { "label": "Password" }],
+            ["Link:primary-btn", { "goto": "dashboard" }, "Sign in"]
+          ]
+        ]
+      ]
+    },
+    "signup": {
+      "title": "Sign up",
+      "nodes": [
+        ["Text:h1", "Create account"],
+        ["Link:primary-btn", { "goto": "dashboard" }, "Create account"]
+      ]
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "nodes": [["Text:h1", "Dashboard"], ["Link:secondary-btn", { "goto": "home" }, "Sign out"]]
+    }
+  }
+}
