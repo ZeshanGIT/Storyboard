@@ -1,5 +1,5 @@
+import type { PlaygroundSource } from '@storyboard/shell'
 import { Button } from '@/components/ui/button'
-import type { PlaygroundSource } from '@/lib/app-routes'
 import { cn } from '@/lib/utils'
 
 export type PlaygroundSourceTabsProps = {

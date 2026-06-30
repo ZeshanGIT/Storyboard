@@ -1,6 +1,3 @@
-import type { Text as MdastText, Root } from 'mdast'
-import type { ComponentType, ReactNode } from 'react'
-import { Fragment } from 'react'
 import {
   Container,
   Divider,
@@ -8,13 +5,16 @@ import {
   Image,
   Input,
   Link,
+  type MdxJsxElement,
   Modal,
+  mdxProcessor,
   Screen,
   Text,
   TopBar,
-} from '@/components/wireframe'
-import type { MdxJsxElement } from '@/plugin/mdx-ast'
-import { mdxProcessor } from '@/plugin/mdx-ast'
+} from '@storyboard/shell'
+import type { Text as MdastText, Root } from 'mdast'
+import type { ComponentType, ReactNode } from 'react'
+import { Fragment } from 'react'
 import { mdxAttributesToProps } from './mdx-element-props'
 
 const WIREFRAME_COMPONENTS: Record<string, ComponentType<Record<string, unknown>>> = {

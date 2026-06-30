@@ -4,7 +4,10 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../../src'),
+      '@storyboard/shell/json/build-json-document': path.resolve(
+        __dirname,
+        '../shell/dist/json/build-json-document.js',
+      ),
     },
   },
   test: {

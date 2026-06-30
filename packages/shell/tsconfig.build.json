@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "jsx": "react-jsx",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@shell/*": ["./src/*"]
+    }
+  },
+  "include": ["src/json/**/*", "src/plugin/**/*", "src/types/**/*", "src/vite/**/*"],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/json/to-document-bundle.ts",
+    "src/json/build-screen-component.tsx",
+    "src/json/render-json-node.tsx"
+  ]
+}

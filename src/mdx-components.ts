@@ -9,7 +9,7 @@ import {
   Screen,
   Text,
   TopBar,
-} from './components/wireframe'
+} from '@storyboard/shell'
 
 const components = {
   Screen,

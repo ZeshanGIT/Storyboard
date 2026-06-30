@@ -1,4 +1,4 @@
-import type { MdxJsxElement } from '@/plugin/mdx-ast'
+import type { MdxJsxElement } from '@storyboard/shell'
 
 export function mdxAttributesToProps(
   attributes: MdxJsxElement['attributes'],

@@ -1,5 +1,7 @@
-import { toBrowserPath } from '@/lib/app-base-path'
-import { buildAppUrl } from '@/lib/app-url'
+import { buildAppUrl, toBrowserPath } from '@storyboard/shell'
+import { defaultJsonDocumentSlug } from '@/playground/content-json'
+
+const MDX_PLAYGROUND_SLUG = 'playground'
 
 export function navigateToAppPath(appPath: string, search = ''): void {
   window.history.pushState({}, '', `${toBrowserPath(appPath)}${search}`)
@@ -10,7 +12,7 @@ export function openPlayground(source: 'json' | 'mdx' = 'json'): void {
   const { appPath, search } = buildAppUrl({
     app: 'playground',
     source,
-    docSlug: 'playground',
+    docSlug: source === 'json' ? defaultJsonDocumentSlug() : MDX_PLAYGROUND_SLUG,
     view: 'preview',
   })
   navigateToAppPath(appPath, search)

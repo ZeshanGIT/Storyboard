@@ -1,8 +1,15 @@
+import { buildAppUrl, type PlaygroundSource, parseAppUrl, toAppPath } from '@storyboard/shell'
 import { useCallback, useEffect, useState } from 'react'
-import { toAppPath } from '@/lib/app-base-path'
-import type { PlaygroundSource } from '@/lib/app-routes'
-import { buildAppUrl, parseAppUrl } from '@/lib/app-url'
 import { navigateToAppPath } from '@/lib/navigate-app'
+import { defaultJsonDocumentSlug, isContentJsonSlug } from './content-json'
+
+const MDX_PLAYGROUND_SLUG = 'playground'
+
+function docSlugForSource(source: PlaygroundSource, currentSlug?: string): string {
+  if (source === 'mdx') return MDX_PLAYGROUND_SLUG
+  if (currentSlug && isContentJsonSlug(currentSlug)) return currentSlug
+  return defaultJsonDocumentSlug()
+}
 
 function readSource(): PlaygroundSource {
   const parsed = parseAppUrl({
@@ -31,11 +38,11 @@ export function usePlaygroundSource(): {
     })
     const { appPath, search } = buildAppUrl(
       current?.app === 'playground'
-        ? { ...current, source: next }
+        ? { ...current, source: next, docSlug: docSlugForSource(next, current.docSlug) }
         : {
             app: 'playground',
             source: next,
-            docSlug: 'playground',
+            docSlug: docSlugForSource(next),
             view: 'preview',
           },
     )

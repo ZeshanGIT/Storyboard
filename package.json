@@ -8,12 +8,12 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build:packages": "npm run build -w @storyboard/spec -w @storyboard/shell -w storyboard",
+    "build:packages": "npm run build -w @storyboard/shell && npm run build -w @storyboard/spec -w storyboard",
     "build": "npm run build:packages && npm run codegen && tsc -b && vite build",
     "build:pages": "npm run build && cp dist/index.html dist/404.html",
     "check": "npm run codegen && tsc -b && biome check .",
     "fix": "biome check --write .",
-    "codegen": "tsx src/plugin/run-codegen.ts",
+    "codegen": "tsx packages/shell/src/plugin/run-codegen.ts",
     "archive-skills": "bash scripts/archive-skills.sh",
     "preview": "vite preview",
     "test": "vitest run",
@@ -21,6 +21,7 @@
     "storyboard": "tsx packages/spec/src/cli/main.ts"
   },
   "dependencies": {
+    "@storyboard/shell": "0.1.0",
     "@base-ui/react": "^1.6.0",
     "@dagrejs/dagre": "^3.0.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",

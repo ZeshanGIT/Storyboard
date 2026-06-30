@@ -4,7 +4,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shell/*": ["./packages/shell/src/*"],
+      "@storyboard/shell": ["./packages/shell/src/index.ts"]
     }
   }
 }

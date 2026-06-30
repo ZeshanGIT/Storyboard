@@ -1,6 +1,4 @@
-import { buildMdxDocument } from '@/plugin/build-mdx-document'
-import { extractFrontmatter } from '@/plugin/extract-frontmatter'
-import type { MdxDocument } from '@/plugin/types'
+import { buildMdxDocument, extractFrontmatter, type MdxDocument } from '@storyboard/shell'
 
 export type MdxPlaygroundBuilt = {
   title: string

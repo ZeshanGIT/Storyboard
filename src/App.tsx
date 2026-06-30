@@ -1,8 +1,6 @@
+import { isPlaygroundAppPath, parseAppUrl, toAppPath } from '@storyboard/shell'
 import { useEffect, useState } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { toAppPath } from '@/lib/app-base-path'
-import { isPlaygroundAppPath } from '@/lib/app-routes'
-import { parseAppUrl } from '@/lib/app-url'
 import { MdxApp } from './MdxApp'
 import { PlaygroundApp } from './playground/PlaygroundApp'
 

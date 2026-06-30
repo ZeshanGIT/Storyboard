@@ -1,4 +1,4 @@
-import { buildJsonDocument, type JsonDocumentBuilt } from '@/json/build-json-document'
+import { buildJsonDocument, type JsonDocumentBuilt } from '@storyboard/shell'
 
 export type CompilePlaygroundJsonResult =
   | { ok: true; document: JsonDocumentBuilt }

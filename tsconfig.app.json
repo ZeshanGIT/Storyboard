@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shell/*": ["./packages/shell/src/*"],
+      "@storyboard/shell": ["./packages/shell/src/index.ts"]
     },
     "ignoreDeprecations": "6.0",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
@@ -31,8 +33,12 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "**/*.mdx"],
-  "exclude": ["src/generated"],
+  "include": ["src", "packages/shell/src", "**/*.mdx"],
+  "exclude": [
+    "src/generated",
+    "packages/shell/src/**/*.test.ts",
+    "packages/shell/src/**/*.test.tsx"
+  ],
   "mdx": {
     "checkMdx": true,
     "plugins": ["remark-gfm"]

@@ -5,6 +5,12 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@shell': path.resolve(__dirname, './packages/shell/src'),
+      '@storyboard/shell': path.resolve(__dirname, './packages/shell/src/index.ts'),
+      'virtual:wireframe-codegen-state': path.resolve(
+        __dirname,
+        './src/test/codegen-state-mock.ts',
+      ),
     },
   },
   test: {

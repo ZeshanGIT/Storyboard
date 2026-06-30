@@ -17,6 +17,9 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
+  "dependencies": {
+    "@storyboard/shell": "0.1.0"
+  },
   "devDependencies": {
     "@types/node": "^24.13.2",
     "typescript": "~6.0.2",

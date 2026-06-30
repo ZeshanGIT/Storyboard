@@ -1,10 +1,8 @@
 import { readFileSync } from 'node:fs'
+import { buildMdxDocument, mdxProcessor, Screen } from '@storyboard/shell'
 import { createElement, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { Screen } from '@/components/wireframe'
-import { buildMdxDocument } from '@/plugin/build-mdx-document'
-import { mdxProcessor } from '@/plugin/mdx-ast'
 import { buildMdxScreenComponent } from './build-mdx-screen-component'
 import { renderMdxJsxElement, renderMdxScreenJsx } from './render-mdx-node'
 
