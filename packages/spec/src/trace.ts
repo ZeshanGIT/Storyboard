@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
-import { isBehavioralReqId, isStructuralReqId } from './sr-id'
-import type { ProductSpec, TraceMatch, TraceResult } from './types'
+import { isBehavioralReqId, isStructuralReqId } from './sr-id.js'
+import type { ProductSpec, TraceMatch, TraceResult } from './types.js'
 
 const execFileAsync = promisify(execFile)
 

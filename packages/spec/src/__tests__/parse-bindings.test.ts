@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseBindingsFile } from './parse-bindings'
+import { parseBindingsFile } from '../parse-bindings.js'
 
 describe('parseBindingsFile', () => {
   it('parses screen-only and SR-anchored bindings', () => {

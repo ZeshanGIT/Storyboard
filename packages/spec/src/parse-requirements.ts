@@ -1,5 +1,5 @@
-import { isBehavioralReqId, isStructuralReqId } from './sr-id'
-import type { ReqDefinition, RequirementsFile } from './types'
+import { isBehavioralReqId, isStructuralReqId } from './sr-id.js'
+import type { ReqDefinition, RequirementsFile } from './types.js'
 
 export type ParseResult<T> = { ok: true; value: T } | { ok: false; message: string }
 

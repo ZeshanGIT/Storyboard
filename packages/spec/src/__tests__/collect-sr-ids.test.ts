@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { collectSrIds } from './collect-sr-ids'
+import { collectSrIds } from '../collect-sr-ids.js'
 
 describe('collectSrIds', () => {
   it('collects screen-level and tuple SR ids', () => {

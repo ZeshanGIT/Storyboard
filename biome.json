@@ -7,6 +7,7 @@
   },
   "files": {
     "includes": [
+      "packages/**",
       "src/**",
       "vite.config.ts",
       "vitest.config.ts",

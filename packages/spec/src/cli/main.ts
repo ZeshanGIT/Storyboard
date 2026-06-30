@@ -1,7 +1,7 @@
-import { runImpact } from './run-impact'
-import { runReqShow } from './run-req-show'
-import { runTrace } from './run-trace'
-import { runValidate } from './run-validate'
+import { runImpact } from './run-impact.js'
+import { runReqShow } from './run-req-show.js'
+import { runTrace } from './run-trace.js'
+import { runValidate } from './run-validate.js'
 
 const [command, sub, ...rest] = process.argv.slice(2)
 const cwd = process.cwd()

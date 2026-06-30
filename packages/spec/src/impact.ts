@@ -1,5 +1,11 @@
-import { isBehavioralReqId } from './sr-id'
-import type { BehavioralReqId, Binding, ImpactResult, ProductSpec, StructuralReqId } from './types'
+import { isBehavioralReqId } from './sr-id.js'
+import type {
+  BehavioralReqId,
+  Binding,
+  ImpactResult,
+  ProductSpec,
+  StructuralReqId,
+} from './types.js'
 
 function uniqueScreens(placements: readonly Binding[]): string[] {
   return [...new Set(placements.map(([screenId]) => screenId))]

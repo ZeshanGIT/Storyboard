@@ -1,6 +1,6 @@
-import { collectSrPlacements } from './collect-sr-ids'
-import { isBehavioralReqId, isStructuralReqId } from './sr-id'
-import type { ProductSpec } from './types'
+import { collectSrPlacements } from './collect-sr-ids.js'
+import { isBehavioralReqId, isStructuralReqId } from './sr-id.js'
+import type { ProductSpec } from './types.js'
 
 export function showReq(spec: ProductSpec, id: string): string {
   if (isStructuralReqId(id)) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseRequirementsFile } from './parse-requirements'
+import { parseRequirementsFile } from '../parse-requirements.js'
 
 const SAMPLE = {
   structural: { 'SR-001': { description: 'Home screen' } },

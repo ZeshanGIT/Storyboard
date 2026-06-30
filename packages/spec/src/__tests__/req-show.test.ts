@@ -1,8 +1,8 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { loadProductSpec } from './load'
-import { showReq } from './req-show'
+import { loadProductSpec } from '../load.js'
+import { showReq } from '../req-show.js'
 
 const FIXTURE = join(fileURLToPath(new URL('.', import.meta.url)), 'fixtures', 'todo')
 

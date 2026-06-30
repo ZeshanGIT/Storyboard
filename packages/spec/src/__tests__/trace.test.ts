@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { loadProductSpec } from './load'
-import { buildPattern, parseRgJson, traceReq } from './trace'
+import { loadProductSpec } from '../load.js'
+import { buildPattern, parseRgJson, traceReq } from '../trace.js'
 
 const FIXTURE = join(fileURLToPath(new URL('.', import.meta.url)), 'fixtures', 'todo')
 

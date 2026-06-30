@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isBehavioralReqId, isStructuralReqId, parseReqPath } from './sr-id'
+import { isBehavioralReqId, isStructuralReqId, parseReqPath } from '../sr-id.js'
 
 describe('isStructuralReqId', () => {
   it('accepts SR-001 and SR-010', () => {

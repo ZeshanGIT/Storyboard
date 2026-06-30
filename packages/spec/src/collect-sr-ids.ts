@@ -1,5 +1,5 @@
-import { isStructuralReqId } from './sr-id'
-import type { StructuralReqId, WireframeSpec } from './types'
+import { isStructuralReqId } from './sr-id.js'
+import type { StructuralReqId, WireframeSpec } from './types.js'
 
 export type SrPlacement = { screenId: string; path?: string }
 

@@ -1,5 +1,5 @@
-import { collectSrIds, listScreenIds } from './collect-sr-ids'
-import { isNamedChildKey, isNumericChildKey, parseReqPath } from './sr-id'
+import { collectSrIds, listScreenIds } from './collect-sr-ids.js'
+import { isNamedChildKey, isNumericChildKey, parseReqPath } from './sr-id.js'
 import type {
   ProductSpec,
   ReqDefinition,
@@ -8,7 +8,7 @@ import type {
   ValidationIssue,
   ValidationResult,
   WireframeSpec,
-} from './types'
+} from './types.js'
 
 function isLocalBrId(id: string): boolean {
   return /^BR-[0-9]+$/.test(id)

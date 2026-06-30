@@ -1,8 +1,8 @@
-import { loadProductSpec } from '../load'
-import { validateProductSpec } from '../validate'
+import { loadProductSpec } from '../load.js'
+import { validateProductSpec } from '../validate.js'
 
 export async function runValidate(cwd: string): Promise<number> {
-  const { resolveStoryboardDir } = await import('./resolve-storyboard-dir')
+  const { resolveStoryboardDir } = await import('./resolve-storyboard-dir.js')
   const spec = await loadProductSpec(resolveStoryboardDir(cwd))
   const result = validateProductSpec(spec)
   for (const e of result.errors) console.error(`error: ${e.message}`)

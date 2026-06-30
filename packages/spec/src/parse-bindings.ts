@@ -1,6 +1,6 @@
-import type { ParseResult } from './parse-requirements'
-import { isBehavioralReqId, isStructuralReqId } from './sr-id'
-import type { Binding, BindingsFile } from './types'
+import type { ParseResult } from './parse-requirements.js'
+import { isBehavioralReqId, isStructuralReqId } from './sr-id.js'
+import type { Binding, BindingsFile } from './types.js'
 
 export function parseBindingsFile(raw: unknown): ParseResult<BindingsFile> {
   if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) {

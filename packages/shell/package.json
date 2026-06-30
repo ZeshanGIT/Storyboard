@@ -14,7 +14,10 @@
       "import": "./dist/vite/storyboard-config.js"
     }
   },
-  "files": ["dist", "template"],
+  "files": [
+    "dist",
+    "template"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"

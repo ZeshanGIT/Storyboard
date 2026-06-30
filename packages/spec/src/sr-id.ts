@@ -1,4 +1,4 @@
-import type { BehavioralReqId, ReqPath, StructuralReqId } from './types'
+import type { BehavioralReqId, ReqPath, StructuralReqId } from './types.js'
 
 const SR_PATTERN = /^SR-[A-Z0-9-]+$/
 const BR_PATTERN = /^BR-[A-Z0-9-]+$/

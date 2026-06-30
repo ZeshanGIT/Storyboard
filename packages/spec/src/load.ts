@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { buildJsonDocument } from '@/json/build-json-document'
-import { parseBindingsFile } from './parse-bindings'
-import { parseRequirementsFile } from './parse-requirements'
-import type { ProductSpec, WireframeSpec } from './types'
+import { parseBindingsFile } from './parse-bindings.js'
+import { parseRequirementsFile } from './parse-requirements.js'
+import type { ProductSpec, WireframeSpec } from './types.js'
 
 async function readJson(path: string): Promise<unknown> {
   const text = await readFile(path, 'utf8')
