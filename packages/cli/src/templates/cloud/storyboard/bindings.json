@@ -1,0 +1,7 @@
+{
+  "BR-001": [["home", "SR-012"]],
+  "BR-002": [["home", "SR-010"]],
+  "BR-003": [["home", "SR-010"]],
+  "BR-004": [["home", "SR-013"]],
+  "BR-PASSWORD-VALIDATE": [["edit-task", "SR-020"]]
+}

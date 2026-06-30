@@ -19,6 +19,17 @@ function collectFiles(dir: string, base = ''): Record<string, string> {
   return files
 }
 
+describe('runInit cloud', () => {
+  it('scaffolds todo-poc/ with app stub and design docs', async () => {
+    const cwd = mkdtempSync(join(tmpdir(), 'sb-cloud-'))
+    await runInit({ cwd, template: 'cloud' })
+    await expect(access(join(cwd, 'todo-poc', 'storyboard', 'spec.json'))).resolves.toBeUndefined()
+    await expect(access(join(cwd, 'todo-poc', 'DESIGN.md'))).resolves.toBeUndefined()
+    await expect(access(join(cwd, 'todo-poc', 'ARCHITECTURE.md'))).resolves.toBeUndefined()
+    await expect(access(join(cwd, 'todo-poc', 'app', 'README.md'))).resolves.toBeUndefined()
+  })
+})
+
 describe('runInit embedded', () => {
   it('scaffolds storyboard/ and sample mdx', async () => {
     const cwd = mkdtempSync(join(tmpdir(), 'sb-init-'))
