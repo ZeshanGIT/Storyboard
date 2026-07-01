@@ -60,7 +60,7 @@ As the Product Specification evolves, every derived artifact evolves with it.
 
 ## Customer Perspective
 
-From a customer's point of view, Storyboard is extremely simple.
+From a customer's point of view, OneSpec is extremely simple.
 
 The customer defines:
 
@@ -69,7 +69,7 @@ The customer defines:
 * Navigation
 * Design guides
 
-Storyboard AI then generates:
+OneSpec AI then generates:
 
 * Interactive wireframes
 * Prototype
@@ -91,11 +91,11 @@ Generated UI
 
 ---
 
-## Two Flavors of Storyboard
+## Two Flavors of OneSpec
 
-Storyboard is intended to exist in two complementary products.
+OneSpec is intended to exist in two complementary products.
 
-### 1. Storyboard Cloud
+### 1. OneSpec Cloud
 
 This is the primary product.
 
@@ -120,11 +120,11 @@ Users generally do not edit generated code directly.
 
 Instead they modify the Product Specification and let AI regenerate the implementation.
 
-Because Storyboard owns the entire lifecycle, the Product Specification remains the authoritative source of truth.
+Because OneSpec owns the entire lifecycle, the Product Specification remains the authoritative source of truth.
 
 ---
 
-### 2. Storyboard OSS / Power User Edition
+### 2. OneSpec OSS / Power User Edition
 
 This version targets developers.
 
@@ -133,15 +133,15 @@ Power users can:
 * Use completely custom React components
 * Customize the rendering pipeline
 * Choose their own architecture
-* Integrate Storyboard into existing projects
+* Integrate OneSpec into existing projects
 * Extend the component library
 * Ignore the opinionated architecture if they choose
 
 The Product Specification still exists.
 
-However, Storyboard no longer guarantees that implementation remains synchronized because developers are free to modify the code directly.
+However, OneSpec no longer guarantees that implementation remains synchronized because developers are free to modify the code directly.
 
-Instead Storyboard provides diagnostics and tooling that help detect drift.
+Instead OneSpec provides diagnostics and tooling that help detect drift.
 
 ---
 
@@ -220,7 +220,7 @@ They intentionally do not prescribe implementation.
 
 ## Traceability
 
-One of Storyboard's core goals is maintaining traceability between:
+One of OneSpec's core goals is maintaining traceability between:
 
 * Product Specification
 * UI
@@ -243,7 +243,7 @@ Example:
 // represents SR-001
 ```
 
-This allows Storyboard to determine:
+This allows OneSpec to determine:
 
 * which requirements are implemented
 * which requirements are missing
@@ -259,7 +259,7 @@ A behavioral requirement is not mapped to a specific function.
 
 Real implementations usually span multiple files and multiple functions.
 
-Instead Storyboard uses lightweight implementation annotations.
+Instead OneSpec uses lightweight implementation annotations.
 
 Example:
 
@@ -316,7 +316,7 @@ rather than trying to combine them.
 
 ## Opinionated Architecture
 
-Storyboard Cloud intentionally generates applications using a consistent architecture.
+OneSpec Cloud intentionally generates applications using a consistent architecture.
 
 This architecture exists primarily to make AI significantly more effective.
 
@@ -341,9 +341,9 @@ provides AI with enough context to consistently evolve the application.
 
 ## AI-First Development
 
-Storyboard is designed around the assumption that AI will be the primary implementation tool.
+OneSpec is designed around the assumption that AI will be the primary implementation tool.
 
-Rather than asking AI to search an entire codebase, Storyboard narrows the search space.
+Rather than asking AI to search an entire codebase, OneSpec narrows the search space.
 
 The AI has access to:
 
@@ -384,8 +384,8 @@ Editing one representation updates the Product Specification, which updates ever
 * Every structural requirement should be traceable to the UI.
 * Every behavioral requirement should be traceable to implementation and tests.
 * AI should modify the Product Specification first, then implementation.
-* Storyboard should reduce search space for both humans and AI.
+* OneSpec should reduce search space for both humans and AI.
 * The cloud product favors consistency and opinionated workflows.
 * The power-user edition favors flexibility and extensibility.
 * Traceability should be lightweight enough that developers will actually maintain it.
-* Storyboard is not a wireframing tool. It is an AI-first application specification platform.
+* OneSpec is not a wireframing tool. It is an AI-first application specification platform.

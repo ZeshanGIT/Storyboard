@@ -49,8 +49,8 @@ export async function runFullCodegen(root: string): Promise<CodegenResult> {
   await generateAggregateRoutes(documentScreens, outDir)
   await generateContentDocuments(documents, documentScreens, outDir)
 
-  const primarySlug = documentScreens.has('storyboard')
-    ? 'storyboard'
+  const primarySlug = documentScreens.has('onespec')
+    ? 'onespec'
     : documentScreens.has('wireframe')
       ? 'wireframe'
       : documents[0]?.slug

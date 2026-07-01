@@ -6,7 +6,7 @@ import remarkFrontmatter from 'remark-frontmatter'
 import type { UserConfig } from 'vite'
 import { mdxVitePlugin } from '../plugin/mdx-vite-plugin'
 import { wireframePlugin } from '../plugin/wireframe-plugin'
-import { detectStoryboardMode } from './detect-mode'
+import { detectOnespecMode } from './detect-mode'
 
 export type OnespecConfigOptions = {
   root: string
@@ -15,7 +15,7 @@ export type OnespecConfigOptions = {
 }
 
 export function defineOnespecConfig(options: OnespecConfigOptions): UserConfig {
-  const mode = detectStoryboardMode(options.root)
+  const mode = detectOnespecMode(options.root)
   const templateRoot = path.resolve(import.meta.dirname, '../../template')
   const shellRoot = path.resolve(import.meta.dirname, '../..')
   const workspaceRoot = path.resolve(shellRoot, '../..')

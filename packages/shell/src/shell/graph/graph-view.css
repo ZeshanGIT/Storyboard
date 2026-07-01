@@ -1,4 +1,4 @@
-/* Storyboard graph view — sharp corners, edge layering */
+/* OneSpec graph view — sharp corners, edge layering */
 .react-flow {
   border-radius: 0;
   --xy-edge-stroke: #63b3ed;

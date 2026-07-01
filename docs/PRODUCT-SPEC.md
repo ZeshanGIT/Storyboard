@@ -37,7 +37,7 @@ Recommended sequencing (do not publish npm before the schema is stable):
 
 **Phase 2 — Package extraction + CLI**
 
-- Split: `@onespec/spec`, `@onespec/shell`, `storyboard` CLI
+- Split: `@onespec/spec`, `@onespec/shell`, `onespec` CLI
 - `npx @onespec-dev/cli init` — embedded mode (power users) vs cloud template
 - Publish 0.1.0 with: init, dev (shell), validate — no production codegen yet
 
@@ -621,7 +621,7 @@ todo-poc/
 | SR granularity | **One SR per traceable primitive** (`Input`, `Link`, meaningful `Text`, etc.); layout wrappers (`Container:row`, `Divider`) skip SR |
 | Annotate parent or leaves? | **Both** — parent and leaf `sb-req` / `@sb-req` allowed; CLI `trace` returns all matches |
 | Binding without SR? | **Both forms** — `["login"]` screen-scoped and `["login", "SR-012"]` SR-anchored bindings are valid |
-| Package name on npm | **`storyboard`** bin; publish as `storyboard` or `@onespec/cli` depending on npm availability at 0.1.0 |
+| Package name on npm | **`onespec`** bin; published as `@onespec-dev/cli@0.1.0` |
 | VISION.md alignment | **Done (2026-06-30)** — `UI-xxx`/`BH-xxx` → `SR-xxx`/`BR-xxx` (Task 12) |
 | Ultra-minimal screen keys | **Defer** — keep `title`, `nodes`, etc. unless a token audit demands shortening |
 

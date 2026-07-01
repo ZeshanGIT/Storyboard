@@ -7,7 +7,7 @@
   "homepage": "https://onespec.dev",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ZeshanGIT/Storyboard.git",
+    "url": "https://github.com/ZeshanGIT/OneSpec.git",
     "directory": "packages/spec"
   },
   "publishConfig": {

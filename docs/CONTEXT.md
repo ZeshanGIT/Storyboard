@@ -92,7 +92,7 @@ Published install: `npx @onespec-dev/cli@0.1.0` (bin `onespec`). `trace` needs `
 | `packages/shell/src/runtime/` | WireframeViewContext, WireframeErrorProvider |
 | `packages/shell/src/components/wireframe/` | Primitives |
 | `packages/shell/src/lib/` | `app-url.ts`, `app-routes.ts`, `app-base-path.ts` |
-| `packages/shell/src/vite/` | `detectStoryboardMode`, `defineOnespecConfig`, `createOnespecDevServer`, JSON loader |
+| `packages/shell/src/vite/` | `detectOnespecMode`, `defineOnespecConfig`, `createOnespecDevServer`, JSON loader |
 | `packages/shell/template/` | Consumer Vite scaffold (JSON dev default) |
 | `packages/cli/src/` | Commander CLI, init templates (`embedded/`, `cloud/`) |
 | `src/content/*.mdx` | OSS MDX authoring |
@@ -110,7 +110,7 @@ Removed from root (now in `packages/shell/`): `src/plugin/`, `src/shell/`, `src/
 
 **URLs:** MDX `/mdx/{docSlug}/{view}[/{screenId}]`; playground `/playground/{source}/{docSlug}/{view}[/{screenId}]`; graph `?graphMode=screen|compact&focus={screenId}`. Legacy paths redirect; invalid segments normalized.
 
-**Views:** Preview — all screens; Prototype — generated routes, URL `screenId`; Graph — per-doc `navigationGraph`, Dagre LR, Screen (link-anchored edges) or Compact. Doc picker persists across views; `storyboard.mdx` first in OSS content.
+**Views:** Preview — all screens; Prototype — generated routes, URL `screenId`; Graph — per-doc `navigationGraph`, Dagre LR, Screen (link-anchored edges) or Compact. Doc picker persists across views; `onespec.mdx` first in OSS content.
 
 **Link / Modal:** `<Link goto>` not Button — preview `#scroll`; prototype `navigate` / `openModal` / `_close` / `_back`; graph non-interactive (screen→screen edges only). Details → [`MDX-COMPONENTS.md`](MDX-COMPONENTS.md).
 

@@ -22,9 +22,9 @@ describe('app base path helpers', () => {
     })
   })
 
-  describe('on GitHub Pages (BASE_URL /Storyboard/)', () => {
+  describe('on GitHub Pages (BASE_URL /OneSpec/)', () => {
     beforeEach(() => {
-      vi.stubEnv('BASE_URL', '/Storyboard/')
+      vi.stubEnv('BASE_URL', '/OneSpec/')
     })
 
     afterEach(() => {
@@ -32,14 +32,14 @@ describe('app base path helpers', () => {
     })
 
     it('maps browser paths to app paths', () => {
-      expect(toAppPath('/Storyboard')).toBe('/')
-      expect(toAppPath('/Storyboard/login')).toBe('/login')
+      expect(toAppPath('/OneSpec')).toBe('/')
+      expect(toAppPath('/OneSpec/login')).toBe('/login')
       expect(toAppPath('/login')).toBe('/login')
     })
 
     it('maps app paths to browser paths', () => {
-      expect(toBrowserPath('/login')).toBe('/Storyboard/login')
-      expect(toBrowserPath('/')).toBe('/Storyboard/')
+      expect(toBrowserPath('/login')).toBe('/OneSpec/login')
+      expect(toBrowserPath('/')).toBe('/OneSpec/')
     })
   })
 })

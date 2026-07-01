@@ -6,7 +6,7 @@ Site: [https://onespec.dev](https://onespec.dev)
 
 Describe screens, actions, and navigation in code — not mockups. One MDX source drives **Preview**, **Prototype**, and **Graph View**. Think Storybook for UX flows.
 
-**Live demo:** [zeshangit.github.io/Storyboard](https://zeshangit.github.io/Storyboard/)
+**Live demo:** [zeshangit.github.io/OneSpec](https://zeshangit.github.io/OneSpec/)
 
 ## Screenshots
 
@@ -48,7 +48,7 @@ Demo documents:
 
 | File | Purpose |
 |------|---------|
-| [`storyboard.mdx`](src/content/storyboard.mdx) | Intro and how the tool works |
+| [`onespec.mdx`](src/content/onespec.mdx) | Intro and how the tool works |
 | [`wireframe.mdx`](src/content/wireframe.mdx) | Workforge auth demo (login → dashboard) |
 | [`components.mdx`](src/content/components.mdx) | Component catalog |
 
@@ -86,7 +86,7 @@ No imports in MDX — components are registered globally. Save the file and code
 | **Prototype View** | Clickable flow using generated routes (first screen = entry) |
 | **Graph View** | Navigation graph with pan/zoom; Screen or Compact sub-modes |
 
-Use the document picker (☰ menu) to switch between MDX files. `storyboard.mdx` opens first.
+Use the document picker (☰ menu) to switch between MDX files. `onespec.mdx` opens first.
 
 ## MDX components
 
@@ -150,13 +150,13 @@ If deploy fails with `404` / “Ensure GitHub Pages has been enabled”, Pages i
 Setup:
 
 1. Enable Pages: **Settings → Pages → Source → GitHub Actions**
-2. Push to `master` — the workflow builds with `base: /Storyboard/` and deploys
+2. Push to `master` — the workflow builds with `base: /OneSpec/` and deploys
 
 Local preview of the Pages build:
 
 ```bash
-GITHUB_PAGES=true GITHUB_REPOSITORY=ZeshanGIT/Storyboard npm run build:pages
-npm run preview -- --base /Storyboard/
+GITHUB_PAGES=true GITHUB_REPOSITORY=ZeshanGIT/OneSpec npm run build:pages
+npm run preview -- --base /OneSpec/
 ```
 
 ## Project layout

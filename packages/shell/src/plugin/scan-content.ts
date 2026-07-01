@@ -9,7 +9,7 @@ export type ScannedMdxDocument = {
   importPath: string
 }
 
-const PRIMARY_MDX = 'storyboard.mdx'
+const PRIMARY_MDX = 'onespec.mdx'
 const DEMO_MDX = 'wireframe.mdx'
 
 function mdxSortRank(filename: string): number {

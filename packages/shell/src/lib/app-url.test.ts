@@ -96,7 +96,7 @@ describe('screenPathForDoc', () => {
 describe('resolveLegacyAppPath', () => {
   const docs = [
     { slug: 'wireframe', screenIds: ['home', 'login'] },
-    { slug: 'storyboard', screenIds: ['welcome'] },
+    { slug: 'onespec', screenIds: ['welcome'] },
   ]
 
   it('maps flat /login to wireframe prototype', () => {

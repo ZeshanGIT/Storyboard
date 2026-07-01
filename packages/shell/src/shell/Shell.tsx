@@ -31,9 +31,9 @@ export type ShellProps = {
 }
 
 function defaultDocumentSlug(documents: readonly WireframeDocumentBundle[]): string {
-  const storyboard = documents.find((doc) => doc.slug === 'storyboard')
+  const onespec = documents.find((doc) => doc.slug === 'onespec')
   const wireframe = documents.find((doc) => doc.slug === 'wireframe')
-  return storyboard?.slug ?? wireframe?.slug ?? documents[0]?.slug ?? ''
+  return onespec?.slug ?? wireframe?.slug ?? documents[0]?.slug ?? ''
 }
 
 function documentFilename(entry: WireframeDocumentBundle): string {

@@ -101,8 +101,8 @@ export async function generateAggregateRoutes(
   documentScreens: DocumentScreensMap,
   outDir: string,
 ): Promise<void> {
-  const primarySlug = documentScreens.has('storyboard')
-    ? 'storyboard'
+  const primarySlug = documentScreens.has('onespec')
+    ? 'onespec'
     : documentScreens.has('wireframe')
       ? 'wireframe'
       : [...documentScreens.keys()][0]

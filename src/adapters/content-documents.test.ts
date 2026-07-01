@@ -6,8 +6,8 @@ describe('allContentDocumentsToBundles', () => {
   it('inserts JSON companion after matching MDX document', () => {
     const mdxEntries = [
       {
-        slug: 'storyboard',
-        title: 'About Storyboard',
+        slug: 'onespec',
+        title: 'About OneSpec',
         component: () => null,
         routes: [],
         navigationGraph: { nodes: [], edges: [] },
@@ -23,11 +23,7 @@ describe('allContentDocumentsToBundles', () => {
 
     const bundles = allContentDocumentsToBundles(mdxEntries)
 
-    expect(bundles.map((bundle) => bundle.slug)).toEqual([
-      'storyboard',
-      'wireframe',
-      'wireframe-json',
-    ])
+    expect(bundles.map((bundle) => bundle.slug)).toEqual(['onespec', 'wireframe', 'wireframe-json'])
     expect(bundles[2]?.title).toBe('Workforge Demo JSON')
     expect(bundles[2]?.source).toBe('json')
   })

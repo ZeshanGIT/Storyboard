@@ -9,7 +9,7 @@ This document defines the scope, requirements, and success criteria for the firs
 
 ## Goal
 
-When a developer runs `npm run dev`, WireframeX should:
+When a developer runs `npm run dev`, OneSpec should:
 
 1. Start the React dev app (Vite).
 2. Watch the wireframe MDX file(s) and regenerate TypeScript on every change.

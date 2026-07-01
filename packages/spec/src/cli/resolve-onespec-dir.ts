@@ -8,6 +8,3 @@ export function resolveOnespecDir(cwd: string): string {
   }
   return dir
 }
-
-/** @deprecated Use resolveOnespecDir */
-export const resolveStoryboardDir = resolveOnespecDir

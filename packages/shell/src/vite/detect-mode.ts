@@ -5,10 +5,7 @@ export function resolveOnespecDir(root: string): string {
   return join(root, 'onespec')
 }
 
-/** @deprecated Use resolveOnespecDir */
-export const resolveStoryboardDir = resolveOnespecDir
-
-export function detectStoryboardMode(root: string): 'mdx' | 'json' {
+export function detectOnespecMode(root: string): 'mdx' | 'json' {
   const contentDir = join(root, 'src', 'content')
   if (existsSync(contentDir)) {
     const hasMdx = readdirSync(contentDir).some((name) => name.endsWith('.mdx'))

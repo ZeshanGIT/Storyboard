@@ -84,6 +84,6 @@ Run `npm run build` + `npm run check` before claiming done.
 - [ ] Wireframe primitives; new components → `mdx-components.ts`; new content → `title` frontmatter
 - [ ] `npm run test` (+ `src/lib/app-url.test.ts` if URLs); `npm run build` + `npm run check`; scope matches build phase
 
-Git: workspace dir not git root. Repo: `/Users/seshan-12821/Data/Repos/WireframeX` — use `git -C …`. Changes sync automatically.
+Git: workspace dir not git root. Repo: `/Users/seshan-12821/Data/Repos/OneSpec` — use `git -C …`. Changes sync automatically.
 
 Subagents: **composer-2.5 only** — never composer-2.5-fast.

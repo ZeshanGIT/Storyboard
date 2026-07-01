@@ -126,8 +126,8 @@ export function resolveLegacyAppPath(
   const segments = appPath.split('/').filter(Boolean)
 
   if (appPath === '/' || appPath === '') {
-    const storyboard = knownDocs.find((doc) => doc.slug === 'storyboard')
-    const fallback = storyboard ?? knownDocs[0]
+    const onespec = knownDocs.find((doc) => doc.slug === 'onespec')
+    const fallback = onespec ?? knownDocs[0]
     if (!fallback) return null
     return { app: 'mdx', docSlug: fallback.slug, view: 'preview' }
   }

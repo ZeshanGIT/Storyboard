@@ -10,7 +10,7 @@ export function normalizePath(pathname: string): string {
   return pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
 }
 
-/** Browser pathname → app route path (e.g. `/Storyboard/login` → `/login`). */
+/** Browser pathname → app route path (e.g. `/OneSpec/login` → `/login`). */
 export function toAppPath(pathname: string): string {
   const normalized = normalizePath(pathname)
   const base = appBasePath()

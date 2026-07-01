@@ -35,7 +35,7 @@ describe('runInit embedded', () => {
     const cwd = mkdtempSync(join(tmpdir(), 'sb-init-'))
     await runInit({ cwd, template: 'embedded' })
     await expect(access(join(cwd, 'onespec', 'spec.json'))).resolves.toBeUndefined()
-    await expect(access(join(cwd, 'src', 'content', 'storyboard.mdx'))).resolves.toBeUndefined()
+    await expect(access(join(cwd, 'src', 'content', 'onespec.mdx'))).resolves.toBeUndefined()
     expect(collectFiles(cwd)).toMatchSnapshot()
   })
 

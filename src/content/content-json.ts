@@ -1,4 +1,4 @@
-const PRIMARY_JSON = 'storyboard.json'
+const PRIMARY_JSON = 'onespec.json'
 const DEMO_JSON = 'wireframe.json'
 
 const jsonModules = import.meta.glob('./*.json', {
@@ -54,7 +54,7 @@ export function resolveJsonDocumentSlug(
 }
 
 export function defaultJsonBaseSlug(): string {
-  const storyboard = contentJsonSources.find((doc) => doc.baseSlug === 'storyboard')
+  const onespec = contentJsonSources.find((doc) => doc.baseSlug === 'onespec')
   const wireframe = contentJsonSources.find((doc) => doc.baseSlug === 'wireframe')
-  return storyboard?.baseSlug ?? wireframe?.baseSlug ?? contentJsonSources[0]?.baseSlug ?? ''
+  return onespec?.baseSlug ?? wireframe?.baseSlug ?? contentJsonSources[0]?.baseSlug ?? ''
 }

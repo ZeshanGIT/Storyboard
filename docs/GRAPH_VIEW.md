@@ -182,7 +182,7 @@ Graph View does not sync selection or scroll position with Preview or Prototype 
 
 ## Visual design constraints
 
-Graph View follows WireframeX non-goals:
+Graph View follows OneSpec non-goals:
 
 - No brand colors, shadows, or typography systems on graph chrome
 - Node wireframes use the same structural wireframe style as primitives

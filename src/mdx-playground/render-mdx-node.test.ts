@@ -70,6 +70,6 @@ describe('renderMdxScreenJsx', () => {
     expect(markup).toContain('Login')
     expect(markup).toContain('Create account')
     expect(markup).toContain('demo note')
-    expect(markup).toContain('Sample auth flow for Storyboard')
+    expect(markup).toContain('Sample auth flow for OneSpec')
   })
 })

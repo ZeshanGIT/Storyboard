@@ -10,7 +10,7 @@ describe('contentJsonSources', () => {
     expect(wireframe.raw.title).toBe('Workforge Demo JSON')
   })
 
-  it('prefers wireframe as default base slug when storyboard.json is absent', () => {
+  it('prefers wireframe as default base slug when onespec.json is absent', () => {
     expect(defaultJsonBaseSlug()).toBe('wireframe')
   })
 

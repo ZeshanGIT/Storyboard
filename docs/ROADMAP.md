@@ -92,7 +92,7 @@ npx @onespec-dev/cli dev | validate | req show | impact | trace
 
 Init modes: **embedded** (`my-app/onespec/` — MDX path stays in OSS) · **cloud stub** (`todo-poc/app/` + `onespec/` JSON-only + DESIGN.md + ARCHITECTURE.md).
 
-**Remaining:** `0.2.0` breaking change — consumer directory renamed `storyboard/` → `onespec/` (rename Phase 4). Unstable. No production codegen.
+**Remaining:** Unstable. No production codegen.
 
 ### P3 · Toy repo traceability POC ○
 
